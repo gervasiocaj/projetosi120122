@@ -1,0 +1,33 @@
+<project>
+
+    <target name="limpa">
+        <delete dir="build"/>
+    </target>
+
+    <target name="compila">
+        <mkdir dir="build/classes"/>
+        <javac srcdir="src" destdir="build/classes"/>
+    </target>
+
+	<target name="testa">
+		<java classname="easyaccept.EasyAccept" args="a.Definir testesDeAceitacao_SI1/scripts"/>
+	</target>
+	
+	<target name="doc">
+		<javadoc></javadoc> <!-- criar javadoc -->
+	</target>
+	
+    <target name="jar">
+        <mkdir dir="build/jar"/>
+        <jar destfile="build/jar/ProjetoSI.jar" basedir="build/classes">
+            <manifest>
+                <attribute name="Main-Class" value="a.Definir"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="roda">
+        <java jar="build/jar/ProjetoSI.jar" fork="true"/>
+    </target>
+
+</project>
