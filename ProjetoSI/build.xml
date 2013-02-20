@@ -10,7 +10,13 @@
     </target>
 
 	<target name="testa">
-		<java classname="easyaccept.EasyAccept" args="a.Definir testesDeAceitacao_SI1/scripts"/>
+	    <java classname="easyaccept.EasyAccept">
+	        <arg line="br.edu.ufcg.rickroll.RickRoll testesDeAceitacao_SI1/scripts"/>
+	        <classpath>
+	            <pathelement location="lib/easyaccept.jar"/>
+           		<pathelement location="bin"/>
+	        </classpath>
+	    </java>
 	</target>
 	
 	<target name="doc">
