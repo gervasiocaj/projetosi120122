@@ -10,13 +10,14 @@ import java.util.TreeMap;
 public class DataStorage {
 
 	
-	private Map<String, User> userList ;
+	private Map<String, Usuario> userList ;
 	public DataStorage() {
 		
-		userList = new TreeMap<String, User>();
+		userList = new TreeMap<String, Usuario>();
+		
 	}
 	
-	public void addUsuario(User user){
+	public void addUsuario(Usuario user){
 		userList.put(user.getId(), user);
 	}
 
@@ -25,7 +26,7 @@ public class DataStorage {
 		Iterator<String> i = keySet.iterator();
 		while ( i.hasNext() ) {
 			String key = i.next();
-			User user = userList.get(key);
+			Usuario user = userList.get(key);
 			if ( user.getLogin() == login || user.getEmail() == email ) {
 				return true;
 			}
@@ -38,7 +39,7 @@ public class DataStorage {
 		Iterator<String> i = keySet.iterator();
 		while ( i.hasNext() ) {
 			String key = i.next();
-			User user = userList.get(key);
+			Usuario user = userList.get(key);
 			if ( user.getLogin() == login ) {
 				return user.getId();
 			}
@@ -46,7 +47,7 @@ public class DataStorage {
 		return null;
 	}
 
-	public User getUser(String userID) {
+	public Usuario getUser(String userID) {
 		return userList.get(userID);
 	}
 

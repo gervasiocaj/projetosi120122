@@ -1,30 +1,26 @@
 package Classes;
 
+import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
+import java.sql.Date;
 
+import Exceptions.DataInvalidaException;
 import Exceptions.LinkInvalidoException;
 
-public class Musica {
+public class Musica implements Comparable<Musica> {
 	
-	private String idSessao;
+	private String loginCriador;
 	private String link;
-	private String dataDeCriacao;
+	private GregorianCalendar dataDeCriacao;
+
 	
-	public Musica(String idSessao,String link, String dataDeCriacao) throws LinkInvalidoException {
-		if (!linkValido(link))
-			throw new LinkInvalidoException("Link invalido.");
-		this.idSessao = idSessao;
+	public Musica(String loginCriador,String link, GregorianCalendar dataDeCriacao) throws LinkInvalidoException, DataInvalidaException {
+		if (!linkValido(link)) throw new LinkInvalidoException("Link inválido");
+//		else if(!dataValida(dataDeCriacao)) throw new DataInvalidaException("Data inválida");
+		this.loginCriador = loginCriador;
 		this.link = link;
 		this.dataDeCriacao = dataDeCriacao;
 	}
-	
-	public Musica(String idSessao,String link, GregorianCalendar dataDeCriacao) throws LinkInvalidoException {
-		if (!linkValido(link))
-			throw new LinkInvalidoException("Link invalido.");
-		this.idSessao = idSessao;
-		this.link = link;
-	}
-	
 	
 	
 	public String getLink(){
@@ -42,7 +38,7 @@ public class Musica {
 	
 	public void setLink(String newLink) throws LinkInvalidoException {
 		if (!linkValido(newLink))
-			throw new LinkInvalidoException("Link invalido.");
+			throw new LinkInvalidoException("Link inválido");
 		this.link = newLink;
 	}
 	
@@ -53,7 +49,7 @@ public class Musica {
 	 * 		Data de criacao.
 	 */
 	
-	public String getDataDeCriacao(){
+	public GregorianCalendar getDataDeCriacao(){
 		return dataDeCriacao;
 	}
 	
@@ -65,7 +61,7 @@ public class Musica {
 	 */
 	
 	public String getIdSessao(){
-		return idSessao;
+		return loginCriador;
 	}
 
 	/**
@@ -81,6 +77,19 @@ public class Musica {
 		return (link.startsWith("http://") && link.length() > "http://".length()) ||
 				(link.startsWith("https://") && link.length() > "https://".length());
 	}
+	
+	/**
+	 * Verifica se a data eh valida ou nao.
+	 * 
+	 * @param link
+	 * 		Data a ser verificada
+	 * @return
+	 * 		true caso a data seja valida, false caso contrario.
+	 */
+	
+	public static boolean dataValida(String data) {
+		return (new SimpleDateFormat("dd/MM/yyyy").format(new Date(System.currentTimeMillis())) == data);
+	}
 
 	/**
 	 * Retorna uma string representando a musica
@@ -88,9 +97,57 @@ public class Musica {
 	 * 		String de representacao.
 	 */
 	
+	
+	
+//	@Override
+//	public String toString() {
+//		return link + " - " + dataDeCriacao;
+//	}
+
+
 	@Override
-	public String toString() {
-		return link + " - " + dataDeCriacao;
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((dataDeCriacao == null) ? 0 : dataDeCriacao.hashCode());
+		result = prime * result + ((link == null) ? 0 : link.hashCode());
+		result = prime * result
+				+ ((loginCriador == null) ? 0 : loginCriador.hashCode());
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Musica other = (Musica) obj;
+		if (dataDeCriacao == null) {
+			if (other.dataDeCriacao != null)
+				return false;
+		} else if (!dataDeCriacao.equals(other.dataDeCriacao))
+			return false;
+		if (link == null) {
+			if (other.link != null)
+				return false;
+		} else if (!link.equals(other.link))
+			return false;
+		if (loginCriador == null) {
+			if (other.loginCriador != null)
+				return false;
+		} else if (!loginCriador.equals(other.loginCriador))
+			return false;
+		return true;
+	}
+
+	@Override
+	public int compareTo(Musica musica2) {
+		return getDataDeCriacao().compareTo(musica2.getDataDeCriacao());
 	}
 
 }

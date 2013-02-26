@@ -1,4 +1,4 @@
-package Classes;
+package Testes;
 import static org.junit.Assert.*;
 
 import java.util.GregorianCalendar;
@@ -10,7 +10,10 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import Classes.Musica;
+import Classes.SystemAPI;
 import Exceptions.AtributoInvalidoException;
+import Exceptions.DataInvalidaException;
 import Exceptions.LinkInvalidoException;
 import Exceptions.LoginException;
 import Exceptions.PostaSomException;
@@ -18,7 +21,7 @@ import Exceptions.SessaoIDException;
 import Exceptions.UsuarioNaoCadastradoException;
 
 
-public class SystemAPITest {
+public class TesteUS01 {
 
 	SystemAPI api;
 	
@@ -30,7 +33,7 @@ public class SystemAPITest {
 	// TODO: TESTES NAO FUNCIONAIS!
 	
 	@Test
-	public void criaNovoUsuário() throws UsuarioNaoCadastradoException, LoginException {
+	public void criaNovoUsuário() throws Exception {
 		
 		String idUser;
 		try {
@@ -50,7 +53,7 @@ public class SystemAPITest {
 	}
 	
 	@Test
-	public void getAtributoUsuario() throws UsuarioNaoCadastradoException, AtributoInvalidoException {
+	public void getAtributoUsuario() throws Exception {
 		
 		try {
 			api.getAtributoUsuario( "login", "" );
@@ -69,7 +72,7 @@ public class SystemAPITest {
 	}
 	
 	@Test
-	public void abrirSessao() throws LoginException, UsuarioNaoCadastradoException{
+	public void abrirSessao() throws Exception{
 		
 		try {
 			api.abrirSessao("login", "senha");
@@ -89,31 +92,22 @@ public class SystemAPITest {
 	}
 
 	@Test
-	public void getPerfilMusical() throws UsuarioNaoCadastradoException{
-		
-		try {
-			api.getPerfilMusical("login");
-			Assert.fail( "Deveria lancar uma UsuarioNaoCadastradoException" );
-		} catch ( UsuarioNaoCadastradoException e) {
-			Assert.assertEquals( "Usuário inexistente", e.getMessage() );
-		} catch (Exception e) {
-			Assert.fail( "Deveria lancar uma UsuarioNaoCadastradoException" );
-		}
-		
+	public void getPerfilMusical() throws Exception{
 		api.criaNovoUsuario( "login", "senha", "nome", "email" );
+		String sessaoID = api.abrirSessao("login", "senha");
 		
 		List<Musica> list = new LinkedList<Musica>();
-		Assert.assertEquals(list, api.getPerfilMusical("login"));
+		Assert.assertEquals(list, api.getPerfilMusical(sessaoID));
 	}
 	
 	@Test
-	public void postarSom() throws UsuarioNaoCadastradoException, LoginException, SessaoIDException, PostaSomException, LinkInvalidoException {
+	public void postarSom() throws Exception {
 
 		try {
 			api.postarSom( "idSessao" , "link", new GregorianCalendar() );
 			Assert.fail( "Deveria lancar uma SessaoIDException" );
 		} catch ( SessaoIDException e) {
-			Assert.assertEquals( "SessaoID invalido!", e.getMessage() );
+			Assert.assertEquals( "SessaoID invalida", e.getMessage() );
 		} catch (Exception e) {
 			Assert.fail( "Deveria lancar uma SessaoIDException" );
 		}
@@ -121,18 +115,22 @@ public class SystemAPITest {
 		api.criaNovoUsuario( "login", "senha", "nome", "email" );
 		String sessaoID = api.abrirSessao("login", "senha");
 		
-		List<Musica> list = new LinkedList<Musica>();
-		Assert.assertEquals(list, api.getPerfilMusical("login"));
-		api.postarSom( sessaoID , "http://youtu.be/IXcruXXLy8E", new GregorianCalendar() );
+		GregorianCalendar data = new GregorianCalendar();
+		List<Musica> lista = new LinkedList<Musica>();
+		Assert.assertEquals(lista, api.getPerfilMusical("login"));
+		api.postarSom( sessaoID , "http://youtu.be/IXcruXXLy8E", new GregorianCalendar(data.YEAR, data.MONTH, data.DAY_OF_MONTH) );
 		
-		Assert.assertEquals(1, api.getPerfilMusical("login").size());
-		Musica som = new Musica( sessaoID , "http://youtu.be/IXcruXXLy8E", new GregorianCalendar() );
-		Assert.assertEquals(som, api.getPerfilMusical(sessaoID).get(1));
+		lista.add(new Musica(sessaoID, "http://youtu.be/IXcruXXLy8E", new GregorianCalendar(data.YEAR, data.MONTH, data.DAY_OF_MONTH) ));
+		
+		System.out.println(lista.get(0));
+		System.out.println(api.getPerfilMusical("login").get(0));
+		
+		Assert.assertEquals(lista, api.getPerfilMusical("login"));
+
 	}
 	
-	
 	@Test
-	public void encerrarSessao() throws UsuarioNaoCadastradoException, LoginException{
+	public void encerrarSessao() throws Exception {
 		
 		api.criaNovoUsuario( "login", "senha", "nome", "email" );
 		String sessaoID = api.abrirSessao("login", "senha");
@@ -142,7 +140,7 @@ public class SystemAPITest {
 			api.postarSom( "idSessao" , "link", new GregorianCalendar() );
 			Assert.fail( "Deveria lancar uma SessaoIDException" );
 		} catch ( SessaoIDException e) {
-			Assert.assertEquals( "SessaoID invalido!", e.getMessage() );
+			Assert.assertEquals( "SessaoID invalida", e.getMessage() );
 		} catch (Exception e) {
 			Assert.fail( "Deveria lancar uma SessaoIDException" );
 		}
