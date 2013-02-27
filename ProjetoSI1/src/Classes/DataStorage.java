@@ -4,11 +4,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-
-
-
 public class DataStorage {
-
 
 	private Map<String, Usuario> userList ;
 	public DataStorage() {
@@ -22,12 +18,12 @@ public class DataStorage {
 	}
 
 	public boolean hasUser(String login, String email) {
-		Set keySet = userList.keySet();
+		Set<String> keySet = userList.keySet();
 		Iterator<String> i = keySet.iterator();
 		while ( i.hasNext() ) {
 			String key = i.next();
 			Usuario user = userList.get(key);
-			if ( user.getLogin() == login || user.getEmail() == email ) {
+			if ( user.getLogin().equals(login) || user.getEmail().equals(email) ) {
 				return true;
 			}
 		}
@@ -35,12 +31,12 @@ public class DataStorage {
 	}
 
 	public String getUserID(String login) {
-		Set keySet = userList.keySet();
+		Set<String> keySet = userList.keySet();
 		Iterator<String> i = keySet.iterator();
 		while ( i.hasNext() ) {
 			String key = i.next();
 			Usuario user = userList.get(key);
-			if ( user.getLogin() == login ) {
+			if ( user.getLogin().equals(login) ) {
 				return user.getId();
 			}
 		}
@@ -57,7 +53,7 @@ public class DataStorage {
 			if(user.getLogin() == login){
 				return user;
 			}
-		throw new EntradaInvalidaException("Login inválido");
+		throw new EntradaInvalidaException("Login invï¿½lido");
 	}
 	**/
 }
