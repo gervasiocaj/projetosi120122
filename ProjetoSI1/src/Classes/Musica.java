@@ -8,12 +8,12 @@ import Exceptions.DataInvalidaException;
 import Exceptions.LinkInvalidoException;
 
 public class Musica implements Comparable<Musica> {
-	
+
 	private String loginCriador;
 	private String link;
 	private GregorianCalendar dataDeCriacao;
 
-	
+
 	public Musica(String loginCriador,String link, GregorianCalendar dataDeCriacao) throws LinkInvalidoException, DataInvalidaException {
 		if (!linkValido(link)) throw new LinkInvalidoException("Link inválido");
 //		else if(!dataValida(dataDeCriacao)) throw new DataInvalidaException("Data inválida");
@@ -21,8 +21,8 @@ public class Musica implements Comparable<Musica> {
 		this.link = link;
 		this.dataDeCriacao = dataDeCriacao;
 	}
-	
-	
+
+
 	public String getLink(){
 		return link;
 	}
@@ -35,31 +35,31 @@ public class Musica implements Comparable<Musica> {
 	 * @throws LinkInvalidoException
 	 * 		Joga excessao caso o link nao seja valido.
 	 */
-	
+
 	public void setLink(String newLink) throws LinkInvalidoException {
 		if (!linkValido(newLink))
 			throw new LinkInvalidoException("Link inválido");
 		this.link = newLink;
 	}
-	
+
 	/**
 	 * Retorna a data de criacao da musica.
 	 * 
 	 * @return
 	 * 		Data de criacao.
 	 */
-	
+
 	public GregorianCalendar getDataDeCriacao(){
 		return dataDeCriacao;
 	}
-	
+
 	/**
 	 * Retorna o id do criador da musica.
 	 * 
 	 * @return
 	 * 		Id do criador.
 	 */
-	
+
 	public String getIdSessao(){
 		return loginCriador;
 	}
@@ -72,12 +72,12 @@ public class Musica implements Comparable<Musica> {
 	 * @return
 	 * 		true caso o link seja valido, false caso contrario.
 	 */
-	
+
 	public static boolean linkValido(String link) {
 		return (link.startsWith("http://") && link.length() > "http://".length()) ||
 				(link.startsWith("https://") && link.length() > "https://".length());
 	}
-	
+
 	/**
 	 * Verifica se a data eh valida ou nao.
 	 * 
@@ -86,7 +86,7 @@ public class Musica implements Comparable<Musica> {
 	 * @return
 	 * 		true caso a data seja valida, false caso contrario.
 	 */
-	
+
 	public static boolean dataValida(String data) {
 		return (new SimpleDateFormat("dd/MM/yyyy").format(new Date(System.currentTimeMillis())) == data);
 	}
@@ -96,9 +96,9 @@ public class Musica implements Comparable<Musica> {
 	 * @return
 	 * 		String de representacao.
 	 */
-	
-	
-	
+
+
+
 //	@Override
 //	public String toString() {
 //		return link + " - " + dataDeCriacao;
