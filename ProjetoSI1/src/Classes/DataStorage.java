@@ -9,14 +9,14 @@ import java.util.TreeMap;
 
 public class DataStorage {
 
-	
+
 	private Map<String, Usuario> userList ;
 	public DataStorage() {
-		
+
 		userList = new TreeMap<String, Usuario>();
-		
+
 	}
-	
+
 	public void addUsuario(Usuario user){
 		userList.put(user.getId(), user);
 	}
@@ -33,7 +33,7 @@ public class DataStorage {
 		}
 		return false;
 	}
-	
+
 	public String getUserID(String login) {
 		Set keySet = userList.keySet();
 		Iterator<String> i = keySet.iterator();
