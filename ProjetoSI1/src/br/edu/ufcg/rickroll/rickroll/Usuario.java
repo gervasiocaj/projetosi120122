@@ -149,38 +149,91 @@ public class Usuario {
 	public List<Musica> getPerfilMusical(){
 		return perfilMusical;
 	}
+	
+	/** Pega a lista de amigos
+	 * 
+	 * @return
+	 * 		os amigos
+	 */
 
 	public Set getListaAmigos() {
 		return listaAmigos;
 	}
+	
+	/** Adiciona uma solicitacao de amizade
+	 * 
+	 * @param userID
+	 * 		id do amigo
+	 */
 
 	public void addSolicitacaoDeAmizade(String userID) {
 		listaDeSolicitacoesDeAmizade.add(userID);
 	}
+	
+	/** Adiciona uma solicitacao de amizade pendente, que deve ser aceitada ou nao
+	 * 
+	 * @param userID
+	 * 		id do amigo
+	 */
 
 	public void addSolicitacaoDeAmizadePendente(String userID) {
 		listaDeSolicitacoesDeAmizadePendente.add(userID);
 	}
 
+	/** Pega as solicitacoes enviadas
+	 * 
+	 * @return
+	 * 		as solicitacoes
+	 */
 	public List<String> getMinhasSolicitacoes() {
 		return listaDeSolicitacoesDeAmizade;
 	}
 
+	/** Pega as solicitacoes pendentes, a serem aceitadas
+	 * 
+	 * @return
+	 * 		as solicitacoes
+	 */
 	public List<String> getMinhasSolicitacoesPendentes() {
 		return listaDeSolicitacoesDeAmizadePendente;
 	}
 
+	/** Verifica se possui solicitacao de um usuario especifico
+	 * 
+	 * @param userID
+	 * 		id do amigo
+	 * @return
+	 * 		true caso tenha, false caso contrario
+	 */
 	public boolean temSolicitacaoDoAmigo(String userID) {
 		return listaDeSolicitacoesDeAmizadePendente.contains(userID);
 	}
+	
+	/** Remove uma solicitacao de amizade
+	 * 
+	 * @param userID
+	 * 		id do amigo
+	 */
 
 	public void removeSolicitacaoDeAmizade(String userID) {
 		listaDeSolicitacoesDeAmizade.remove(userID);
 	}
+	
+	/** Remove uma solicitacao de usuario pendente, que foi aceita
+	 * 
+	 * @param userID
+	 * 		id do amigo
+	 */
 
 	public void removeSolicitacaoDeAmizadePendente(String userID) {
 		listaDeSolicitacoesDeAmizadePendente.remove(userID);
 	}
+	
+	/** Adiciona um amigo a lista de amigos
+	 * 
+	 * @param userID
+	 * 		id do amigo
+	 */
 
 	public void addAmigo(String userID) {
 		listaAmigos.add(userID);

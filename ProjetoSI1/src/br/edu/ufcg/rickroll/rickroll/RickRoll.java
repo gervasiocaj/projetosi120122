@@ -11,10 +11,12 @@ import java.util.Set;
 
 
 import Exceptions.AtributoInvalidoException;
+import Exceptions.CriacaoUsrException;
 import Exceptions.DataInvalidaException;
 import Exceptions.LinkInvalidoException;
 import Exceptions.LoginException;
 import Exceptions.SessaoIDException;
+import Exceptions.UsuarioExistenteException;
 import Exceptions.UsuarioNaoCadastradoException;
 
 public class SystemSound {
@@ -29,20 +31,20 @@ public class SystemSound {
 	}
 
 	public void criaNovoUsuario(String login, String senha, String nome,
-			String email) {
+			String email) /*throws CriacaoUsrException, UsuarioExistenteException */{
 
 		if ( !Verificador.verificaStringValida(login) ) {
-			// TODO: falta exception
+//			throw new CriacaoUsrException("Login invalido");
 		}else if ( !Verificador.verificaStringValida(senha) ){
-			// TODO: falta exception
+//			throw new CriacaoUsrException("Senha invalida");
 		}else if ( !Verificador.verificaStringValida(nome) ){
-			// TODO: falta exception
+//			throw new CriacaoUsrException("Nome invalido");
 		}else if ( !Verificador.verificaStringValida(email) ){
-			// TODO: falta exception
+//			throw new CriacaoUsrException("Email invalido");
 		}
 
 		if ( storage.hasUser(login, email) ) {
-			// TODO: falta exception
+//			throw new UsuarioExistenteException("Usuario ja existe");
 		}
 		Usuario usr = new Usuario(login, senha, nome, email);
 		storage.addUsuario(usr);
@@ -75,9 +77,6 @@ public class SystemSound {
 	public String abrirSessao(String login, String senha) throws UsuarioNaoCadastradoException {
 		String userID = storage.getUserID( login );
 		if ( userID==null ) throw new UsuarioNaoCadastradoException("Usuário inexistente");
-
-		// TODO: sessaoID vai ser oq?
-		// TODO: falta tratar exception
 		usuarioLogados.put(userID, login);
 		return userID;
 	}

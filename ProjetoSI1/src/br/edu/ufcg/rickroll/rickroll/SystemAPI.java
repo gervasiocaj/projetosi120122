@@ -4,9 +4,11 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
 import Exceptions.AtributoInvalidoException;
+import Exceptions.CriacaoUsrException;
 import Exceptions.DataInvalidaException;
 import Exceptions.LinkInvalidoException;
 import Exceptions.LoginException;
+import Exceptions.UsuarioExistenteException;
 
 import Exceptions.SessaoIDException;
 import Exceptions.UsuarioNaoCadastradoException;
@@ -25,9 +27,13 @@ public class SystemAPI {
 	 * 		nome do novo usuario
 	 * @param email
 	 * 		email do novo usuario
+	 * @throws UsuarioExistenteException
+	 * 		caso o usuario ja exista 
+	 * @throws CriacaoUsrException 
+	 * 		caso ocorra algum erro durante a criacao
 	 */
 	
-	public void criaNovoUsuario( String login, String senha, String nome, String email ) {
+	public void criaNovoUsuario( String login, String senha, String nome, String email )/* throws CriacaoUsrException, UsuarioExistenteException */{
 		sistema.criaNovoUsuario( login, senha, nome, email);
 	}
 
