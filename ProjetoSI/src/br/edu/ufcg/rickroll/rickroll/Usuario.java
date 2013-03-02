@@ -150,7 +150,7 @@ public class Usuario {
 		return perfilMusical;
 	}
 
-	public Set getListaAmigos() {
+	public Set<String> getListaAmigos() {
 		return listaAmigos;
 	}
 

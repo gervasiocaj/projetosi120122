@@ -50,21 +50,21 @@ public class RickRoll {
 	}
 
 	public String procuraUsuario(String userLogin) throws UsuarioNaoCadastradoException, LoginException {
-		if ( userLogin == null || userLogin == "" ) throw new  LoginException("Login inválido");
+		if ( userLogin == null || userLogin == "" ) throw new  LoginException("Login invï¿½lido");
 
 		String userID = storage.getUserID( userLogin );
-		if ( userID==null ) throw new UsuarioNaoCadastradoException("Usuário inexistente");
+		if ( userID==null ) throw new UsuarioNaoCadastradoException("Usuï¿½rio inexistente");
 		return userID;
 	}
 
 	public String getAtributoUsuario(String login, String attr) throws UsuarioNaoCadastradoException, AtributoInvalidoException {
 		String userID = storage.getUserID( login );
-		if ( userID==null ) throw new UsuarioNaoCadastradoException("Usuário inexistente");
+		if ( userID==null ) throw new UsuarioNaoCadastradoException("Usuï¿½rio inexistente");
 
 		Usuario user = storage.getUser(userID);
 
 		if ( attr == null || attr == "" ) {
-			throw new AtributoInvalidoException("Atributo inválido");
+			throw new AtributoInvalidoException("Atributo invï¿½lido");
 		}else if ( attr == "nome" ){
 			return user.getNome();
 		}else if ( attr == "email" ) {
@@ -75,7 +75,7 @@ public class RickRoll {
 
 	public String abrirSessao(String login, String senha) throws UsuarioNaoCadastradoException {
 		String userID = storage.getUserID( login );
-		if ( userID==null ) throw new UsuarioNaoCadastradoException("Usuário inexistente");
+		if ( userID==null ) throw new UsuarioNaoCadastradoException("Usuï¿½rio inexistente");
 
 		// TODO: sessaoID vai ser oq?
 		// TODO: falta tratar exception
@@ -85,7 +85,7 @@ public class RickRoll {
 
 	public List<Musica> getPerfilMusical(String sessaoID) throws UsuarioNaoCadastradoException {
 		Usuario usr = storage.getUser( usuarioLogados.get(sessaoID) );
-		if ( usr==null ) throw new UsuarioNaoCadastradoException("Usuário inexistente");
+		if ( usr==null ) throw new UsuarioNaoCadastradoException("Usuï¿½rio inexistente");
 
 		return usr.getPerfilMusical();
 	}
@@ -112,7 +112,7 @@ public class RickRoll {
 		usuarioLogados.remove(sessaoID);
 	}
 
-	public Set getListaAmigos(String sessaoID) {
+	public Set<String> getListaAmigos(String sessaoID) {
 		return storage.getUser(usuarioLogados.get(sessaoID)).getListaAmigos();
 	}
 
@@ -136,9 +136,9 @@ public class RickRoll {
 		return storage.getUser(usuarioLogados.get(sessaoID)).getMinhasSolicitacoesPendentes();
 	}
 
-	public List getTimeLine(String sessaoID) {
-		Set minhaLista = getListaAmigos(sessaoID);
-		List timeLine = new LinkedList<Musica>();
+	public List<Musica> getTimeLine(String sessaoID) {
+		Set<String> minhaLista = getListaAmigos(sessaoID);
+		LinkedList<Musica> timeLine = new LinkedList<Musica>();
 		Iterator<String> i = minhaLista.iterator();
 		while ( i.hasNext() ) {
 			String amigoID = i.next();

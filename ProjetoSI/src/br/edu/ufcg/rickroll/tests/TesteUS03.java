@@ -65,7 +65,7 @@ public class TesteUS03 {
 		
 		GregorianCalendar data = new GregorianCalendar();
 		List<Musica> lista = new LinkedList<Musica>();
-		List lista2 = new LinkedList<Musica>();
+		List<Musica> lista2 = new LinkedList<Musica>();
 		Assert.assertEquals(lista, api.getPerfilMusical(gabrielID));
 		api.postarSom( sessaoGabriel , "http://youtu.be/IXcruXXLy8E", new GregorianCalendar(data.YEAR, data.MONTH, data.DAY_OF_MONTH) );
 		

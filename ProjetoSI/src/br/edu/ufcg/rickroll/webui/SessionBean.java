@@ -1,7 +1,6 @@
 package br.edu.ufcg.rickroll.webui;
 
 import br.edu.ufcg.rickroll.rickroll.Musica;
-import br.edu.ufcg.rickroll.rickroll.Usuario;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
@@ -37,12 +36,8 @@ public class SessionBean {
     
     
     private void preencherEspacoDeMusicas(){
-        List<Musica> musicas = null;
-        try{
-            musicas = Conversador.sistema.getTimeLine(sessaoID);
-        }catch(Exception ex){
-            
-        }
+        List<Musica> musicas = Conversador.sistema.getTimeLine(sessaoID);
+
         for (int i = 0; i < 6; i++) {
             try{
                 ultimasMusicas[i] = musicas.get(i).getLink();
@@ -54,13 +49,13 @@ public class SessionBean {
     }
     
     private void preencherEspacoDeAmigos(){
-        Set<Usuario> amigos = null;
+        Set<String> amigos = null;
         try{
             amigos = Conversador.sistema.getListaAmigos(sessaoID);
         }catch(Exception ex){
         	
         }
-        Iterator<Usuario> it = null;
+        Iterator<String> it = null;
         try{
             it = amigos.iterator();
         }catch(Exception ex){
@@ -72,7 +67,7 @@ public class SessionBean {
                 if(posAmigos == posicaoAmigos){
                     for (int i = 0; i < 6; i++) {
                         if(it.hasNext()){
-                            ultimosAmigos[i] = it.next().getNome();
+                            ultimosAmigos[i] = it.next(); //TODO o it.next.tostring dá o nome ou login?
                         }
                         else{
                             ultimosAmigos[i] = "";
@@ -164,7 +159,7 @@ public class SessionBean {
     
     public List<Musica> getMusicas(){
         if (Conversador.sistema.getTimeLine(sessaoID).size()< 6)
-            return Conversador.sistema.getTimeLine(sessaoID);
+            return Conversador.sistema.getTimeLine(sessaoID); //TODO só funciona quando eh multiplo de 6
         return Conversador.sistema.getTimeLine(sessaoID).subList(posicaoMusicas, posicaoMusicas + 6);
     }
     

@@ -162,7 +162,7 @@ public class SystemAPI {
 	 * @return
 	 * 		todos os amigos
 	 */
-	public Set getListaAmigos(String sessaoID) {
+	public Set<String> getListaAmigos(String sessaoID) {
 		return sistema.getListaAmigos(sessaoID);
 		
 	}
@@ -217,7 +217,7 @@ public class SystemAPI {
 		
 	}
 	
-	public List getTimeLine(String sessaoID) {
+	public List<Musica> getTimeLine(String sessaoID) {
 		return sistema.getTimeLine(sessaoID);
 	}
 	
