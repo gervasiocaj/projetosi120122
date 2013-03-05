@@ -1,22 +1,9 @@
-package br.edu.ufcg.rickroll.rickroll;
+﻿package br.edu.ufcg.rickroll.rickroll;
 
-import java.util.Collections;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
-import br.edu.ufcg.rickroll.exceptions.AtributoInvalidoException;
-import br.edu.ufcg.rickroll.exceptions.DataInvalidaException;
-import br.edu.ufcg.rickroll.exceptions.LinkInvalidoException;
-import br.edu.ufcg.rickroll.exceptions.LoginException;
-import br.edu.ufcg.rickroll.exceptions.SessaoIDException;
-import br.edu.ufcg.rickroll.exceptions.UsuarioNaoCadastradoException;
-
-
+import br.edu.ufcg.rickroll.exceptions.*;
 
 public class RickRoll {
 
@@ -30,117 +17,138 @@ public class RickRoll {
 	}
 
 	public void criaNovoUsuario(String login, String senha, String nome,
-			String email) {
+			String email) throws AtributoException, CriacaoUserException {
 
-		if ( !Verificador.verificaStringValida(login) ) {
-			// TODO: falta exception
-		}else if ( !Verificador.verificaStringValida(senha) ){
-			// TODO: falta exception
-		}else if ( !Verificador.verificaStringValida(nome) ){
-			// TODO: falta exception
-		}else if ( !Verificador.verificaStringValida(email) ){
-			// TODO: falta exception
-		}
+		if (storage.getUserID(login) != null)
+			throw new CriacaoUserException(
+					"Já existe um usuário com este login");
+		else if (storage.hasUserEmail(email))
+			throw new CriacaoUserException(
+					"Já existe um usuário com este email");
 
-		if ( storage.hasUser(login, email) ) {
-			// TODO: falta exception
-		}
 		Usuario usr = new Usuario(login, senha, nome, email);
 		storage.addUsuario(usr);
 	}
 
-	public String procuraUsuario(String userLogin) throws UsuarioNaoCadastradoException, LoginException {
-		if ( userLogin == null || userLogin == "" ) throw new  LoginException("Login inv�lido");
+	public String procuraUsuario(String userLogin)
+			throws UsuarioNaoCadastradoException, LoginException {
+		if (userLogin == null || userLogin.equals(""))
+			throw new LoginException("Login inv�lido");
 
-		String userID = storage.getUserID( userLogin );
-		if ( userID==null ) throw new UsuarioNaoCadastradoException("Usu�rio inexistente");
+		String userID = storage.getUserID(userLogin);
+		if (userID == null)
+			throw new UsuarioNaoCadastradoException("Usuário inexistente");
 		return userID;
 	}
 
-	public String getAtributoUsuario(String login, String attr) throws UsuarioNaoCadastradoException, AtributoInvalidoException {
-		String userID = storage.getUserID( login );
-		if ( userID==null ) throw new UsuarioNaoCadastradoException("Usu�rio inexistente");
+	public String getAtributoUsuario(String login, String attr)
+			throws UsuarioNaoCadastradoException, AtributoException {
+		String userID = storage.getUserID(login);
+		if (userID == null)
+			throw new UsuarioNaoCadastradoException("Usuário inexistente");
 
 		Usuario user = storage.getUser(userID);
 
-		if ( attr == null || attr == "" ) {
-			throw new AtributoInvalidoException("Atributo inv�lido");
-		}else if ( attr == "nome" ){
+		if (attr == null || attr.equals("")) {
+			throw new AtributoException("Atributo inválido");
+		} else if (attr.equals("nome")) {
 			return user.getNome();
-		}else if ( attr == "email" ) {
+		} else if (attr.equals("email")) {
 			return user.getEmail();
-		}else
-			throw new AtributoInvalidoException("Atributo inexistente");
+		} else
+			throw new AtributoException("Atributo inexistente");
 	}
 
-	public String abrirSessao(String login, String senha) throws UsuarioNaoCadastradoException {
-		String userID = storage.getUserID( login );
-		if ( userID==null ) throw new UsuarioNaoCadastradoException("Usu�rio inexistente");
+	public String abrirSessao(String login, String senha)
+			throws UsuarioNaoCadastradoException, LoginException {
+
+		if (!Verificador.verificaStringValida(login))
+			throw new LoginException("Login inválido");
+
+		String userID = storage.getUserID(login);
+		if (userID == null)
+			throw new UsuarioNaoCadastradoException("Usuário inexistente");
 
 		// TODO: sessaoID vai ser oq?
 		// TODO: falta tratar exception
-		usuarioLogados.put(userID, login);
-		return userID;
+
+		if (!storage.getUser(userID).getSenha().equals(senha))
+			throw new LoginException("Login inválido");
+
+		String sessaoID = login + Calendar.getInstance().hashCode();
+
+		usuarioLogados.put(sessaoID, userID);
+
+		return sessaoID;
 	}
 
-	public List<Musica> getPerfilMusical(String sessaoID) throws UsuarioNaoCadastradoException {
-		Usuario usr = storage.getUser( usuarioLogados.get(sessaoID) );
-		if ( usr==null ) throw new UsuarioNaoCadastradoException("Usu�rio inexistente");
+	public List<String> getPerfilMusical(String sessaoID)
+			throws UsuarioNaoCadastradoException {
+		Usuario usr = storage.getUser(usuarioLogados.get(sessaoID));
+		if (usr == null)
+			throw new UsuarioNaoCadastradoException("Usuário inexistente");
 
 		return usr.getPerfilMusical();
 	}
 
-	public List<Musica> getPerfilMusical(String sessaoID, String userID) {
-		Usuario usrLogado = storage.getUser( usuarioLogados.get(sessaoID) );
-		if ( !usrLogado.getListaAmigos().contains(userID) ) {
+	public List<String> getPerfilMusical(String sessaoID, String userID) {
+		Usuario usrLogado = storage.getUser(usuarioLogados.get(sessaoID));
+		if (!usrLogado.getListaMeusSeguidores().contains(userID)) {
 
 		}
-		Usuario amigo = storage.getUser( userID );;
+		Usuario amigo = storage.getUser(userID);
+		;
 		return amigo.getPerfilMusical();
 	}
 
-	public void postarSom(String sessaoID, String link, GregorianCalendar dataCriacao) throws SessaoIDException, LinkInvalidoException, DataInvalidaException {
-		String loginUser = usuarioLogados.get(sessaoID);
-		if(loginUser == null){
-			throw new SessaoIDException("SessaoID invalida");
-		}
-		storage.getUser(usuarioLogados.get(sessaoID)).addMusica(new Musica(sessaoID, link, dataCriacao));
+	public String postarSom(String sessaoID, String link,
+			GregorianCalendar dataCriacao) throws SessaoIDException,
+			LinkInvalidoException, DataInvalidaException {
 
+		String loginUser = usuarioLogados.get(sessaoID);
+		if (loginUser == null)
+			throw new SessaoIDException("SessaoID invalida");
+		if (dataCriacao.before(GregorianCalendar.getInstance()))
+			throw new DataInvalidaException("Data de Criação inválida");
+
+		Musica musica = new Musica(loginUser, link, dataCriacao);
+		storage.addMusic(musica);
+		storage.getUser(usuarioLogados.get(sessaoID)).addMusica(musica.getID());
+		return musica.getID();
 	}
 
 	public void encerrarSessao(String sessaoID) {
 		usuarioLogados.remove(sessaoID);
 	}
 
-	public Set<String> getListaAmigos(String sessaoID) {
-		return storage.getUser(usuarioLogados.get(sessaoID)).getListaAmigos();
+	public List<String> getListaAmigos(String sessaoID) {
+		return storage.getUser(usuarioLogados.get(sessaoID))
+				.getListaMeusSeguidores();
 	}
 
-	public void enviaSolicitacaoDeAmizade(String sessaoID, String userID) {
-		if ( storage.getUser(usuarioLogados.get(sessaoID)).temSolicitacaoDoAmigo(userID) ) {
-			storage.getUser(userID).removeSolicitacaoDeAmizade( usuarioLogados.get(sessaoID) );
-			storage.getUser(usuarioLogados.get(sessaoID)).removeSolicitacaoDeAmizadePendente( userID );
-			storage.getUser(usuarioLogados.get(sessaoID)).addAmigo(userID);
-			storage.getUser(userID).addAmigo( usuarioLogados.get(sessaoID) );
-		}else{
-			storage.getUser(usuarioLogados.get(sessaoID)).addSolicitacaoDeAmizade(userID);
-			storage.getUser(userID).addSolicitacaoDeAmizadePendente( usuarioLogados.get(sessaoID) );
+	public void seguirUsuario(String sessaoID, String userID) {
+
+	}
+
+	/*
+	 * public List<String> getSolicitacaoDeAmizade(String sessaoID) { return
+	 * storage.getUser(usuarioLogados.get(sessaoID)).getMinhasSolicitacoes(); }
+	 * 
+	 * public List<String> getListaDeSolicitacaoDeAmizadePendente(String
+	 * sessaoID) { return
+	 * storage.getUser(usuarioLogados.get(sessaoID)).getMinhasSolicitacoesPendentes
+	 * (); }
+	 */
+	public List<String> getTimeLine(String sessaoID) {
+		List<String> minhaLista = getListaAmigos(sessaoID);
+		List<String> timeLine = new LinkedList<String>();
+		try {
+			timeLine.addAll(getPerfilMusical(usuarioLogados.get(sessaoID)));
+		} catch (UsuarioNaoCadastradoException ex) {
+
 		}
-	}
-
-	public List<String> getSolicitacaoDeAmizade(String sessaoID) {
-		return storage.getUser(usuarioLogados.get(sessaoID)).getMinhasSolicitacoes();
-	}
-
-	public List<String> getListaDeSolicitacaoDeAmizadePendente(String sessaoID) {
-		return storage.getUser(usuarioLogados.get(sessaoID)).getMinhasSolicitacoesPendentes();
-	}
-
-	public List<Musica> getTimeLine(String sessaoID) {
-		Set<String> minhaLista = getListaAmigos(sessaoID);
-		LinkedList<Musica> timeLine = new LinkedList<Musica>();
 		Iterator<String> i = minhaLista.iterator();
-		while ( i.hasNext() ) {
+		while (i.hasNext()) {
 			String amigoID = i.next();
 			Usuario user = storage.getUser(amigoID);
 			timeLine.addAll(user.getPerfilMusical());
@@ -149,15 +157,34 @@ public class RickRoll {
 		return timeLine;
 	}
 
+	public String getAtributoSom(String idSom, String atributo)
+			throws UsuarioNaoCadastradoException, AtributoException {
+		Musica musica = storage.getMusica(idSom);
+
+		if (musica == null)
+			throw new UsuarioNaoCadastradoException("Usuário inexistente");
+
+		if (atributo == null || atributo.equals("")) {
+			throw new AtributoException("Atributo inválido");
+		} else if (atributo.equals("link")) {
+			return musica.getLink();
+		} else if (atributo.equals("dataCriacao")) {
+			Date date = musica.getDataDeCriacao().getTime();
+			return new SimpleDateFormat("dd/MM/yyyy").format(date);
+		} else
+			throw new AtributoException("Atributo inexistente");
+
+	}
+
 	/**
-	 * 	TODO: colocar todos os metodos para serem autenticados, ou seja,
-	 * passar o sessaoID como parametro para verificar se existe um usuario 
-	 * com essa sessaoID logado para poder realizar os metodos!
-	 *  
-	 *  TODO: realizar testes nao funcionais. Verificar se o sistema nao faz aquilo
-	 * que nao eh para fazer.
+	 * TODO: colocar todos os metodos para serem autenticados, ou seja, passar o
+	 * sessaoID como parametro para verificar se existe um usuario com essa
+	 * sessaoID logado para poder realizar os metodos!
 	 * 
-	 *  TODO: 
+	 * TODO: realizar testes nao funcionais. Verificar se o sistema nao faz
+	 * aquilo que nao eh para fazer.
+	 * 
+	 * TODO:
 	 */
 
 }

@@ -1,10 +1,10 @@
-/*
+﻿/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 package br.edu.ufcg.rickroll.webui;
 
-import br.edu.ufcg.rickroll.rickroll.SystemAPI;
+import br.edu.ufcg.rickroll.rickroll.RickRoll;
 
 /**
  *
@@ -12,12 +12,12 @@ import br.edu.ufcg.rickroll.rickroll.SystemAPI;
  */
 public class Conversador {
     
-    protected static SystemAPI sistema;
+    protected static RickRoll sistema;
     
     
     public static void tentaIniciarRepositorio(){
         if(sistema == null){
-            sistema = new SystemAPI();
+            sistema = new RickRoll();
             //falta fazer a parte da persistencia
         }
         

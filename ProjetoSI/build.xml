@@ -1,19 +1,19 @@
-<project>
+<project name="projetoSI" default="compila" >
 
     <target name="limpa">
         <delete dir="build"/>
     </target>
 
-    <target name="compila">
+    <target name="compila" depends="limpa">
         <mkdir dir="build/classes"/>
         <javac srcdir="src" destdir="build/classes" includeantruntime="false" />
     </target>
 
 	<target name="testa">
 	    <java classname="easyaccept.EasyAccept">
-	        <arg line="br.edu.ufcg.rickroll.RickRoll testesDeAceitacao_SI1/scripts"/>
+	        <arg line="br.edu.ufcg.rickroll.facade.Fachada testesDeAceitacao_SI1\scripts\US01.txt"/>
 	        <classpath>
-	            <pathelement location="lib/easyaccept.jar"/>
+	            <pathelement location="lib\easyaccept.jar"/>
            		<pathelement location="bin"/>
 	        </classpath>
 	    </java>

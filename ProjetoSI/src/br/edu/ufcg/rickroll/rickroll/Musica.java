@@ -1,30 +1,38 @@
-package br.edu.ufcg.rickroll.rickroll;
+﻿package br.edu.ufcg.rickroll.rickroll;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.UUID;
 import java.sql.Date;
-
-import br.edu.ufcg.rickroll.exceptions.DataInvalidaException;
-import br.edu.ufcg.rickroll.exceptions.LinkInvalidoException;
-
+import br.edu.ufcg.rickroll.exceptions.*;
 
 public class Musica implements Comparable<Musica> {
 
-	private String loginCriador;
+	private String IDCriador;
 	private String link;
 	private GregorianCalendar dataDeCriacao;
+	private final String id;
 
+	public Musica(String IDCriador, String link, GregorianCalendar dataDeCriacao)
+			throws LinkInvalidoException, DataInvalidaException {
 
-	public Musica(String loginCriador,String link, GregorianCalendar dataDeCriacao) throws LinkInvalidoException, DataInvalidaException {
-		if (!linkValido(link)) throw new LinkInvalidoException("Link inv�lido");
-//		else if(!dataValida(dataDeCriacao)) throw new DataInvalidaException("Data inv�lida");
-		this.loginCriador = loginCriador;
+		if (!linkValido(link))
+			throw new LinkInvalidoException("Som inválido");
+
+		this.IDCriador = IDCriador;
 		this.link = link;
 		this.dataDeCriacao = dataDeCriacao;
+		this.id = IDCriador + ";" + link + ";" + UUID.randomUUID();
+		// this.dataDeCriacao = new GregorianCalendar();
+		// this.dataDeCriacao.setTime(dataDeCriacao.getTime());
 	}
 
+	// public String getMusicaId() {
+	// return (getIDCriador() + " " + getLink());
+	// }
 
-	public String getLink(){
+	public String getLink() {
 		return link;
 	}
 
@@ -32,79 +40,67 @@ public class Musica implements Comparable<Musica> {
 	 * Altera o link da musica
 	 * 
 	 * @param newLink
-	 * 		Novo link
+	 *            Novo link
 	 * @throws LinkInvalidoException
-	 * 		Joga excessao caso o link nao seja valido.
+	 *             Joga excessao caso o link nao seja valido.
 	 */
 
 	public void setLink(String newLink) throws LinkInvalidoException {
 		if (!linkValido(newLink))
-			throw new LinkInvalidoException("Link inv�lido");
+			throw new LinkInvalidoException("Link inválido");
 		this.link = newLink;
 	}
 
 	/**
 	 * Retorna a data de criacao da musica.
 	 * 
-	 * @return
-	 * 		Data de criacao.
+	 * @return Data de criacao.
 	 */
 
-	public GregorianCalendar getDataDeCriacao(){
+	public GregorianCalendar getDataDeCriacao() {
 		return dataDeCriacao;
-	}
-
-	/**
-	 * Retorna o id do criador da musica.
-	 * 
-	 * @return
-	 * 		Id do criador.
-	 */
-
-	public String getIdSessao(){
-		return loginCriador;
 	}
 
 	/**
 	 * Verifica se o link utilizado eh valido ou nao.
 	 * 
 	 * @param link
-	 * 		Link a ser verificado
-	 * @return
-	 * 		true caso o link seja valido, false caso contrario.
+	 *            Link a ser verificado
+	 * @return true caso o link seja valido, false caso contrario.
 	 */
 
 	public static boolean linkValido(String link) {
-		return (link.startsWith("http://") && link.length() > "http://".length()) ||
-				(link.startsWith("https://") && link.length() > "https://".length());
+		if (link == null || link.equals(""))
+			return false;
+		return (link.startsWith("http://") && link.length() > "http://"
+				.length())
+				|| (link.startsWith("https://") && link.length() > "https://"
+						.length());
 	}
 
 	/**
 	 * Verifica se a data eh valida ou nao.
 	 * 
 	 * @param link
-	 * 		Data a ser verificada
-	 * @return
-	 * 		true caso a data seja valida, false caso contrario.
+	 *            Data a ser verificada
+	 * @return true caso a data seja valida, false caso contrario.
 	 */
 
 	public static boolean dataValida(String data) {
-		return (new SimpleDateFormat("dd/MM/yyyy").format(new Date(System.currentTimeMillis())) == data);
+		return (new SimpleDateFormat("dd/MM/yyyy").format(new Date(System
+				.currentTimeMillis())).equals(data));
 	}
 
 	/**
 	 * Retorna uma string representando a musica
-	 * @return
-	 * 		String de representacao.
+	 * 
+	 * @return String de representacao.
 	 */
 
-
-
-//	@Override
-//	public String toString() {
-//		return link + " - " + dataDeCriacao;
-//	}
-
+	// @Override
+	// public String toString() {
+	// return getLoginCriador() + " postou: " + link + " - " + dataDeCriacao;
+	// }
 
 	@Override
 	public int hashCode() {
@@ -114,10 +110,13 @@ public class Musica implements Comparable<Musica> {
 				+ ((dataDeCriacao == null) ? 0 : dataDeCriacao.hashCode());
 		result = prime * result + ((link == null) ? 0 : link.hashCode());
 		result = prime * result
-				+ ((loginCriador == null) ? 0 : loginCriador.hashCode());
+				+ ((IDCriador == null) ? 0 : IDCriador.hashCode());
 		return result;
 	}
 
+	public String getIDCriador() {
+		return IDCriador;
+	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -138,17 +137,21 @@ public class Musica implements Comparable<Musica> {
 				return false;
 		} else if (!link.equals(other.link))
 			return false;
-		if (loginCriador == null) {
-			if (other.loginCriador != null)
+		if (IDCriador == null) {
+			if (other.IDCriador != null)
 				return false;
-		} else if (!loginCriador.equals(other.loginCriador))
+		} else if (!IDCriador.equals(other.IDCriador))
 			return false;
 		return true;
 	}
 
 	@Override
 	public int compareTo(Musica musica2) {
-		return getDataDeCriacao().compareTo(musica2.getDataDeCriacao());
+		return musica2.getDataDeCriacao().compareTo(getDataDeCriacao());
+	}
+
+	public String getID() {
+		return id;
 	}
 
 }

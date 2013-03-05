@@ -1,8 +1,8 @@
 package br.edu.ufcg.rickroll.rickroll;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+
+import br.edu.ufcg.rickroll.exceptions.*;
+
+import java.util.*;
 
 public class Usuario {
 
@@ -10,41 +10,57 @@ public class Usuario {
 	private String senha;
 	private String nome;
 	private String email;
+	private final String id;
 
-	private List<Musica> perfilMusical;
-	private Set<String> listaAmigos;
-	private List<String> listaDeSolicitacoesDeAmizade;
-	private List<String> listaDeSolicitacoesDeAmizadePendente;
+	private List<String> perfilMusical;
+	private List<String> listaMeusSeguidores;
+	private Set<String> listaQueEuSigo;
 
 	/**
 	 * Cria um novo usuario.
 	 * 
 	 * @param login
-	 * 		Login do usuario.
+	 *            Login do usuario.
 	 * @param senha
-	 * 		Senha do usuario.
+	 *            Senha do usuario.
 	 * @param nome
-	 * 		Nome do usuario.
+	 *            Nome do usuario.
 	 * @param email
-	 * 		Email do usuario.
+	 *            Email do usuario.
 	 */
 
-	public Usuario(String login, String senha, String nome, String email) {
-		this.login = login;
-		this.senha = senha;
-		this.nome = nome;
-		this.email = email;
-		perfilMusical = new LinkedList<Musica>();
-		listaAmigos = new HashSet<String>();
-		listaDeSolicitacoesDeAmizade = new LinkedList<String>();
-		listaDeSolicitacoesDeAmizadePendente = new LinkedList<String>();
+	public Usuario(String login, String senha, String nome, String email)
+			throws AtributoException {
+		if (Verificador.verificaStringValida(login))
+			this.login = login;
+		else
+			throw new AtributoException("Login inválido");
+
+		if (Verificador.verificaStringValida(senha))
+			this.senha = senha;
+		else
+			throw new AtributoException("Senha inválida");
+
+		if (Verificador.verificaStringValida(nome))
+			this.nome = nome;
+		else
+			throw new AtributoException("Nome inválido");
+
+		if (Verificador.verificaStringValida(email))
+			this.email = email;
+		else
+			throw new AtributoException("Email inválido");
+		
+		this.id = login + ";" + UUID.randomUUID();
+		perfilMusical = new LinkedList<String>();
+		listaMeusSeguidores = new LinkedList<String>();
+
 	}
 
 	/**
 	 * Retorna o login do usuario.
 	 * 
-	 * @return
-	 * 		Login do usuario.
+	 * @return Login do usuario.
 	 */
 
 	public String getLogin() {
@@ -54,8 +70,7 @@ public class Usuario {
 	/**
 	 * Retorna a senha do usuario.
 	 * 
-	 * @return
-	 * 		Senha do usuario.
+	 * @return Senha do usuario.
 	 */
 
 	public String getSenha() {
@@ -66,7 +81,7 @@ public class Usuario {
 	 * Altera a senha do usuario.
 	 * 
 	 * @param senha
-	 * 		Nova senha desejada.
+	 *            Nova senha desejada.
 	 */
 
 	public void setSenha(String senha) {
@@ -76,8 +91,7 @@ public class Usuario {
 	/**
 	 * Retorna o nome do usuario.
 	 * 
-	 * @return
-	 * 		Nome do usuario.
+	 * @return Nome do usuario.
 	 */
 
 	public String getNome() {
@@ -88,7 +102,7 @@ public class Usuario {
 	 * Altera o nome do usuario.
 	 * 
 	 * @param nome
-	 * 		Novo nome desejado.
+	 *            Novo nome desejado.
 	 */
 
 	public void setName(String nome) {
@@ -98,8 +112,7 @@ public class Usuario {
 	/**
 	 * Returna o email do usuario.
 	 * 
-	 * @return
-	 * 		Email do usuario.
+	 * @return Email do usuario.
 	 */
 
 	public String getEmail() {
@@ -110,7 +123,7 @@ public class Usuario {
 	 * Altera o email do usuario.
 	 * 
 	 * @param email
-	 * 		Novo email desejado.
+	 *            Novo email desejado.
 	 */
 
 	public void setEmail(String email) {
@@ -120,70 +133,71 @@ public class Usuario {
 	/**
 	 * Returna o id do usuario.
 	 * 
-	 * @return
-	 * 		Id do usuario.
+	 * @return Id do usuario.
 	 */
 
-	public String getId(){
-		return login;
+	public String getId() {
+		return this.id;
 	}
 
 	/**
 	 * Adiciona uma musica ao perfil musical do usuario.
 	 * 
 	 * @param musica
-	 * 		Musica que se deseja adicionar.
+	 *            Musica que se deseja adicionar.
 	 */
 
-	public void addMusica(Musica musica){
-		perfilMusical.add(0, musica);
-}
+	public void addMusica(String musicaID) throws LinkInvalidoException,
+			DataInvalidaException {
+		perfilMusical.add(0, musicaID);
+	}
 
 	/**
 	 * Retorna o perfil musical do usuario.
 	 * 
-	 * @return
-	 * 		Lista de musicas.
+	 * @return Lista de musicas.
 	 */
 
-	public List<Musica> getPerfilMusical(){
+	public List<String> getPerfilMusical() {
 		return perfilMusical;
 	}
 
-	public Set<String> getListaAmigos() {
-		return listaAmigos;
+	/**
+	 * Retorna um conjunto com todos os seguidores deste Usuario
+	 * 
+	 * @return Os usuarios que seguem este Usuario
+	 */
+	public List<String> getListaMeusSeguidores() {
+		return listaMeusSeguidores;
 	}
 
-	public void addSolicitacaoDeAmizade(String userID) {
-		listaDeSolicitacoesDeAmizade.add(userID);
+	/**
+	 * Adiciona um seguidor para este usuario
+	 * 
+	 * @param userID
+	 *            O ID do usuario que ira seguir este usuario
+	 */
+	public void addMeuSeguidor(String userID) {
+		listaMeusSeguidores.add(userID);
 	}
 
-	public void addSolicitacaoDeAmizadePendente(String userID) {
-		listaDeSolicitacoesDeAmizadePendente.add(userID);
+	/**
+	 * Retorna a lista de todos os usuarios que eu sigo
+	 * 
+	 * @return Os usuarios que eu sigo
+	 */
+	public Set<String> getListaQueEuSigo() {
+		return listaQueEuSigo;
 	}
 
-	public List<String> getMinhasSolicitacoes() {
-		return listaDeSolicitacoesDeAmizade;
-	}
-
-	public List<String> getMinhasSolicitacoesPendentes() {
-		return listaDeSolicitacoesDeAmizadePendente;
-	}
-
-	public boolean temSolicitacaoDoAmigo(String userID) {
-		return listaDeSolicitacoesDeAmizadePendente.contains(userID);
-	}
-
-	public void removeSolicitacaoDeAmizade(String userID) {
-		listaDeSolicitacoesDeAmizade.remove(userID);
-	}
-
-	public void removeSolicitacaoDeAmizadePendente(String userID) {
-		listaDeSolicitacoesDeAmizadePendente.remove(userID);
-	}
-
-	public void addAmigo(String userID) {
-		listaAmigos.add(userID);
+	/**
+	 * Segue um determinado usuario
+	 * 
+	 * @param userID
+	 *            O ID do usuario que este usuario ira seguir
+	 */
+	public void seguir(String userID) {
+		listaQueEuSigo.add(userID);
 	}
 
 }
