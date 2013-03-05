@@ -1,7 +1,6 @@
 ﻿package br.edu.ufcg.rickroll.rickroll;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.UUID;
 import java.sql.Date;
