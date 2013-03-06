@@ -1,39 +1,50 @@
-<project name="projetoSI" default="compila" >
+<project name="projetoSI">
 
-    <target name="limpa">
-        <delete dir="build"/>
-    </target>
+<!-- 	<presetdef name="java"> -->
+<!-- 		<java> -->
+<!-- 			<sysproperty key="file.encoding" value="UTF-8" /> -->
+<!-- 		</java> -->
+<!-- 	</presetdef> -->
+<!-- 	<presetdef name="javac"> -->
+<!-- 		<javac encoding="UTF-8"></javac> -->
+<!-- 	</presetdef> -->
 
-    <target name="compila" depends="limpa">
-        <mkdir dir="build/classes"/>
-        <javac srcdir="src" destdir="build/classes" includeantruntime="false" />
-    </target>
+	<target name="limpa">
+		<delete dir="build" />
+	</target>
+
+	<target name="compila" depends="limpa">
+		<mkdir dir="build/classes" />
+		<javac srcdir="src" destdir="build/classes" encoding="UTF8"
+			includeantruntime="false" />
+	</target>
 
 	<target name="testa">
-	    <java classname="easyaccept.EasyAccept">
-	        <arg line="br.edu.ufcg.rickroll.facade.Fachada testesDeAceitacao_SI1\scripts\US01.txt"/>
-	        <classpath>
-	            <pathelement location="lib\easyaccept.jar"/>
-           		<pathelement location="bin"/>
-	        </classpath>
-	    </java>
+		<java classname="easyaccept.EasyAccept">
+			<arg
+				line="br.edu.ufcg.rickroll.facade.Fachada testesDeAceitacao_SI1\scripts\US01.txt" />
+			<classpath>
+				<pathelement location="lib\easyaccept.jar" />
+				<pathelement location="bin" />
+			</classpath>
+		</java>
 	</target>
-	
+
 	<target name="doc">
 		<javadoc></javadoc> <!-- criar javadoc -->
 	</target>
-	
-    <target name="jar">
-        <mkdir dir="build/jar"/>
-        <jar destfile="build/jar/ProjetoSI.jar" basedir="build/classes">
-            <manifest>
-                <attribute name="Main-Class" value="a.Definir"/>
-            </manifest>
-        </jar>
-    </target>
 
-    <target name="roda">
-        <java jar="build/jar/ProjetoSI.jar" fork="true"/>
-    </target>
+	<target name="jar">
+		<mkdir dir="build/jar" />
+		<jar destfile="build/jar/ProjetoSI.jar" basedir="build/classes">
+			<manifest>
+				<attribute name="Main-Class" value="a.Definir" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="roda">
+		<java jar="build/jar/ProjetoSI.jar" fork="true" />
+	</target>
 
 </project>

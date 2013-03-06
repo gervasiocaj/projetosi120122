@@ -1,4 +1,4 @@
-﻿package br.edu.ufcg.rickroll.webui;
+package br.edu.ufcg.rickroll.webui;
 
 import java.util.*;
 import javax.faces.bean.ManagedBean;

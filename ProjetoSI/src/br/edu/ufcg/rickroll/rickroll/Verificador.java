@@ -1,4 +1,4 @@
-﻿package br.edu.ufcg.rickroll.rickroll;
+package br.edu.ufcg.rickroll.rickroll;
 
 public class Verificador {
 
