@@ -1,4 +1,4 @@
-package Exceptions;
+package br.edu.ufcg.rickroll.exceptions;
 
 public class UsuarioNaoCadastradoException extends Exception {
 

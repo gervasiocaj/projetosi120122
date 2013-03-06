@@ -1,11 +1,12 @@
-package Classes;
+package br.edu.ufcg.rickroll.rickroll;
 
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.sql.Date;
 
-import Exceptions.DataInvalidaException;
-import Exceptions.LinkInvalidoException;
+import br.edu.ufcg.rickroll.exceptions.DataInvalidaException;
+import br.edu.ufcg.rickroll.exceptions.LinkInvalidoException;
+
 
 public class Musica implements Comparable<Musica> {
 

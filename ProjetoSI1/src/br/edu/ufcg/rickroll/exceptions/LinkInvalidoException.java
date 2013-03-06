@@ -1,4 +1,4 @@
-package Exceptions;
+package br.edu.ufcg.rickroll.exceptions;
 
 public class LinkInvalidoException extends Exception {
 	

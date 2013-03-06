@@ -1,4 +1,4 @@
-package Testes;
+package br.edu.ufcg.rickroll.tests;
 
 import static org.junit.Assert.*;
 
@@ -13,10 +13,11 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import Classes.Musica;
-import Classes.SystemAPI;
-import Exceptions.LoginException;
-import Exceptions.UsuarioNaoCadastradoException;
+import br.edu.ufcg.rickroll.exceptions.LoginException;
+import br.edu.ufcg.rickroll.exceptions.UsuarioNaoCadastradoException;
+import br.edu.ufcg.rickroll.rickroll.Musica;
+import br.edu.ufcg.rickroll.rickroll.SystemAPI;
+
 
 public class TesteUS03 {
 
@@ -36,21 +37,21 @@ public class TesteUS03 {
 		
 		String gabrielID = "gabriel";
 		String sessaoGabriel = api.abrirSessao("gabriel", "minhasenhaeh");
-		Set amigosDeGabriel = api.getListaAmigos( sessaoGabriel );
+		Set<String> amigosDeGabriel = api.getListaAmigos( sessaoGabriel );
 		
 		Assert.assertEquals( new LinkedList<Musica>(), api.getTimeLine(sessaoGabriel));
 		
 		String eduardoID = "eduardo";
 		String sessaoEduardo = api.abrirSessao("eduardo", "123456");
-		Set amigosDeEduardo = api.getListaAmigos( sessaoEduardo );
+		Set<String> amigosDeEduardo = api.getListaAmigos( sessaoEduardo );
 		
 		String gervasioID = "gervasio";
 		String sessaoGervasio= api.abrirSessao("gervasio", "senha");
-		Set amigosDeGervasio = api.getListaAmigos( sessaoEduardo );
+		Set<String> amigosDeGervasio = api.getListaAmigos( sessaoEduardo );
 		
 		String guilhermeID = "guilherme";
 		String sessaoGuilherme= api.abrirSessao("guilherme", "senha?");
-		Set amigosDeGuilherme = api.getListaAmigos( sessaoEduardo );
+		Set<String> amigosDeGuilherme = api.getListaAmigos( sessaoEduardo );
 		
 		api.enviaSolicitacaoDeAmizade( sessaoGabriel, eduardoID );
 		api.aceitaSolicitacaoDeAmizade( sessaoEduardo, gabrielID );
@@ -64,7 +65,7 @@ public class TesteUS03 {
 		
 		GregorianCalendar data = new GregorianCalendar();
 		List<Musica> lista = new LinkedList<Musica>();
-		List lista2 = new LinkedList<Musica>();
+		List<Musica> lista2 = new LinkedList<Musica>();
 		Assert.assertEquals(lista, api.getPerfilMusical(gabrielID));
 		api.postarSom( sessaoGabriel , "http://youtu.be/IXcruXXLy8E", new GregorianCalendar(data.YEAR, data.MONTH, data.DAY_OF_MONTH) );
 		
@@ -83,12 +84,8 @@ public class TesteUS03 {
 		
 		lista2.addAll(api.getPerfilMusical(sessaoEduardo, guilhermeID));
 		lista2.addAll(api.getPerfilMusical(sessaoEduardo, gervasioID));
-		lista2.addAll(api.getPerfilMusical(sessaoEduardo, guilhermeID));
+//		lista2.addAll(api.getPerfilMusical(sessaoEduardo, guilhermeID));
 		Collections.sort(lista2);
-//		lista2.add(new Musica(gervasioID, "http://youtu.be/1Cn-J4BCp6Q", new GregorianCalendar(data.YEAR, data.MONTH, data.DAY_OF_MONTH) ));
-//		lista2.add(new Musica(guilhermeID, "http://youtu.be/etSDwseOtMQ", new GregorianCalendar(data.YEAR, data.MONTH, data.DAY_OF_MONTH) ));
-//		lista2.add(new Musica(gervasioID, "http://youtu.be/QYPAT1MF8Og", new GregorianCalendar(data.YEAR, data.MONTH, data.DAY_OF_MONTH) ));
-//		lista2.add(new Musica(gervasioID, "http://youtu.be/kKLL-hEoUyI", new GregorianCalendar(data.YEAR, data.MONTH, data.DAY_OF_MONTH) ));
 		
 		Assert.assertEquals( lista, api.getTimeLine(sessaoGabriel));
 		

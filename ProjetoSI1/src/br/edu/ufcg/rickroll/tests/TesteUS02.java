@@ -1,4 +1,4 @@
-package Testes;
+package br.edu.ufcg.rickroll.tests;
 
 import static org.junit.Assert.*;
 
@@ -12,9 +12,10 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import Classes.SystemAPI;
-import Exceptions.LoginException;
-import Exceptions.UsuarioNaoCadastradoException;
+import br.edu.ufcg.rickroll.exceptions.LoginException;
+import br.edu.ufcg.rickroll.exceptions.UsuarioNaoCadastradoException;
+import br.edu.ufcg.rickroll.rickroll.SystemAPI;
+
 
 public class TesteUS02 {
 

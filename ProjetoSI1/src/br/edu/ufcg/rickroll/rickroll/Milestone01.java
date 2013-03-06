@@ -1,14 +1,15 @@
-package Classes;
+package br.edu.ufcg.rickroll.rickroll;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 
-import Exceptions.AtributoInvalidoException;
-import Exceptions.CriacaoUsrException;
-import Exceptions.LoginException;
-import Exceptions.PostaSomException;
-import Exceptions.SolicitacaoInvalidaException;
+import br.edu.ufcg.rickroll.exceptions.AtributoInvalidoException;
+import br.edu.ufcg.rickroll.exceptions.CriacaoUsrException;
+import br.edu.ufcg.rickroll.exceptions.LoginException;
+import br.edu.ufcg.rickroll.exceptions.PostaSomException;
+import br.edu.ufcg.rickroll.exceptions.SolicitacaoInvalidaException;
+
 
 
 public class Milestone01 {

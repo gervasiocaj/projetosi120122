@@ -1,4 +1,4 @@
-package Testes;
+package br.edu.ufcg.rickroll.tests;
 import static org.junit.Assert.*;
 
 import java.util.GregorianCalendar;
@@ -10,15 +10,16 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import Classes.Musica;
-import Classes.SystemAPI;
-import Exceptions.AtributoInvalidoException;
-import Exceptions.DataInvalidaException;
-import Exceptions.LinkInvalidoException;
-import Exceptions.LoginException;
-import Exceptions.PostaSomException;
-import Exceptions.SessaoIDException;
-import Exceptions.UsuarioNaoCadastradoException;
+import br.edu.ufcg.rickroll.exceptions.AtributoInvalidoException;
+import br.edu.ufcg.rickroll.exceptions.DataInvalidaException;
+import br.edu.ufcg.rickroll.exceptions.LinkInvalidoException;
+import br.edu.ufcg.rickroll.exceptions.LoginException;
+import br.edu.ufcg.rickroll.exceptions.PostaSomException;
+import br.edu.ufcg.rickroll.exceptions.SessaoIDException;
+import br.edu.ufcg.rickroll.exceptions.UsuarioNaoCadastradoException;
+import br.edu.ufcg.rickroll.rickroll.Musica;
+import br.edu.ufcg.rickroll.rickroll.SystemAPI;
+
 
 
 public class TesteUS01 {
