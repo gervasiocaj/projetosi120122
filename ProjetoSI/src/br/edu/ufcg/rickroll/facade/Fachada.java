@@ -34,7 +34,9 @@ public class Fachada {
 	}
 
 	public String getAtributoUsuario(String login, String atributo)
-			throws AtributoException, UsuarioNaoCadastradoException {
+			throws AtributoException, UsuarioNaoCadastradoException, LoginException {
+		if (!Verificador.verificaStringValida(login))
+			throw new LoginException("Login inválido");
 		return sistema.getAtributoUsuario(login, atributo);
 	}
 
@@ -56,9 +58,11 @@ public class Fachada {
 
 	public String postarSom(String idSessao, String link, String dataCriacao)
 			throws SessaoIDException, LinkInvalidoException, DataInvalidaException {
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		GregorianCalendar cal = new GregorianCalendar();
-		try {
+		try {	
+			sdf.setLenient(false);
 			cal.setTime(sdf.parse(dataCriacao));
 		} catch (ParseException e) {
 			throw new DataInvalidaException("Data de Criação inválida");
@@ -67,7 +71,7 @@ public class Fachada {
 	}
 
 	public String getAtributoSom(String idSom, String atributo)
-			throws UsuarioNaoCadastradoException, AtributoException {
+			throws UsuarioNaoCadastradoException, AtributoException, SomInexistenteException {
 		return sistema.getAtributoSom(idSom, atributo);
 	}
 
@@ -80,28 +84,47 @@ public class Fachada {
 	}
 
 	public String getIDUsuario(String idSessao) {
-		return "";
+		return sistema.getIDUsuario(idSessao);
 	}
 
 	public int getNumeroDeSeguidores(String idSessao) throws SessaoIDException {
-		return 0;
+		return sistema.getListaDeSeguidores(idSessao).size();
 	}
 
 	public void seguirUsuario(String idSessao, String login)
 			throws SessaoIDException, LoginException {
-
+		sistema.seguirUsuario(idSessao, login);
 	}
 
-	public List<String> getFonteDeSons(String idSessao)
+	public String getFontesDeSons(String idSessao)
 			throws SessaoIDException {
-
-		return null;
+		String str = "{";
+		Set<String> fonteDeSons = sistema.getListaSeguindo(idSessao);
+		Iterator<String> it = fonteDeSons.iterator();
+		while(it.hasNext()){
+			str += it.next();
+			if(it.hasNext()){
+				str += ",";
+			}
+		}
+		str += "}";
+		return str;
+		
 	}
 
-	public List<String> getListaDeSeguidores(String idSessao)
+	public String getListaDeSeguidores(String idSessao)
 			throws SessaoIDException {
-
-		return null;
+		String str = "{";
+		Set<String> seguidores = sistema.getListaDeSeguidores(idSessao);
+		Iterator<String> it = seguidores.iterator();
+		while(it.hasNext()){
+			str += it.next();
+			if(it.hasNext()){
+				str += ",";
+			}
+		}
+		str += "}";
+		return str;
 	}
 
 }

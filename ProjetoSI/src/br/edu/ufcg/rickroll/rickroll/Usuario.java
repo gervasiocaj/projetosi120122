@@ -13,8 +13,8 @@ public class Usuario {
 	private final String id;
 
 	private List<String> perfilMusical;
-	private List<String> listaMeusSeguidores;
-	private Set<String> listaQueEuSigo;
+	private Set<String> listaMyFollowers;
+	private Set<String> listaFollowing;
 
 	/**
 	 * Cria um novo usuario.
@@ -53,8 +53,8 @@ public class Usuario {
 		
 		this.id = login + ";" + UUID.randomUUID();
 		perfilMusical = new LinkedList<String>();
-		listaMeusSeguidores = new LinkedList<String>();
-
+		listaMyFollowers = new TreeSet<String>();
+		listaFollowing = new LinkedHashSet<String>();
 	}
 
 	/**
@@ -167,8 +167,8 @@ public class Usuario {
 	 * 
 	 * @return Os usuarios que seguem este Usuario
 	 */
-	public List<String> getListaMeusSeguidores() {
-		return listaMeusSeguidores;
+	public Set<String> getListaMeusSeguidores() {
+		return listaMyFollowers;
 	}
 
 	/**
@@ -178,7 +178,7 @@ public class Usuario {
 	 *            O ID do usuario que ira seguir este usuario
 	 */
 	public void addMeuSeguidor(String userID) {
-		listaMeusSeguidores.add(userID);
+		listaMyFollowers.add(userID);
 	}
 
 	/**
@@ -186,8 +186,8 @@ public class Usuario {
 	 * 
 	 * @return Os usuarios que eu sigo
 	 */
-	public Set<String> getListaQueEuSigo() {
-		return listaQueEuSigo;
+	public Set<String> getSeguindo() {
+		return listaFollowing;
 	}
 
 	/**
@@ -197,7 +197,8 @@ public class Usuario {
 	 *            O ID do usuario que este usuario ira seguir
 	 */
 	public void seguir(String userID) {
-		listaQueEuSigo.add(userID);
+		((LinkedHashSet<String>)listaFollowing).add(userID);
+		//TODO add na lista my followers
 	}
 
 }

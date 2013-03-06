@@ -121,13 +121,15 @@ public class RickRoll {
 		usuarioLogados.remove(sessaoID);
 	}
 
-	public List<String> getListaAmigos(String sessaoID) {
-		return storage.getUser(usuarioLogados.get(sessaoID))
-				.getListaMeusSeguidores();
+	public Set<String> getListaSeguindo(String sessaoID) {
+		return storage.getUser(usuarioLogados.get(sessaoID)).getSeguindo();
 	}
 
-	public void seguirUsuario(String sessaoID, String userID) {
-
+	public void seguirUsuario(String sessaoID, String loginFollowed) {
+		String userIDAtual = usuarioLogados.get(sessaoID); 
+		String userIDSeguido = storage.getUserID(loginFollowed);
+		storage.getUser(userIDAtual).seguir(userIDSeguido);
+		storage.getUser(userIDSeguido).addMeuSeguidor(userIDAtual);
 	}
 
 	/*
@@ -139,14 +141,11 @@ public class RickRoll {
 	 * storage.getUser(usuarioLogados.get(sessaoID)).getMinhasSolicitacoesPendentes
 	 * (); }
 	 */
-	public List<String> getTimeLine(String sessaoID) {
-		List<String> minhaLista = getListaAmigos(sessaoID);
+	public List<String> getTimeLine(String sessaoID)
+			throws UsuarioNaoCadastradoException {
+		Set<String> minhaLista = getListaSeguindo(sessaoID);
 		List<String> timeLine = new LinkedList<String>();
-		try {
-			timeLine.addAll(getPerfilMusical(usuarioLogados.get(sessaoID)));
-		} catch (UsuarioNaoCadastradoException ex) {
-
-		}
+		timeLine.addAll(getPerfilMusical(usuarioLogados.get(sessaoID)));
 		Iterator<String> i = minhaLista.iterator();
 		while (i.hasNext()) {
 			String amigoID = i.next();
@@ -158,11 +157,12 @@ public class RickRoll {
 	}
 
 	public String getAtributoSom(String idSom, String atributo)
-			throws UsuarioNaoCadastradoException, AtributoException {
+			throws UsuarioNaoCadastradoException, AtributoException,
+			SomInexistenteException {
 		Musica musica = storage.getMusica(idSom);
 
 		if (musica == null)
-			throw new UsuarioNaoCadastradoException("Usuário inexistente");
+			throw new SomInexistenteException("Som inválido");
 
 		if (atributo == null || atributo.equals("")) {
 			throw new AtributoException("Atributo inválido");
@@ -174,6 +174,15 @@ public class RickRoll {
 		} else
 			throw new AtributoException("Atributo inexistente");
 
+	}
+
+	public String getIDUsuario(String idSessao) {
+		return usuarioLogados.get(idSessao);
+	}
+
+	public Set<String> getListaDeSeguidores(String idSessao) {
+		
+		return storage.getUser(usuarioLogados.get(idSessao)).getListaMeusSeguidores();
 	}
 
 	/**
