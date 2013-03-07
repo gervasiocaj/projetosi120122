@@ -157,6 +157,12 @@ public class Musica implements Comparable<Musica> {
 		return id;
 	}
 	
+	/** Adicina usuarios que favoritaram a musica
+	 * 
+	 * @param idSessao
+	 * 		Id do usuario que a favoritou
+	 */
+	
 	public void addFavoritado(String idSessao){
 		favoritaram.add(idSessao);
 	}
