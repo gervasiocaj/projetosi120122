@@ -82,17 +82,22 @@ public class RickRoll {
 		return sessaoID;
 	}
 
-	public List<String> getPerfilMusical(String sessaoID)
-			throws UsuarioNaoCadastradoException {
-		Usuario usr = storage.getUser(usuarioLogados.get(sessaoID));
+	public List<String> getPerfilMusical(String sessaoID) throws SessaoIDException, UsuarioNaoCadastradoException
+			 {
+		
+		String meuID = isAutenticado( sessaoID );
+		Usuario usr = storage.getUser(meuID);
+		
 		if (usr == null)
 			throw new UsuarioNaoCadastradoException("Usuário inexistente");
 
 		return usr.getPerfilMusical();
 	}
 
-	public List<String> getPerfilMusical(String sessaoID, String userID) {
-		Usuario usrLogado = storage.getUser(usuarioLogados.get(sessaoID));
+	public List<String> getPerfilMusical(String sessaoID, String userID) throws SessaoIDException  {
+		
+		String meuID = isAutenticado( sessaoID );
+		Usuario usrLogado = storage.getUser(meuID);
 		if (!usrLogado.getListaMeusSeguidores().contains(userID)) {
 
 		}
@@ -102,34 +107,34 @@ public class RickRoll {
 	}
 
 	public String postarSom(String sessaoID, String link,
-			GregorianCalendar dataCriacao) throws SessaoIDException,
-			LinkInvalidoException, DataInvalidaException {
+			GregorianCalendar dataCriacao) throws SessaoIDException, DataInvalidaException, LinkInvalidoException  {
 
-		String loginUser = usuarioLogados.get(sessaoID);
-		if (loginUser == null)
-			throw new SessaoIDException("SessaoID invalida");
-		if (dataCriacao.before(GregorianCalendar.getInstance()))
-			throw new DataInvalidaException("Data de Criação inválida");
+		String meuID = isAutenticado( sessaoID );
 
-		Musica musica = new Musica(loginUser, link, dataCriacao);
+		Musica musica = new Musica(meuID, link, dataCriacao);
 		storage.addMusic(musica);
-		storage.getUser(usuarioLogados.get(sessaoID)).addMusica(musica.getID());
+		storage.getUser(meuID).addMusica(musica.getID());
 		return musica.getID();
 	}
 
-	public void encerrarSessao(String sessaoID) {
+	public void encerrarSessao(String sessaoID) throws SessaoIDException {
+		
+		isAutenticado( sessaoID );
 		usuarioLogados.remove(sessaoID);
 	}
 
-	public Set<String> getListaSeguindo(String sessaoID) {
-		return storage.getUser(usuarioLogados.get(sessaoID)).getSeguindo();
+	public Set<String> getListaSeguindo(String sessaoID) throws SessaoIDException {
+		
+		String meuID = isAutenticado( sessaoID );
+		return storage.getUser(meuID).getSeguindo();
 	}
 
-	public void seguirUsuario(String sessaoID, String loginFollowed) {
-		String userIDAtual = usuarioLogados.get(sessaoID); 
+	public void seguirUsuario(String sessaoID, String loginFollowed) throws SessaoIDException {
+		
+		String meuID = isAutenticado( sessaoID );
 		String userIDSeguido = storage.getUserID(loginFollowed);
-		storage.getUser(userIDAtual).seguir(userIDSeguido);
-		storage.getUser(userIDSeguido).addMeuSeguidor(userIDAtual);
+		storage.getUser(meuID).seguir(userIDSeguido);
+		storage.getUser(userIDSeguido).addMeuSeguidor(meuID);
 	}
 
 	/*
@@ -143,10 +148,12 @@ public class RickRoll {
 	 */
 	
 	public List<String> getTimeLine(String sessaoID)
-			throws UsuarioNaoCadastradoException {
+			throws SessaoIDException, UsuarioNaoCadastradoException {
+		
+		String meuID = isAutenticado( sessaoID );
 		Set<String> minhaLista = getListaSeguindo(sessaoID);
 		List<String> timeLine = new LinkedList<String>();
-		timeLine.addAll(getPerfilMusical(usuarioLogados.get(sessaoID)));
+		timeLine.addAll(getPerfilMusical(meuID));
 		Iterator<String> i = minhaLista.iterator();
 		while (i.hasNext()) {
 			String amigoID = i.next();
@@ -160,6 +167,7 @@ public class RickRoll {
 	public String getAtributoSom(String idSom, String atributo)
 			throws UsuarioNaoCadastradoException, AtributoException,
 			SomInexistenteException {
+		
 		Musica musica = storage.getMusica(idSom);
 
 		if (musica == null)
@@ -177,9 +185,9 @@ public class RickRoll {
 
 	}
 
-	public String getIDUsuario(String idSessao) {
-		return usuarioLogados.get(idSessao);
-	}
+//	public String getIDUsuario(String idSessao) {
+//		return usuarioLogados.get(idSessao);
+//	}
 
 	/** Pega a lista de seguidores de um usuario
 	 * 
@@ -187,10 +195,13 @@ public class RickRoll {
 	 * 		Id do usuario que se deseja a lista de seguidores.
 	 * @return
 	 * 		Lista de seguidores.
+	 * @throws Exception 
 	 */
 	
-	public Set<String> getListaDeSeguidores(String idSessao) {
-		return storage.getUser(usuarioLogados.get(idSessao)).getListaMeusSeguidores();
+	public Set<String> getListaDeSeguidores(String sessaoID) throws Exception {
+		
+		String meuID = isAutenticado( sessaoID );
+		return storage.getUser(meuID).getListaMeusSeguidores();
 	}
 	
 	/** Adiciona um post favorito
@@ -199,16 +210,19 @@ public class RickRoll {
 	 * 		Id do usuario que adicionou o post.
 	 * @param idMusica
 	 * 		Id do post.
+	 * @throws SessaoIDException 
 	 */
 	
-	public void addFavorito(String idSessao, String idMusica){
-		storage.getUser(usuarioLogados.get(idSessao)).addFavorito(idMusica);
-		storage.getMusica(idMusica).addFavoritado(idSessao);
+	public void addFavorito(String sessaoID, String idMusica) throws SessaoIDException{
+		
+		String meuID = isAutenticado( sessaoID );
+		storage.getUser(meuID).addFavorito(idMusica);
+		storage.getMusica(idMusica).addFavoritado(meuID);
 		
 		// Aqui ele adiciona o post favoritado a todos os que o seguem.
 		
-		for (String seguidor : storage.getUser(idSessao).getListaMeusSeguidores()) {
-			storage.getUser(seguidor).addFeedExtra(idMusica, idSessao);
+		for (String seguidor : storage.getUser(meuID).getListaMeusSeguidores()) {
+			storage.getUser(seguidor).addFeedExtra(idMusica, meuID);
 		}
 	}
 	
@@ -218,10 +232,13 @@ public class RickRoll {
 	 * 		Id do usuario desejado
 	 * @return
 	 * 		Lista dos favoritos.
+	 * @throws SessaoIDException 
 	 */
 	
-	public List<String> getFavoritos(String idSessao){
-		return storage.getUser(usuarioLogados.get(idSessao)).getFavoritos();
+	public List<String> getFavoritos(String sessaoID) throws SessaoIDException{
+		
+		String meuID = isAutenticado( sessaoID );
+		return storage.getUser(meuID).getFavoritos();
 	}
 	
 	
@@ -247,5 +264,25 @@ public class RickRoll {
 	 * 
 	 * TODO:
 	 */
+	
+	private String isAutenticado( String sessaoID ) throws SessaoIDException {
+		
+		if ( sessaoID == null || sessaoID.equals("") )
+			throw new SessaoIDException("Sessão inválida");
+			
+		String retorno = usuarioLogados.get(sessaoID);
+		if ( retorno == null )
+			throw new SessaoIDException("Sessão inexistente");
+			
+		return retorno;
+	}
+
+	private boolean hasPermicao( String sessaoID, String amigoID ) throws SessaoIDException {
+		
+		String meuID = isAutenticado( sessaoID );
+		
+		return storage.getUser(meuID).hasAmigo(amigoID);
+		
+	}
 
 }

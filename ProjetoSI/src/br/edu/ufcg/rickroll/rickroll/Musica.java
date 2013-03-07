@@ -19,6 +19,8 @@ public class Musica implements Comparable<Musica> {
 	public Musica(String IDCriador, String link, GregorianCalendar dataDeCriacao)
 			throws LinkInvalidoException, DataInvalidaException {
 
+		if (dataDeCriacao.before(GregorianCalendar.getInstance()))
+			throw new DataInvalidaException("Data de Criação inválida");
 		if (!linkValido(link))
 			throw new LinkInvalidoException("Som inválido");
 

@@ -246,6 +246,9 @@ public class Usuario {
 	public List<Favorito> getFeedExtra() {
 		return feedExtra;
 	}
-	
+
+	public boolean hasAmigo( String amigoID ){
+		return listaFollowing.contains(amigoID);
+	}
 
 }
