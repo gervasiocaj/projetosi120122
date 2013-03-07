@@ -15,7 +15,9 @@ public class Usuario {
 	private List<String> perfilMusical;
 	private Set<String> listaMyFollowers;
 	private Set<String> listaFollowing;
-
+	private List<String> listaFavorite;
+	private List<String> feedExtra;
+	
 	/**
 	 * Cria um novo usuario.
 	 * 
@@ -55,6 +57,8 @@ public class Usuario {
 		perfilMusical = new LinkedList<String>();
 		listaMyFollowers = new TreeSet<String>();
 		listaFollowing = new LinkedHashSet<String>();
+		listaFavorite = new LinkedList<String>();
+		feedExtra = new LinkedList<String>();
 	}
 
 	/**
@@ -200,5 +204,48 @@ public class Usuario {
 		((LinkedHashSet<String>)listaFollowing).add(userID);
 		//TODO add na lista my followers
 	}
+	
+	/** Adiciona um post favorito
+	 * 
+	 * @param idMusica
+	 * 		Id do post a ser favoritado
+	 */
+	
+	
+	public void addFavorito(String idMusica){
+		listaFavorite.add(0, idMusica);
+	}
+
+	/** Pega os posts favoritos do usuario
+	 * 
+	 * @return
+	 * 		Lista de posts favoritos
+	 */
+	
+	public List<String> getFavoritos() {
+		return listaFavorite;
+	}
+
+	
+	/** Adiciona um post a feed extra do usuario (lista com os posts favoritados dos meus seguidos)
+	 * 
+	 * @param idMusica
+	 * 		Id do post favoritado pelo meu seguido.
+	 */
+		
+	public void addFeedExtra(String idMusica) {
+		feedExtra.add(0, idMusica);
+	}
+	
+	/** Retorna a feed extra contendo os posts favoritados de meus seguidos.
+	 * 
+	 * @return
+	 * 		A feed extra
+	 */
+
+	public List<String> getFeedExtra() {
+		return feedExtra;
+	}
+	
 
 }

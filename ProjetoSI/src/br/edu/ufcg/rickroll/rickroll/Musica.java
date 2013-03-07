@@ -2,6 +2,8 @@ package br.edu.ufcg.rickroll.rickroll;
 
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 import java.sql.Date;
 import br.edu.ufcg.rickroll.exceptions.*;
@@ -12,6 +14,7 @@ public class Musica implements Comparable<Musica> {
 	private String link;
 	private GregorianCalendar dataDeCriacao;
 	private final String id;
+	private List<String> favoritaram;
 
 	public Musica(String IDCriador, String link, GregorianCalendar dataDeCriacao)
 			throws LinkInvalidoException, DataInvalidaException {
@@ -23,6 +26,7 @@ public class Musica implements Comparable<Musica> {
 		this.link = link;
 		this.dataDeCriacao = dataDeCriacao;
 		this.id = IDCriador + ";" + link + ";" + UUID.randomUUID();
+		favoritaram = new LinkedList<String>();
 		// this.dataDeCriacao = new GregorianCalendar();
 		// this.dataDeCriacao.setTime(dataDeCriacao.getTime());
 	}
@@ -151,6 +155,10 @@ public class Musica implements Comparable<Musica> {
 
 	public String getID() {
 		return id;
+	}
+	
+	public void addFavoritado(String idSessao){
+		favoritaram.add(idSessao);
 	}
 
 }

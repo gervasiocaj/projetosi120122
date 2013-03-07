@@ -141,6 +141,7 @@ public class RickRoll {
 	 * storage.getUser(usuarioLogados.get(sessaoID)).getMinhasSolicitacoesPendentes
 	 * (); }
 	 */
+	
 	public List<String> getTimeLine(String sessaoID)
 			throws UsuarioNaoCadastradoException {
 		Set<String> minhaLista = getListaSeguindo(sessaoID);
@@ -155,7 +156,7 @@ public class RickRoll {
 		Collections.sort(timeLine);
 		return timeLine;
 	}
-
+	
 	public String getAtributoSom(String idSom, String atributo)
 			throws UsuarioNaoCadastradoException, AtributoException,
 			SomInexistenteException {
@@ -180,9 +181,60 @@ public class RickRoll {
 		return usuarioLogados.get(idSessao);
 	}
 
+	/** Pega a lista de seguidores de um usuario
+	 * 
+	 * @param idSessao
+	 * 		Id do usuario que se deseja a lista de seguidores.
+	 * @return
+	 * 		Lista de seguidores.
+	 */
+	
 	public Set<String> getListaDeSeguidores(String idSessao) {
-		
 		return storage.getUser(usuarioLogados.get(idSessao)).getListaMeusSeguidores();
+	}
+	
+	/** Adiciona um post favorito
+	 * 
+	 * @param idSessao
+	 * 		Id do usuario que adicionou o post.
+	 * @param idMusica
+	 * 		Id do post.
+	 */
+	
+	public void addFavorito(String idSessao, String idMusica){
+		storage.getUser(usuarioLogados.get(idSessao)).addFavorito(idMusica);
+		storage.getMusica(idMusica).addFavoritado(idSessao);
+		
+		// Aqui ele adiciona o post favoritado a todos os que o seguem.
+		
+		for (String seguidor : storage.getUser(idSessao).getListaMeusSeguidores()) {
+			storage.getUser(seguidor).addFeedExtra(idMusica);
+		}
+	}
+	
+	/** Pega os favoritos de um usuario.
+	 * 
+	 * @param idSessao
+	 * 		Id do usuario desejado
+	 * @return
+	 * 		Lista dos favoritos.
+	 */
+	
+	public List<String> getFavoritos(String idSessao){
+		return storage.getUser(usuarioLogados.get(idSessao)).getFavoritos();
+	}
+	
+	
+	/** Retorna o feed extra deste usuario(os favoritos dos meu seguidos)
+	 * 
+	 * @param idSessao
+	 * 		Id do usuario desejado.
+	 * @return
+	 * 		Lista do Feed extra.
+	 */
+	
+	public List<String> getFeedExtra(String idSessao){
+		return 	storage.getUser(usuarioLogados.get(idSessao)).getFeedExtra();
 	}
 
 	/**
