@@ -15,7 +15,7 @@ import java.util.*;
  * 
  * @author Guilherme
  */
-public class Fachada {
+public class FacadeEasyAccept {
 
 	private RickRoll sistema;
 
@@ -126,5 +126,38 @@ public class Fachada {
 		str += "}";
 		return str;
 	}
+	
+	public void favoritarSom(String idSessao, String idSom) throws SessaoIDException{
+		sistema.addFavorito(idSessao, idSom);
+	}
+	
+	public String getSonsFavoritos(String idSessao){
+		String str = "{";
+		List<String> favoritos = sistema.getFavoritos(idSessao);
+		Iterator<String> it = favoritos.iterator();
+		while(it.hasNext()){
+			str += it.next();
+			if(it.hasNext()){
+				str += ",";
+			}
+		}
+		str += "}";
+		return str;
+	}
+	
+	public String getFeedExtra(String idSessao){
+		String str = "{";
+		List<Favorito> feed = sistema.getFeedExtra(idSessao);
+		Iterator<Favorito> it = feed.iterator();
+		while(it.hasNext()){
+			str += it.next().getIdMusica();
+			if(it.hasNext()){
+				str += ",";
+			}
+		}
+		str += "}";
+		return str;
+	}
+
 
 }

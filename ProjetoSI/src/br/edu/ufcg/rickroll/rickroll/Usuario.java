@@ -16,7 +16,7 @@ public class Usuario {
 	private Set<String> listaMyFollowers;
 	private Set<String> listaFollowing;
 	private List<String> listaFavorite;
-	private List<String> feedExtra;
+	private List<Favorito> feedExtra;
 	
 	/**
 	 * Cria um novo usuario.
@@ -58,7 +58,7 @@ public class Usuario {
 		listaMyFollowers = new TreeSet<String>();
 		listaFollowing = new LinkedHashSet<String>();
 		listaFavorite = new LinkedList<String>();
-		feedExtra = new LinkedList<String>();
+		feedExtra = new LinkedList<Favorito>();
 	}
 
 	/**
@@ -233,8 +233,8 @@ public class Usuario {
 	 * 		Id do post favoritado pelo meu seguido.
 	 */
 		
-	public void addFeedExtra(String idMusica) {
-		feedExtra.add(0, idMusica);
+	public void addFeedExtra(String idMusica, String idSeguido) {
+		feedExtra.add(0, new Favorito(idMusica, idSeguido));
 	}
 	
 	/** Retorna a feed extra contendo os posts favoritados de meus seguidos.
@@ -243,7 +243,7 @@ public class Usuario {
 	 * 		A feed extra
 	 */
 
-	public List<String> getFeedExtra() {
+	public List<Favorito> getFeedExtra() {
 		return feedExtra;
 	}
 	

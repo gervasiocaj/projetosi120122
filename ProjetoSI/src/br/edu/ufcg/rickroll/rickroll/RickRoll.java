@@ -208,7 +208,7 @@ public class RickRoll {
 		// Aqui ele adiciona o post favoritado a todos os que o seguem.
 		
 		for (String seguidor : storage.getUser(idSessao).getListaMeusSeguidores()) {
-			storage.getUser(seguidor).addFeedExtra(idMusica);
+			storage.getUser(seguidor).addFeedExtra(idMusica, idSessao);
 		}
 	}
 	
@@ -233,7 +233,7 @@ public class RickRoll {
 	 * 		Lista do Feed extra.
 	 */
 	
-	public List<String> getFeedExtra(String idSessao){
+	public List<Favorito> getFeedExtra(String idSessao){
 		return 	storage.getUser(usuarioLogados.get(idSessao)).getFeedExtra();
 	}
 
