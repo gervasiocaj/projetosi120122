@@ -185,9 +185,9 @@ public class RickRoll {
 
 	}
 
-//	public String getIDUsuario(String idSessao) {
-//		return usuarioLogados.get(idSessao);
-//	}
+	public String getIDUsuario(String idSessao) {
+		return usuarioLogados.get(idSessao);
+	}
 
 	/** Pega a lista de seguidores de um usuario
 	 * 

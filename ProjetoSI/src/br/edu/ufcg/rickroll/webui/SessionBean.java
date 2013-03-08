@@ -4,6 +4,7 @@ import java.util.*;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
+import br.edu.ufcg.rickroll.exceptions.SessaoIDException;
 import br.edu.ufcg.rickroll.exceptions.UsuarioNaoCadastradoException;
 
 // or import javax.enterprise.context.SessionScoped;
@@ -23,7 +24,7 @@ public class SessionBean {
 	private int posicaoAmigos;
 	private String[] ultimosAmigos;
 
-	public SessionBean() throws UsuarioNaoCadastradoException {
+	public SessionBean() throws UsuarioNaoCadastradoException, SessaoIDException {
 		Conversador.tentaIniciarRepositorio();
 		posicaoMusicas = 0;
 		ultimasMusicas = new String[6];
@@ -33,7 +34,7 @@ public class SessionBean {
 		preencherEspacoDeAmigos();
 	}
 
-	private void preencherEspacoDeMusicas() throws UsuarioNaoCadastradoException {
+	private void preencherEspacoDeMusicas() throws UsuarioNaoCadastradoException, SessaoIDException {
 		List<String> musicas = Conversador.sistema.getTimeLine(sessaoID);
 
 		for (int i = 0; i < 6; i++) {
@@ -46,7 +47,7 @@ public class SessionBean {
 		}
 	}
 
-	private void preencherEspacoDeAmigos() {
+	private void preencherEspacoDeAmigos() throws SessaoIDException {
 		Set<String> amigos = Conversador.sistema.getListaSeguindo(sessaoID);
 
 		Iterator<String> it = amigos.iterator();
@@ -75,7 +76,7 @@ public class SessionBean {
 		return sessaoID;
 	}
 
-	public String deslogar() {
+	public String deslogar() throws SessaoIDException {
 		Conversador.sistema.encerrarSessao(sessaoID);
 		return "index";
 	}
@@ -109,7 +110,7 @@ public class SessionBean {
 		musica = "";
 	}
 
-	public List<String> getMusicas() throws UsuarioNaoCadastradoException {
+	public List<String> getMusicas() throws UsuarioNaoCadastradoException, SessaoIDException {
 		if (Conversador.sistema.getTimeLine(sessaoID).size() < 6)
 			return Conversador.sistema.getTimeLine(sessaoID); // TODO só
 																// funciona
@@ -189,22 +190,22 @@ public class SessionBean {
 
 	}
 
-	public void pegaMusicasMaisNovas() throws UsuarioNaoCadastradoException {
+	public void pegaMusicasMaisNovas() throws UsuarioNaoCadastradoException, SessaoIDException {
 		posicaoMusicas -= 6;
 		preencherEspacoDeMusicas();
 	}
 
-	public void pegaMusicasMaisAntigas() throws UsuarioNaoCadastradoException {
+	public void pegaMusicasMaisAntigas() throws UsuarioNaoCadastradoException, SessaoIDException {
 		posicaoMusicas += 6;
 		preencherEspacoDeMusicas();
 	}
 
-	public void pegaAmigosMaisNovos() {
+	public void pegaAmigosMaisNovos() throws SessaoIDException {
 		posicaoAmigos -= 6;
 		preencherEspacoDeAmigos();
 	}
 
-	public void pegaAmigosMaisAntigos() {
+	public void pegaAmigosMaisAntigos() throws SessaoIDException {
 		posicaoAmigos += 6;
 		preencherEspacoDeAmigos();
 	}

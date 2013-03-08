@@ -41,7 +41,7 @@ public class FacadeEasyAccept {
 	}
 
 	public String getPerfilMusical(String idSessao)
-			throws UsuarioNaoCadastradoException {
+			throws UsuarioNaoCadastradoException, SessaoIDException {
 		List<String> musicas = sistema.getPerfilMusical(idSessao);
 		Iterator<String> it = musicas.iterator();
 		
@@ -75,7 +75,7 @@ public class FacadeEasyAccept {
 		return sistema.getAtributoSom(idSom, atributo);
 	}
 
-	public void encerrarSessao(String login) {
+	public void encerrarSessao(String login) throws SessaoIDException {
 		sistema.encerrarSessao(login);
 	}
 
@@ -87,7 +87,7 @@ public class FacadeEasyAccept {
 		return sistema.getIDUsuario(idSessao);
 	}
 
-	public int getNumeroDeSeguidores(String idSessao) throws SessaoIDException {
+	public int getNumeroDeSeguidores(String idSessao) throws Exception {
 		return sistema.getListaDeSeguidores(idSessao).size();
 	}
 
@@ -113,7 +113,7 @@ public class FacadeEasyAccept {
 	}
 
 	public String getListaDeSeguidores(String idSessao)
-			throws SessaoIDException {
+			throws Exception {
 		String str = "{";
 		Set<String> seguidores = sistema.getListaDeSeguidores(idSessao);
 		Iterator<String> it = seguidores.iterator();
@@ -131,7 +131,7 @@ public class FacadeEasyAccept {
 		sistema.addFavorito(idSessao, idSom);
 	}
 	
-	public String getSonsFavoritos(String idSessao){
+	public String getSonsFavoritos(String idSessao) throws SessaoIDException{
 		String str = "{";
 		List<String> favoritos = sistema.getFavoritos(idSessao);
 		Iterator<String> it = favoritos.iterator();
