@@ -5,66 +5,112 @@ and open the template in the editor.
 -->
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core">
-<head>
-<title>#{sessao.nameUsuarioLogado}'s Profile</title>
-</head>
-<body>
-
-	<h:form>
-
-		<table>
-			<tr>
-
-				<td><h1>Bem vindo, #{sessao.nameUsuarioLogado}</h1></td>
-				<td><h:commandButton value="Sair"
-						action="#{sessao.deslogar()}" /></td>
-
-			</tr>
-		</table>
-		<table>
-			<tr>
-				<td><h2>Poste uma musica:</h2></td>
-				<td><h:inputText value="#{sessao.musica}" id="postagem" /></td>
-				<td><h:commandButton value="postar"
-						action="#{sessao.postarMusica()}" /></td>
-				<td><h:commandButton value="apagar"
-						action="#{sessao.limpaMusica()}" /></td>
-
-			</tr>
-
-
-
-			<h:dataTable value="#{sessao.musicas}" var="mus">
-
-				<h:column>
-					<f:facet name="header">
-						<h3>Musicas Recentes</h3>
-					</f:facet>
-    			#{mus.link}
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.prime.com.tr/ui"
+      >
+    <head>
+        <title>#{sessao.nameUsuarioLogado}'s Colletany </title>
+    </head>
+    <body >
+        
+        <h:form >
+            
+            <table >
+                <tr >
+                    
+                    <td ><h1 >Bem vindo, #{sessao.nameUsuarioLogado}</h1></td>
+                    <td ><h:commandButton value="Sair" action="#{sessao.deslogar()}"  /></td>
+                    
+                </tr>
+            </table>
+            <table>
+                <tr >
+                    <td ><h2>Poste uma musica: </h2></td>
+                    <td ><h:inputText value="#{sessao.musica}" id="postagem" /></td>
+                    <td ><h:commandButton value="postar" action="#{sessao.postarMusica()}" /></td>
+                    <td ><h:commandButton value="apagar" action="#{sessao.limpaMusica()}"/></td>
+                    
+                </tr>
+                
+                <tr>
+                    <td ><h3>Seguir Usuario: </h3></td>
+                    <td ><h:inputText  value="#{sessao.seguir}" id="amigoParaAdicionar" /></td>
+                    <td><h:commandButton value="adicionar" id="adicionarAmigo" action="#{sessao.seguirUsuario()}" /></td>
+                    
+                </tr>
+                
+                
+                
+                <h:dataTable value="#{sessao.musicas}" var="mus" bgcolor="FFF500">
+                    
+                <h:column >
+                    <f:facet name="header"><h3>Musicas Recentes</h3></f:facet>
+    			#{mus}
     		</h:column>
+                    
+                </h:dataTable>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                <tr>
+                    <td><h:commandButton value="Mais Novas" disabled="#{!sessao.hasMusicasMaisNovas()}" id="musicasMaisNovas" action="#{sessao.pegaMusicasMaisNovas()}"/></td>
+                    <td><h:commandButton value="Mais Antigas" disabled="#{!sessao.hasMusicasMaisAntigas()}" id="musicasMaisAntigas" action="#{sessao.pegaMusicasMaisAntigas()}"/></td>
+                </tr>
+                
+                
+                
+                <tr >
+                    <td><h2>Amigos: </h2></td>
+                </tr>
+                
+                </table>
+                
+                
+                
+                <p:dataGrid var="seguidor" value="#{sessao.seguidores}" columns="3"  
+        rows="12" paginator="true"  
+        paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+        rowsPerPageTemplate="9,12,15">  
+  
+        <p:panel style="text-align:center">  
+            <h:panelGrid columns="1" style="width:100%">  
+                
+                <h:outputText value="#{seguidor.name}" />  
+  
+   
+            </h:panelGrid>  
+        </p:panel>  
+  
+    </p:dataGrid> 
+                
+                
+                
+            <table>
+                
+                
 
-			</h:dataTable>
-
-			<tr>
-				<td><h:commandButton value="Mais Novas"
-						disabled="#{!sessao.hasMusicasMaisNovas()}" id="musicasMaisNovas"
-						action="#{sessao.pegaMusicasMaisNovas()}" /></td>
-				<td><h:commandButton value="Mais Antigas"
-						disabled="#{!sessao.hasMusicasMaisAntigas()}"
-						id="musicasMaisAntigas"
-						action="#{sessao.pegaMusicasMaisAntigas()}" /></td>
-			</tr>
-
-
-
-
-
-
-		</table>
-
-
-	</h:form>
-</body>
+                <tr>
+                    <td><h:commandButton disabled="#{!sessao.hasSeguidoresMaisNovos()}" value="Mais Novos" id="amigosMaisNovos" action="#{sessao.pegaAmigosMaisNovos()}" /></td>
+                    <td><h:commandButton disabled="#{!sessao.hasSeguidoresMaisVelhos()}" value="Mais Velhos" id="amigosMaisVelhos" action="#{sessao.pegaAmigosMaisAntigos()}" /></td>
+                </tr>
+                
+                
+            </table>
+            
+            
+        </h:form>
+    </body>
 </html>
