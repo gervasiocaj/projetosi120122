@@ -1,5 +1,6 @@
 package br.edu.ufcg.rickroll.rickroll;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
@@ -16,17 +17,27 @@ public class Musica implements Comparable<Musica> {
 	private final String id;
 	private List<String> favoritaram;
 
-	public Musica(String IDCriador, String link, GregorianCalendar dataDeCriacao)
+	public Musica(String IDCriador, String link, String dataDeCriacao)
 			throws LinkInvalidoException, DataInvalidaException {
 
-		if (dataDeCriacao.before(GregorianCalendar.getInstance()))
-			throw new DataInvalidaException("Data de Criação inválida");
 		if (!linkValido(link))
 			throw new LinkInvalidoException("Som inválido");
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		GregorianCalendar cal = new GregorianCalendar();
+		try {	
+			sdf.setLenient(false);
+			cal.setTime(sdf.parse(dataDeCriacao));
+		} catch (ParseException e) {
+			throw new DataInvalidaException("Data de Criação inválida");
+		}
+		if (cal.before(GregorianCalendar.getInstance()))
+			throw new DataInvalidaException("Data de Criação inválida");
+		
 
 		this.IDCriador = IDCriador;
 		this.link = link;
-		this.dataDeCriacao = dataDeCriacao;
+		this.dataDeCriacao = cal;
 		this.id = IDCriador + ";" + link + ";" + UUID.randomUUID();
 		favoritaram = new LinkedList<String>();
 		// this.dataDeCriacao = new GregorianCalendar();

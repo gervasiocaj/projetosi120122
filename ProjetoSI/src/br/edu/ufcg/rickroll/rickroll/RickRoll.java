@@ -107,7 +107,7 @@ public class RickRoll {
 	}
 
 	public String postarSom(String sessaoID, String link,
-			GregorianCalendar dataCriacao) throws SessaoIDException, DataInvalidaException, LinkInvalidoException  {
+			String dataCriacao) throws SessaoIDException, DataInvalidaException, LinkInvalidoException  {
 
 		String meuID = isAutenticado( sessaoID );
 

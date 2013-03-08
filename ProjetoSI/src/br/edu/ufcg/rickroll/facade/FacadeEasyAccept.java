@@ -58,16 +58,7 @@ public class FacadeEasyAccept {
 
 	public String postarSom(String idSessao, String link, String dataCriacao)
 			throws SessaoIDException, LinkInvalidoException, DataInvalidaException {
-		
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		GregorianCalendar cal = new GregorianCalendar();
-		try {	
-			sdf.setLenient(false);
-			cal.setTime(sdf.parse(dataCriacao));
-		} catch (ParseException e) {
-			throw new DataInvalidaException("Data de Criação inválida");
-		}
-		return sistema.postarSom(idSessao, link, cal);
+		return sistema.postarSom(idSessao, link, dataCriacao);
 	}
 
 	public String getAtributoSom(String idSom, String atributo)
