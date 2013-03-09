@@ -82,21 +82,22 @@ public class RickRoll {
 		return sessaoID;
 	}
 
-	public List<String> getPerfilMusical(String sessaoID) throws SessaoIDException, UsuarioNaoCadastradoException
-			 {
-		
-		String meuID = isAutenticado( sessaoID );
+	public List<String> getPerfilMusical(String sessaoID)
+			throws SessaoIDException, UsuarioNaoCadastradoException {
+
+		String meuID = isAutenticado(sessaoID);
 		Usuario usr = storage.getUser(meuID);
-		
+
 		if (usr == null)
 			throw new UsuarioNaoCadastradoException("Usuário inexistente");
 
 		return usr.getPerfilMusical();
 	}
 
-	public List<String> getPerfilMusical(String sessaoID, String userID) throws SessaoIDException  {
-		
-		String meuID = isAutenticado( sessaoID );
+	public List<String> getPerfilMusical(String sessaoID, String userID)
+			throws SessaoIDException {
+
+		String meuID = isAutenticado(sessaoID);
 		Usuario usrLogado = storage.getUser(meuID);
 		if (!usrLogado.getListaMeusSeguidores().contains(userID)) {
 
@@ -106,10 +107,11 @@ public class RickRoll {
 		return amigo.getPerfilMusical();
 	}
 
-	public String postarSom(String sessaoID, String link,
-			String dataCriacao) throws SessaoIDException, DataInvalidaException, LinkInvalidoException  {
+	public String postarSom(String sessaoID, String link, String dataCriacao)
+			throws SessaoIDException, DataInvalidaException,
+			LinkInvalidoException {
 
-		String meuID = isAutenticado( sessaoID );
+		String meuID = isAutenticado(sessaoID);
 
 		Musica musica = new Musica(meuID, link, dataCriacao);
 		storage.addMusic(musica);
@@ -126,24 +128,26 @@ public class RickRoll {
 		}
 	}
 
-	public Set<String> getListaSeguindo(String sessaoID) throws SessaoIDException {
-		
-		String meuID = isAutenticado( sessaoID );
+	public Set<String> getListaSeguindo(String sessaoID)
+			throws SessaoIDException {
+
+		String meuID = isAutenticado(sessaoID);
 		return storage.getUser(meuID).getSeguindo();
 	}
 
-	public void seguirUsuario(String sessaoID, String loginFollowed) throws SessaoIDException, LoginException {
+	public void seguirUsuario(String sessaoID, String loginFollowed)
+			throws SessaoIDException, LoginException {
 		if (loginFollowed == null || loginFollowed.equals(""))
 			throw new LoginException("Login inválido");
-		
-		String meuID = isAutenticado( sessaoID );
+
+		String meuID = isAutenticado(sessaoID);
 		String userIDSeguido = storage.getUserID(loginFollowed);
-		
+
 		if (userIDSeguido == null)
 			throw new LoginException("Login inexistente");
 		if (meuID.equals(userIDSeguido))
 			throw new LoginException("Login inválido");
-		
+
 		storage.getUser(meuID).seguir(userIDSeguido);
 		storage.getUser(userIDSeguido).addMeuSeguidor(meuID);
 	}
@@ -157,11 +161,11 @@ public class RickRoll {
 	 * storage.getUser(usuarioLogados.get(sessaoID)).getMinhasSolicitacoesPendentes
 	 * (); }
 	 */
-	
-	public List<String> getTimeLine(String sessaoID)
-			throws SessaoIDException, UsuarioNaoCadastradoException {
-		
-		String meuID = isAutenticado( sessaoID );
+
+	public List<String> getTimeLine(String sessaoID) throws SessaoIDException,
+			UsuarioNaoCadastradoException {
+
+		String meuID = isAutenticado(sessaoID);
 		Set<String> minhaLista = getListaSeguindo(sessaoID);
 		List<String> timeLine = new LinkedList<String>();
 		timeLine.addAll(getPerfilMusical(meuID));
@@ -174,11 +178,11 @@ public class RickRoll {
 		Collections.sort(timeLine);
 		return timeLine;
 	}
-	
+
 	public String getAtributoSom(String idSom, String atributo)
 			throws UsuarioNaoCadastradoException, AtributoException,
 			SomInexistenteException {
-		
+
 		Musica musica = storage.getMusica(idSom);
 
 		if (musica == null)
@@ -200,69 +204,75 @@ public class RickRoll {
 		return usuarioLogados.get(idSessao);
 	}
 
-	/** Pega a lista de seguidores de um usuario
+	/**
+	 * Pega a lista de seguidores de um usuario
 	 * 
 	 * @param idSessao
-	 * 		Id do usuario que se deseja a lista de seguidores.
-	 * @return
-	 * 		Lista de seguidores.
-	 * @throws Exception 
+	 *            Id do usuario que se deseja a lista de seguidores.
+	 * @return Lista de seguidores.
+	 * @throws Exception
 	 */
-	
+
 	public Set<String> getListaDeSeguidores(String sessaoID) throws Exception {
-		
-		String meuID = isAutenticado( sessaoID );
+
+		String meuID = isAutenticado(sessaoID);
 		return storage.getUser(meuID).getListaMeusSeguidores();
 	}
-	
-	/** Adiciona um post favorito
+
+	/**
+	 * Adiciona um post favorito
 	 * 
 	 * @param idSessao
-	 * 		Id do usuario que adicionou o post.
+	 *            Id do usuario que adicionou o post.
 	 * @param idMusica
-	 * 		Id do post.
-	 * @throws SessaoIDException 
+	 *            Id do post.
+	 * @throws SessaoIDException
+	 * @throws SomInexistenteException
 	 */
-	
-	public void addFavorito(String sessaoID, String idMusica) throws SessaoIDException{
-		
-		String meuID = isAutenticado( sessaoID );
+
+	public void addFavorito(String sessaoID, String idMusica)
+			throws SessaoIDException, SomInexistenteException {
+		if (idMusica == null || idMusica.equals("") || storage.getMusica(idMusica) == null)
+			throw new SomInexistenteException("Som inválido");
+
+		String meuID = isAutenticado(sessaoID);
 		storage.getUser(meuID).addFavorito(idMusica);
 		storage.getMusica(idMusica).addFavoritado(meuID);
-		
+
 		// Aqui ele adiciona o post favoritado a todos os que o seguem.
-		
+
 		for (String seguidor : storage.getUser(meuID).getListaMeusSeguidores()) {
 			storage.getUser(seguidor).addFeedExtra(idMusica, meuID);
 		}
 	}
-	
-	/** Pega os favoritos de um usuario.
+
+	/**
+	 * Pega os favoritos de um usuario.
 	 * 
 	 * @param idSessao
-	 * 		Id do usuario desejado
-	 * @return
-	 * 		Lista dos favoritos.
-	 * @throws SessaoIDException 
+	 *            Id do usuario desejado
+	 * @return Lista dos favoritos.
+	 * @throws SessaoIDException
 	 */
-	
-	public List<String> getFavoritos(String sessaoID) throws SessaoIDException{
-		
-		String meuID = isAutenticado( sessaoID );
+
+	public List<String> getFavoritos(String sessaoID) throws SessaoIDException {
+
+		String meuID = isAutenticado(sessaoID);
 		return storage.getUser(meuID).getFavoritos();
 	}
-	
-	
-	/** Retorna o feed extra deste usuario(os favoritos dos meu seguidos)
+
+	/**
+	 * Retorna o feed extra deste usuario(os favoritos dos meu seguidos)
 	 * 
 	 * @param idSessao
-	 * 		Id do usuario desejado.
-	 * @return
-	 * 		Lista do Feed extra.
+	 *            Id do usuario desejado.
+	 * @return Lista do Feed extra.
+	 * @throws SessaoIDException 
 	 */
-	
-	public List<Favorito> getFeedExtra(String idSessao){
-		return 	storage.getUser(usuarioLogados.get(idSessao)).getFeedExtra();
+
+	public List<Favorito> getFeedExtra(String idSessao) throws SessaoIDException {
+		Usuario user = storage.getUser(isAutenticado(idSessao));
+		return user.getFeedExtra();
 	}
 
 	/**
@@ -275,25 +285,26 @@ public class RickRoll {
 	 * 
 	 * TODO:
 	 */
-	
-	private String isAutenticado( String sessaoID ) throws SessaoIDException {
-		
-		if ( sessaoID == null || sessaoID.equals("") )
+
+	private String isAutenticado(String sessaoID) throws SessaoIDException {
+
+		if (sessaoID == null || sessaoID.equals(""))
 			throw new SessaoIDException("Sessão inválida");
-			
+
 		String retorno = usuarioLogados.get(sessaoID);
-		if ( retorno == null )
+		if (retorno == null)
 			throw new SessaoIDException("Sessão inexistente");
-			
+
 		return retorno;
 	}
 
-	private boolean hasPermicao( String sessaoID, String amigoID ) throws SessaoIDException {
-		
-		String meuID = isAutenticado( sessaoID );
-		
+	private boolean hasPermicao(String sessaoID, String amigoID)
+			throws SessaoIDException {
+
+		String meuID = isAutenticado(sessaoID);
+
 		return storage.getUser(meuID).hasAmigo(amigoID);
-		
+
 	}
 
 }

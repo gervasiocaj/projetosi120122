@@ -82,13 +82,13 @@ public class FacadeEasyAccept {
 		Set<String> fonteDeSons = sistema.getListaSeguindo(idSessao);
 		return convertCollection(fonteDeSons);
 	}
-	
+
 	public String getVisaoDosSons(String idSessao) throws SessaoIDException {
 		List<String> sons = new LinkedList<String>();
 		for (String user : sistema.getListaSeguindo(idSessao)) {
 			sons.addAll(sistema.getPerfilMusical(idSessao, user));
 		}
-		return convertCollection(sons); //TODO
+		return convertCollection(sons); // TODO
 	}
 
 	public String getListaDeSeguidores(String idSessao) throws Exception {
@@ -97,7 +97,7 @@ public class FacadeEasyAccept {
 	}
 
 	public void favoritarSom(String idSessao, String idSom)
-			throws SessaoIDException {
+			throws SessaoIDException, SomInexistenteException {
 		sistema.addFavorito(idSessao, idSom);
 	}
 
@@ -106,23 +106,16 @@ public class FacadeEasyAccept {
 		return convertCollection(favoritos);
 	}
 
-	public String getFeedExtra(String idSessao) {
-		String str = "{";
-		List<Favorito> feed = sistema.getFeedExtra(idSessao);
-		Iterator<Favorito> it = feed.iterator();
-		while (it.hasNext()) {
-			str += it.next().getIdMusica();
-			if (it.hasNext()) {
-				str += ",";
-			}
-		}
-		str += "}";
-		return str;
+	public String getFeedExtra(String idSessao) throws SessaoIDException {
+		List<String> feed = new LinkedList<String>();
+		for (Favorito m : sistema.getFeedExtra(idSessao))
+			feed.add(m.getIdMusica());
+		return convertCollection(feed);
 	}
-	
+
 	private String convertCollection(Collection<?> c) {
 		String str = "{";
-		Iterator<?>  it = c.iterator();
+		Iterator<?> it = c.iterator();
 		while (it.hasNext()) {
 			str += it.next().toString();
 			if (it.hasNext()) {
