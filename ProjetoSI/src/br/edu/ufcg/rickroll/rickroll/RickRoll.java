@@ -117,10 +117,13 @@ public class RickRoll {
 		return musica.getID();
 	}
 
-	public void encerrarSessao(String sessaoID) throws SessaoIDException {
-		
-		isAutenticado( sessaoID );
-		usuarioLogados.remove(sessaoID);
+	public void encerrarSessao(String login) throws SessaoIDException {
+		for (String u : usuarioLogados.keySet()) {
+			if (storage.getUser(usuarioLogados.get(u)).getLogin().equals(login)) {
+				usuarioLogados.remove(u);
+				break;
+			}
+		}
 	}
 
 	public Set<String> getListaSeguindo(String sessaoID) throws SessaoIDException {
