@@ -7,8 +7,6 @@ package br.edu.ufcg.rickroll.facade;
 import br.edu.ufcg.rickroll.rickroll.*;
 import br.edu.ufcg.rickroll.exceptions.*;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -34,7 +32,8 @@ public class FacadeEasyAccept {
 	}
 
 	public String getAtributoUsuario(String login, String atributo)
-			throws AtributoException, UsuarioNaoCadastradoException, LoginException {
+			throws AtributoException, UsuarioNaoCadastradoException,
+			LoginException {
 		if (!Verificador.verificaStringValida(login))
 			throw new LoginException("Login inválido");
 		return sistema.getAtributoUsuario(login, atributo);
@@ -43,26 +42,18 @@ public class FacadeEasyAccept {
 	public String getPerfilMusical(String idSessao)
 			throws UsuarioNaoCadastradoException, SessaoIDException {
 		List<String> musicas = sistema.getPerfilMusical(idSessao);
-		Iterator<String> it = musicas.iterator();
-		
-		String mus = "{";
-		while (it.hasNext()) {
-			mus += it.next();
-			if (it.hasNext())
-				mus += ",";
-		}
-		mus += "}";
-		return mus;
-
+		return convertCollection(musicas);
 	}
 
 	public String postarSom(String idSessao, String link, String dataCriacao)
-			throws SessaoIDException, LinkInvalidoException, DataInvalidaException {
+			throws SessaoIDException, LinkInvalidoException,
+			DataInvalidaException {
 		return sistema.postarSom(idSessao, link, dataCriacao);
 	}
 
 	public String getAtributoSom(String idSom, String atributo)
-			throws UsuarioNaoCadastradoException, AtributoException, SomInexistenteException {
+			throws UsuarioNaoCadastradoException, AtributoException,
+			SomInexistenteException {
 		return sistema.getAtributoSom(idSom, atributo);
 	}
 
@@ -87,68 +78,55 @@ public class FacadeEasyAccept {
 		sistema.seguirUsuario(idSessao, login);
 	}
 
-	public String getFontesDeSons(String idSessao)
-			throws SessaoIDException {
-		String str = "{";
+	public String getFontesDeSons(String idSessao) throws SessaoIDException {
 		Set<String> fonteDeSons = sistema.getListaSeguindo(idSessao);
-		Iterator<String> it = fonteDeSons.iterator();
-		while(it.hasNext()){
-			str += it.next();
-			if(it.hasNext()){
-				str += ",";
-			}
-		}
-		str += "}";
-		return str;
-		
+		return convertCollection(fonteDeSons);
+	}
+	
+	public String getVisaoDosSons(String idSessao) {
+		return null; //TODO
 	}
 
-	public String getListaDeSeguidores(String idSessao)
-			throws Exception {
-		String str = "{";
+	public String getListaDeSeguidores(String idSessao) throws Exception {
 		Set<String> seguidores = sistema.getListaDeSeguidores(idSessao);
-		Iterator<String> it = seguidores.iterator();
-		while(it.hasNext()){
-			str += it.next();
-			if(it.hasNext()){
-				str += ",";
-			}
-		}
-		str += "}";
-		return str;
+		return convertCollection(seguidores);
 	}
-	
-	public void favoritarSom(String idSessao, String idSom) throws SessaoIDException{
+
+	public void favoritarSom(String idSessao, String idSom)
+			throws SessaoIDException {
 		sistema.addFavorito(idSessao, idSom);
 	}
-	
-	public String getSonsFavoritos(String idSessao) throws SessaoIDException{
-		String str = "{";
+
+	public String getSonsFavoritos(String idSessao) throws SessaoIDException {
 		List<String> favoritos = sistema.getFavoritos(idSessao);
-		Iterator<String> it = favoritos.iterator();
-		while(it.hasNext()){
-			str += it.next();
-			if(it.hasNext()){
-				str += ",";
-			}
-		}
-		str += "}";
-		return str;
+		return convertCollection(favoritos);
 	}
-	
-	public String getFeedExtra(String idSessao){
+
+	public String getFeedExtra(String idSessao) {
 		String str = "{";
 		List<Favorito> feed = sistema.getFeedExtra(idSessao);
 		Iterator<Favorito> it = feed.iterator();
-		while(it.hasNext()){
+		while (it.hasNext()) {
 			str += it.next().getIdMusica();
-			if(it.hasNext()){
+			if (it.hasNext()) {
 				str += ",";
 			}
 		}
 		str += "}";
 		return str;
 	}
-
+	
+	private String convertCollection(Collection c) {
+		String str = "{";
+		Iterator<?>  it = c.iterator();
+		while (it.hasNext()) {
+			str += it.next().toString();
+			if (it.hasNext()) {
+				str += ",";
+			}
+		}
+		str += "}";
+		return str;
+	}
 
 }

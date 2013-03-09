@@ -22,10 +22,10 @@ public class Musica implements Comparable<Musica> {
 
 		if (!linkValido(link))
 			throw new LinkInvalidoException("Som inválido");
-		
+
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		GregorianCalendar cal = new GregorianCalendar();
-		try {	
+		try {
 			sdf.setLenient(false);
 			cal.setTime(sdf.parse(dataDeCriacao));
 		} catch (ParseException e) {
@@ -33,7 +33,6 @@ public class Musica implements Comparable<Musica> {
 		}
 		if (cal.before(GregorianCalendar.getInstance()))
 			throw new DataInvalidaException("Data de Criação inválida");
-		
 
 		this.IDCriador = IDCriador;
 		this.link = link;
@@ -88,10 +87,11 @@ public class Musica implements Comparable<Musica> {
 	public static boolean linkValido(String link) {
 		if (link == null || link.equals(""))
 			return false;
-		return (link.startsWith("http://") && link.length() > "http://"
-				.length())
-				|| (link.startsWith("https://") && link.length() > "https://"
-						.length());
+		String[] prefixes = { "http://", "https://", "ftp://", "www" };
+		for (String p : prefixes)
+			if (link.startsWith(p) && (link.length() > p.length()))
+				return true;
+		return false;
 	}
 
 	/**
@@ -169,14 +169,15 @@ public class Musica implements Comparable<Musica> {
 	public String getID() {
 		return id;
 	}
-	
-	/** Adicina usuarios que favoritaram a musica
+
+	/**
+	 * Adicina usuarios que favoritaram a musica
 	 * 
 	 * @param idSessao
-	 * 		Id do usuario que a favoritou
+	 *            Id do usuario que a favoritou
 	 */
-	
-	public void addFavoritado(String idSessao){
+
+	public void addFavoritado(String idSessao) {
 		favoritaram.add(idSessao);
 	}
 

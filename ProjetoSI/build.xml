@@ -36,7 +36,12 @@
 	<target name="testa" depends="jar">
 		<java classname="easyaccept.EasyAccept">
 			<arg
-				line="br.edu.ufcg.rickroll.facade.FacadeEasyAccept testesDeAceitacao_SI1\scripts\US01.txt" />
+				line="br.edu.ufcg.rickroll.facade.FacadeEasyAccept 
+				testesDeAceitacao_SI1\scripts\US01.txt 
+				testesDeAceitacao_SI1\scripts\US02.txt 
+				testesDeAceitacao_SI1\scripts\US03.txt 
+				testesDeAceitacao_SI1\scripts\US04.txt 
+				testesDeAceitacao_SI1\scripts\US05.txt" />
 			<classpath refid="bins" />
 			<classpath refid="libs" />
 		</java>

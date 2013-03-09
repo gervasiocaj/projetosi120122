@@ -132,10 +132,18 @@ public class RickRoll {
 		return storage.getUser(meuID).getSeguindo();
 	}
 
-	public void seguirUsuario(String sessaoID, String loginFollowed) throws SessaoIDException {
+	public void seguirUsuario(String sessaoID, String loginFollowed) throws SessaoIDException, LoginException {
+		if (loginFollowed == null || loginFollowed.equals(""))
+			throw new LoginException("Login inválido");
 		
 		String meuID = isAutenticado( sessaoID );
 		String userIDSeguido = storage.getUserID(loginFollowed);
+		
+		if (userIDSeguido == null)
+			throw new LoginException("Login inexistente");
+		if (meuID.equals(userIDSeguido))
+			throw new LoginException("Login inválido");
+		
 		storage.getUser(meuID).seguir(userIDSeguido);
 		storage.getUser(userIDSeguido).addMeuSeguidor(meuID);
 	}
