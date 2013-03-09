@@ -83,8 +83,12 @@ public class FacadeEasyAccept {
 		return convertCollection(fonteDeSons);
 	}
 	
-	public String getVisaoDosSons(String idSessao) {
-		return null; //TODO
+	public String getVisaoDosSons(String idSessao) throws SessaoIDException {
+		List<String> sons = new LinkedList<String>();
+		for (String user : sistema.getListaSeguindo(idSessao)) {
+			sons.addAll(sistema.getPerfilMusical(idSessao, user));
+		}
+		return convertCollection(sons); //TODO
 	}
 
 	public String getListaDeSeguidores(String idSessao) throws Exception {
@@ -116,7 +120,7 @@ public class FacadeEasyAccept {
 		return str;
 	}
 	
-	private String convertCollection(Collection c) {
+	private String convertCollection(Collection<?> c) {
 		String str = "{";
 		Iterator<?>  it = c.iterator();
 		while (it.hasNext()) {
