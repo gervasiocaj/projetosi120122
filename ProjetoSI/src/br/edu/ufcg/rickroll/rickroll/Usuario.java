@@ -2,6 +2,7 @@ package br.edu.ufcg.rickroll.rickroll;
 
 import br.edu.ufcg.rickroll.exceptions.*;
 import br.edu.ufcg.rickroll.rickroll.RickRoll.Regras;
+
 import java.util.*;
 
 public class Usuario {
