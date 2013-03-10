@@ -10,6 +10,8 @@ import java.sql.Date;
 import br.edu.ufcg.rickroll.exceptions.*;
 
 public class Musica implements Comparable<Musica> {
+	
+	
 
 	private String IDCriador;
 	private String link;
@@ -163,7 +165,8 @@ public class Musica implements Comparable<Musica> {
 
 	@Override
 	public int compareTo(Musica musica2) {
-		return musica2.getDataDeCriacao().compareTo(getDataDeCriacao());
+		return getDataDeCriacao().compareTo(musica2.getDataDeCriacao());
+//		return musica2.getDataDeCriacao().compareTo(getDataDeCriacao());
 	}
 
 	public String getID() {

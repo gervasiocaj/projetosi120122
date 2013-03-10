@@ -1,8 +1,11 @@
 package br.edu.ufcg.rickroll.rickroll;
 
 import br.edu.ufcg.rickroll.exceptions.*;
+import br.edu.ufcg.rickroll.rickroll.RickRoll.Regras;
 
 import java.util.*;
+
+import com.sun.org.apache.bcel.internal.generic.LNEG;
 
 public class Usuario {
 
@@ -10,6 +13,7 @@ public class Usuario {
 	private String senha;
 	private String nome;
 	private String email;
+	private String regraDeComposicao;
 	private final String id;
 
 	private List<String> perfilMusical;
@@ -17,6 +21,7 @@ public class Usuario {
 	private Set<String> listaFollowing;
 	private List<String> listaFavorite;
 	private List<Favorito> feedExtra;
+	private List<String> mainFeed;
 	
 	/**
 	 * Cria um novo usuario.
@@ -54,11 +59,13 @@ public class Usuario {
 			throw new AtributoException("Email inválido");
 		
 		this.id = login + ";" + UUID.randomUUID();
+		regraDeComposicao = Regras.REGRA1.getRegra();
 		perfilMusical = new LinkedList<String>();
 		listaMyFollowers = new TreeSet<String>();
 		listaFollowing = new LinkedHashSet<String>();
 		listaFavorite = new LinkedList<String>();
 		feedExtra = new LinkedList<Favorito>();
+		mainFeed = new LinkedList<String>();
 	}
 
 	/**
@@ -211,7 +218,6 @@ public class Usuario {
 	 * 		Id do post a ser favoritado
 	 */
 	
-	
 	public void addFavorito(String idMusica){
 		listaFavorite.add(0, idMusica);
 	}
@@ -247,8 +253,51 @@ public class Usuario {
 		return feedExtra;
 	}
 
+	/** Vefirica se possui o seguido
+	 * 
+	 * @param amigoID
+	 * 		Id do amigo
+	 * @return
+	 * 		true caso possua o amigo, false caso contrario
+	 */
+	
 	public boolean hasAmigo( String amigoID ){
 		return listaFollowing.contains(amigoID);
+	}
+	
+	/** Adiciona um post ao main feed
+	 * 
+	 * @param idMusica
+	 * 		id do post
+	 */
+	
+	public void addMainFeed(String idMusica){
+		mainFeed.add(0, idMusica); // essa é a mainFeed default
+	}
+	
+	
+	/** Muda a regra de composicao da main feed
+	 * 
+	 * @param regra
+	 * 		nova regra
+	 */
+	
+	public void setRegraDeComposicao(String regra){
+		regraDeComposicao = regra;
+	}
+	
+	public String getRegraDeComposicao(){
+		return regraDeComposicao;
+	}
+	
+	/** Retorna a main feed do usuario
+	 * 
+	 * @return
+	 * 		a main feed
+	 */
+	
+	public List<String> getMainFeed(){
+		return mainFeed;
 	}
 
 }

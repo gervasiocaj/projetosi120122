@@ -112,6 +112,29 @@ public class FacadeEasyAccept {
 			feed.add(m.getIdMusica());
 		return convertCollection(feed);
 	}
+	
+	public String getFirstCompositionRule(){
+		return sistema.getPrimeiraRegraDeComposicao();
+	}
+	
+	public String getSecondCompositionRule(){
+		return sistema.getSegundaRegraDeComposicao();
+	}
+	
+	public String getThirdCompositionRule(){
+		return sistema.getTerceiraRegraDeComposicao();
+	}
+	
+	public String getMainFeed(String idSessao) throws SessaoIDException{
+		List<String> feed = new LinkedList<String>();
+		for (String m : sistema.getMainFeed(idSessao))
+			feed.add(m);
+		return convertCollection(feed);
+	}
+	
+	public void setMainFeedRule(String idSessao ,String rule) throws SessaoIDException, RegraDeComposicaoException{
+		sistema.setRegraDeComposicao(idSessao, rule);
+	}
 
 	private String convertCollection(Collection<?> c) {
 		String str = "{";
@@ -125,5 +148,6 @@ public class FacadeEasyAccept {
 		str += "}";
 		return str;
 	}
+	
 
 }

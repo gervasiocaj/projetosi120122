@@ -6,6 +6,23 @@ import java.util.*;
 import br.edu.ufcg.rickroll.exceptions.*;
 
 public class RickRoll {
+	
+	protected enum Regras{
+		
+		REGRA1("PRIMEIRO OS SONS POSTADOS MAIS RECENTEMENTE PELAS FONTES DE SONS"),
+		REGRA2("PRIMEIRO OS SONS COM MAIS FAVORITOS"),
+		REGRA3("PRIMEIRO SONS DE FONTES DAS QUAIS FAVORITEI SONS NO PASSADO");
+		
+		private String regra;
+		
+		Regras(String regra){
+			this.regra = regra;
+			}
+		
+		public String getRegra(){
+			return this.regra;
+			}
+		}
 
 	Map<String, String> usuarioLogados;
 
@@ -116,6 +133,12 @@ public class RickRoll {
 		Musica musica = new Musica(meuID, link, dataCriacao);
 		storage.addMusic(musica);
 		storage.getUser(meuID).addMusica(musica.getID());
+		
+		// Aqui ele adiciona o post criado na main feed dos seguidos.
+		
+		for (String seguidor : storage.getUser(meuID).getListaMeusSeguidores()) {
+			storage.getUser(seguidor).addMainFeed(musica.getID());
+		}
 		return musica.getID();
 	}
 
@@ -274,6 +297,75 @@ public class RickRoll {
 		Usuario user = storage.getUser(isAutenticado(idSessao));
 		return user.getFeedExtra();
 	}
+	
+	// Nao sei se vai servir pra alguma coisa, mas ta ae, qualquer coisa deleta
+	public String getRegraDeComposicao(String sessaoID) throws SessaoIDException{
+		String meuID = isAutenticado(sessaoID);
+		return storage.getUser(meuID).getRegraDeComposicao();
+	}
+	
+	/** Muda a regra de composicao da feed principal
+	 * 
+	 * @param sessaoID
+	 * 		id do usuario que ira alterar a regra
+	 * @param regra
+	 * 		a regra de composicao
+	 * @throws SessaoIDException
+	 * @throws RegraDeComposicaoException 
+	 */
+	public void setRegraDeComposicao(String sessaoID, String regra) throws SessaoIDException, RegraDeComposicaoException{
+		String meuID = isAutenticado(sessaoID);
+		if(regra == null || regra.equals("")) 
+			throw new RegraDeComposicaoException("Regra de composição inválida");
+		
+		else if(!regra.equals(Regras.REGRA1.getRegra()) && !regra.equals(Regras.REGRA2.getRegra()) 
+				&& !regra.equals(Regras.REGRA3.getRegra())) 
+				throw new RegraDeComposicaoException("Regra de composição inexistente");
+		
+		storage.getUser(meuID).setRegraDeComposicao(regra);
+	}
+	
+	/** Retorna a primeira forma de composição (os sons postados mais recentemente pelas fontes de som)
+	 * 
+	 * @return
+	 * 		a regra
+	 */
+	public String getPrimeiraRegraDeComposicao(){
+		return Regras.REGRA1.getRegra();
+	}
+	
+	/** Retorna a segunda forma de composição (os sons com mais favoritos)
+	 * 
+	 * @return
+	 * 		a regra
+	 */
+	public String getSegundaRegraDeComposicao(){
+		return Regras.REGRA2.getRegra();
+	}
+	
+	/** Retorna a terceira forma de composição (os sons das fontes do qual favoritei no passado)
+	 * 
+	 * @return
+	 * 		a regra
+	 */
+	public String getTerceiraRegraDeComposicao(){
+		return Regras.REGRA3.getRegra();
+	}
+	
+	
+	/** Retorna o feed principal do usuario
+	 * 
+	 * @param sessaoID
+	 * 		ID da sessao do usuario
+	 * @return
+	 * 		
+	 * @throws SessaoIDException
+	 */
+	
+	public List<String> getMainFeed(String sessaoID) throws SessaoIDException{
+		String meuID = isAutenticado(sessaoID);
+		return storage.getUser(meuID).getMainFeed();
+	}
 
 	/**
 	 * TODO: colocar todos os metodos para serem autenticados, ou seja, passar o
@@ -306,5 +398,7 @@ public class RickRoll {
 		return storage.getUser(meuID).hasAmigo(amigoID);
 
 	}
+	
+	
 
 }
