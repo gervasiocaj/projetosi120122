@@ -86,9 +86,6 @@ public class RickRoll {
 		if (userID == null)
 			throw new UsuarioNaoCadastradoException("Usuário inexistente");
 
-		// TODO: sessaoID vai ser oq?
-		// TODO: falta tratar exception
-
 		if (!storage.getUser(userID).getSenha().equals(senha))
 			throw new LoginException("Login inválido");
 
@@ -173,6 +170,7 @@ public class RickRoll {
 
 		storage.getUser(meuID).seguir(userIDSeguido);
 		storage.getUser(userIDSeguido).addMeuSeguidor(meuID);
+		storage.getUser(meuID).addOrdemSeguidor(userIDSeguido);
 	}
 
 	/*
@@ -255,12 +253,17 @@ public class RickRoll {
 
 	public void addFavorito(String sessaoID, String idMusica)
 			throws SessaoIDException, SomInexistenteException {
-		if (idMusica == null || idMusica.equals("") || storage.getMusica(idMusica) == null)
+		if (idMusica == null || idMusica.equals(""))
 			throw new SomInexistenteException("Som inválido");
+		
+		else if( storage.getMusica(idMusica) == null) throw new SomInexistenteException("Som inexistente");
 
 		String meuID = isAutenticado(sessaoID);
 		storage.getUser(meuID).addFavorito(idMusica);
+		
 		storage.getMusica(idMusica).addFavoritado(meuID);
+		
+		storage.getUser(meuID).addNumeroDeFavoritos(storage.getMusica(idMusica).getIDCriador());
 
 		// Aqui ele adiciona o post favoritado a todos os que o seguem.
 
@@ -296,12 +299,6 @@ public class RickRoll {
 	public List<Favorito> getFeedExtra(String idSessao) throws SessaoIDException {
 		Usuario user = storage.getUser(isAutenticado(idSessao));
 		return user.getFeedExtra();
-	}
-	
-	// Nao sei se vai servir pra alguma coisa, mas ta ae, qualquer coisa deleta
-	public String getRegraDeComposicao(String sessaoID) throws SessaoIDException{
-		String meuID = isAutenticado(sessaoID);
-		return storage.getUser(meuID).getRegraDeComposicao();
 	}
 	
 	/** Muda a regra de composicao da feed principal
@@ -364,19 +361,32 @@ public class RickRoll {
 	
 	public List<String> getMainFeed(String sessaoID) throws SessaoIDException{
 		String meuID = isAutenticado(sessaoID);
-		return storage.getUser(meuID).getMainFeed();
+		if(storage.getUser(meuID).getRegraDeComposicao().equals(Regras.REGRA2.getRegra())){
+			// Cria o comparator
+			Comparator<String> ordenador = new OrdenadorRegraFavoritado(storage);
+			// Cria nova lista
+			List<String> newList =  new LinkedList<String>();
+			// Clona lista mainFeed
+			newList.addAll( storage.getUser(meuID).getMainFeed());
+			// Da um sort com o comparator da regra 2
+			Collections.sort(newList, ordenador);
+			
+			return newList;
+			
+		} else if (storage.getUser(meuID).getRegraDeComposicao().equals(Regras.REGRA3.getRegra())){
+			// Cria o comparator
+			Comparator<String> ordenador = new OrdenadorRegraMaisFavoritos(storage, meuID);
+			// Cria nova lista
+			List<String> newList =  new LinkedList<String>();
+			// Clona lista mainFeed
+			newList.addAll( storage.getUser(meuID).getMainFeed());
+			// Da um sort com o comparator da regra 3
+			Collections.sort(newList, ordenador);
+						
+			return newList;
+			
+		} return storage.getUser(meuID).getMainFeed();
 	}
-
-	/**
-	 * TODO: colocar todos os metodos para serem autenticados, ou seja, passar o
-	 * sessaoID como parametro para verificar se existe um usuario com essa
-	 * sessaoID logado para poder realizar os metodos!
-	 * 
-	 * TODO: realizar testes nao funcionais. Verificar se o sistema nao faz
-	 * aquilo que nao eh para fazer.
-	 * 
-	 * TODO:
-	 */
 
 	private String isAutenticado(String sessaoID) throws SessaoIDException {
 
@@ -390,6 +400,7 @@ public class RickRoll {
 		return retorno;
 	}
 
+	@SuppressWarnings("unused")
 	private boolean hasPermicao(String sessaoID, String amigoID)
 			throws SessaoIDException {
 

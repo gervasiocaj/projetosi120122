@@ -19,6 +19,9 @@ public class Usuario {
 	private List<String> listaFavorite;
 	private List<Favorito> feedExtra;
 	private List<String> mainFeed;
+	private Map<String, Integer> ordemSeguidor;
+	private Map<String, Integer> numeroDeFavoritos;
+	private int ordem;
 	
 	/**
 	 * Cria um novo usuario.
@@ -63,6 +66,9 @@ public class Usuario {
 		listaFavorite = new LinkedList<String>();
 		feedExtra = new LinkedList<Favorito>();
 		mainFeed = new LinkedList<String>();
+		numeroDeFavoritos = new HashMap<String, Integer>();
+		ordemSeguidor = new HashMap<String, Integer>();
+		ordem = 1;
 	}
 
 	/**
@@ -283,6 +289,12 @@ public class Usuario {
 		regraDeComposicao = regra;
 	}
 	
+	/** Pega a regra de composicao corrente
+	 * 
+	 * @return
+	 * 		A regra
+	 */
+	
 	public String getRegraDeComposicao(){
 		return regraDeComposicao;
 	}
@@ -296,5 +308,42 @@ public class Usuario {
 	public List<String> getMainFeed(){
 		return mainFeed;
 	}
+	
+	/** Adiciona um novo favorito para um usuario
+	 * 
+	 * @param idUser
+	 * 		Id do usuario a adicionar um favorito
+	 */
+	public void addNumeroDeFavoritos(String idUser){
+		if(!numeroDeFavoritos.containsKey(idUser)) numeroDeFavoritos.put(idUser, 1);
+		else numeroDeFavoritos.put(idUser, numeroDeFavoritos.get(idUser) + 1);
+	}
+	
+	/** Retorna o numero de vezes que um post do usuario foi favoritado
+	 * 
+	 * @param idUser
+	 * 		Id do usuario que se deseja o numero de favoritos
+	 * @return
+	 * 		O numero de favoritos
+	 */
+	public Integer getNumeroDeFavoritos(String idUser){
+		return numeroDeFavoritos.get(idUser);
+	}
+	
+	/** Adiciona o ordem em que o usuario seguio outro
+	 * 
+	 * @param idUser
+	 * 		o usuario a ser seguido
+	 */
+	
+	public void addOrdemSeguidor(String idUser){
+		ordemSeguidor.put(idUser, ordem);
+		ordem++;
+	}
+	
+	public Integer getOrdemSeguidor(String idUser){
+		return ordemSeguidor.get(idUser);
+	}
+
 
 }

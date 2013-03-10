@@ -187,5 +187,14 @@ public class Musica implements Comparable<Musica> {
 	public void addFavoritado(String idSessao) {
 		favoritaram.add(idSessao);
 	}
+	
+	/** Retorna o numero de usuario que favoritaram a musica
+	 * 
+	 * @return
+	 * 		numero de favoritos
+	 */
+	public int getNumeroFavoritos(){
+		return favoritaram.size();
+	}
 
 }
