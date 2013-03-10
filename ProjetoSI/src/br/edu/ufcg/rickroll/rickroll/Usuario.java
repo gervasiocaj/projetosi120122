@@ -2,10 +2,7 @@ package br.edu.ufcg.rickroll.rickroll;
 
 import br.edu.ufcg.rickroll.exceptions.*;
 import br.edu.ufcg.rickroll.rickroll.RickRoll.Regras;
-
 import java.util.*;
-
-import com.sun.org.apache.bcel.internal.generic.LNEG;
 
 public class Usuario {
 

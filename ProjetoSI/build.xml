@@ -27,6 +27,7 @@
 		<mkdir dir="build/classes" />
 		<mkdir dir="build/jar" />
 		<mkdir dir="build/war" />
+		<mkdir dir="build/doc" />
 		<javac srcdir="src" destdir="build/classes" encoding="UTF8">
 			<classpath refid="libs" />
 		</javac>
@@ -48,18 +49,16 @@
 	</target>
 
 	<target name="doc">
-		<javadoc></javadoc> <!-- criar javadoc -->
+		<javadoc sourcepath="src" destdir="build/doc">
+			<classpath refid="libs" />
+		</javadoc>
 	</target>
 
 	<target name="jar" depends="compila">
 		<mkdir dir="build/jar" />
-		<jar destfile="build/jar/ProjetoSI.jar" basedir="build/classes">
-			<manifest>
-				<attribute name="Main-Class" value="a.Definir" />
-			</manifest>
-		</jar>
+		<jar destfile="build/jar/ProjetoSI.jar" basedir="build/classes" />
 	</target>
-	
+
 	<target name="war" depends="compila">
 		<mkdir dir="build/war" />
 		<war destfile="build/jar/ProjetoSI.war" webxml="WebContent/WEB-INF/web.xml">

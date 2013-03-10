@@ -2,11 +2,12 @@ package br.edu.ufcg.rickroll.rickroll;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
-import java.sql.Date;
 import br.edu.ufcg.rickroll.exceptions.*;
 
 public class Musica implements Comparable<Musica> {
@@ -27,9 +28,12 @@ public class Musica implements Comparable<Musica> {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		GregorianCalendar cal = new GregorianCalendar();
+		Date temp;
 		try {
 			sdf.setLenient(false);
-			cal.setTime(sdf.parse(dataDeCriacao));
+			temp = sdf.parse(dataDeCriacao);
+			cal.setTime(new Date());
+			cal.set(temp.getYear()+1900, temp.getMonth(), temp.getDate());
 		} catch (ParseException e) {
 			throw new DataInvalidaException("Data de Criação inválida");
 		}
