@@ -410,8 +410,10 @@ public class RickRoll {
 
 	}
 	
-	public String getUserID(String sessaoID) throws SessaoIDException {
-		Usuario u = storage.getUser(isAutenticado(sessaoID));
+	public String getUserLogin(String userID) {
+		Usuario u = storage.getUser(userID);
+		if (u == null)
+			return "None";
 		return u.getLogin();
 	}
 	
