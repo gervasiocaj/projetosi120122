@@ -1,6 +1,7 @@
 package br.edu.ufcg.rickroll.rickroll;
 
 import br.edu.ufcg.rickroll.exceptions.*;
+import br.edu.ufcg.rickroll.rickroll.RickRoll.Regras;
 
 import java.util.*;
 
@@ -10,6 +11,7 @@ public class Usuario {
 	private String senha;
 	private String nome;
 	private String email;
+	private String regraDeComposicao;
 	private final String id;
 
 	private List<String> perfilMusical;
@@ -17,6 +19,10 @@ public class Usuario {
 	private Set<String> listaFollowing;
 	private List<String> listaFavorite;
 	private List<Favorito> feedExtra;
+	private List<String> mainFeed;
+	private Map<String, Integer> ordemSeguidor;
+	private Map<String, Integer> numeroDeFavoritos;
+	private int ordem;
 	
 	/**
 	 * Cria um novo usuario.
@@ -54,11 +60,16 @@ public class Usuario {
 			throw new AtributoException("Email inválido");
 		
 		this.id = login + ";" + UUID.randomUUID();
+		regraDeComposicao = Regras.REGRA1.getRegra();
 		perfilMusical = new LinkedList<String>();
 		listaMyFollowers = new TreeSet<String>();
 		listaFollowing = new LinkedHashSet<String>();
 		listaFavorite = new LinkedList<String>();
 		feedExtra = new LinkedList<Favorito>();
+		mainFeed = new LinkedList<String>();
+		numeroDeFavoritos = new HashMap<String, Integer>();
+		ordemSeguidor = new HashMap<String, Integer>();
+		ordem = 1;
 	}
 
 	/**
@@ -211,7 +222,6 @@ public class Usuario {
 	 * 		Id do post a ser favoritado
 	 */
 	
-	
 	public void addFavorito(String idMusica){
 		listaFavorite.add(0, idMusica);
 	}
@@ -247,8 +257,94 @@ public class Usuario {
 		return feedExtra;
 	}
 
+	/** Vefirica se possui o seguido
+	 * 
+	 * @param amigoID
+	 * 		Id do amigo
+	 * @return
+	 * 		true caso possua o amigo, false caso contrario
+	 */
+	
 	public boolean hasAmigo( String amigoID ){
 		return listaFollowing.contains(amigoID);
 	}
+	
+	/** Adiciona um post ao main feed
+	 * 
+	 * @param idMusica
+	 * 		id do post
+	 */
+	
+	public void addMainFeed(String idMusica){
+		mainFeed.add(0, idMusica); // essa é a mainFeed default
+	}
+	
+	
+	/** Muda a regra de composicao da main feed
+	 * 
+	 * @param regra
+	 * 		nova regra
+	 */
+	
+	public void setRegraDeComposicao(String regra){
+		regraDeComposicao = regra;
+	}
+	
+	/** Pega a regra de composicao corrente
+	 * 
+	 * @return
+	 * 		A regra
+	 */
+	
+	public String getRegraDeComposicao(){
+		return regraDeComposicao;
+	}
+	
+	/** Retorna a main feed do usuario
+	 * 
+	 * @return
+	 * 		a main feed
+	 */
+	
+	public List<String> getMainFeed(){
+		return mainFeed;
+	}
+	
+	/** Adiciona um novo favorito para um usuario
+	 * 
+	 * @param idUser
+	 * 		Id do usuario a adicionar um favorito
+	 */
+	public void addNumeroDeFavoritos(String idUser){
+		if(!numeroDeFavoritos.containsKey(idUser)) numeroDeFavoritos.put(idUser, 1);
+		else numeroDeFavoritos.put(idUser, numeroDeFavoritos.get(idUser) + 1);
+	}
+	
+	/** Retorna o numero de vezes que um post do usuario foi favoritado
+	 * 
+	 * @param idUser
+	 * 		Id do usuario que se deseja o numero de favoritos
+	 * @return
+	 * 		O numero de favoritos
+	 */
+	public Integer getNumeroDeFavoritos(String idUser){
+		return numeroDeFavoritos.get(idUser);
+	}
+	
+	/** Adiciona o ordem em que o usuario seguio outro
+	 * 
+	 * @param idUser
+	 * 		o usuario a ser seguido
+	 */
+	
+	public void addOrdemSeguidor(String idUser){
+		ordemSeguidor.put(idUser, ordem);
+		ordem++;
+	}
+	
+	public Integer getOrdemSeguidor(String idUser){
+		return ordemSeguidor.get(idUser);
+	}
+
 
 }

@@ -1,14 +1,17 @@
 package br.edu.ufcg.rickroll.rickroll;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
-import java.sql.Date;
 import br.edu.ufcg.rickroll.exceptions.*;
 
 public class Musica implements Comparable<Musica> {
+	
+	
 
 	private String IDCriador;
 	private String link;
@@ -16,17 +19,29 @@ public class Musica implements Comparable<Musica> {
 	private final String id;
 	private List<String> favoritaram;
 
-	public Musica(String IDCriador, String link, GregorianCalendar dataDeCriacao)
+	public Musica(String IDCriador, String link, String dataDeCriacao)
 			throws LinkInvalidoException, DataInvalidaException {
 
-		if (dataDeCriacao.before(GregorianCalendar.getInstance()))
-			throw new DataInvalidaException("Data de Criação inválida");
 		if (!linkValido(link))
 			throw new LinkInvalidoException("Som inválido");
 
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		GregorianCalendar cal = new GregorianCalendar();
+		Date temp;
+		try {
+			sdf.setLenient(false);
+			temp = sdf.parse(dataDeCriacao);
+			cal.setTime(new Date());
+			cal.set(temp.getYear()+1900, temp.getMonth(), temp.getDate());
+		} catch (ParseException e) {
+			throw new DataInvalidaException("Data de Criação inválida");
+		}
+		if (GregorianCalendar.getInstance().getTimeInMillis() - cal.getTimeInMillis() > 60000)
+			throw new DataInvalidaException("Data de Criação inválida");
+
 		this.IDCriador = IDCriador;
 		this.link = link;
-		this.dataDeCriacao = dataDeCriacao;
+		this.dataDeCriacao = cal;
 		this.id = IDCriador + ";" + link + ";" + UUID.randomUUID();
 		favoritaram = new LinkedList<String>();
 		// this.dataDeCriacao = new GregorianCalendar();
@@ -77,10 +92,11 @@ public class Musica implements Comparable<Musica> {
 	public static boolean linkValido(String link) {
 		if (link == null || link.equals(""))
 			return false;
-		return (link.startsWith("http://") && link.length() > "http://"
-				.length())
-				|| (link.startsWith("https://") && link.length() > "https://"
-						.length());
+		String[] prefixes = { "http://", "https://", "ftp://", "www" };
+		for (String p : prefixes)
+			if (link.startsWith(p) && (link.length() > p.length()))
+				return true;
+		return false;
 	}
 
 	/**
@@ -152,21 +168,32 @@ public class Musica implements Comparable<Musica> {
 
 	@Override
 	public int compareTo(Musica musica2) {
-		return musica2.getDataDeCriacao().compareTo(getDataDeCriacao());
+		return getDataDeCriacao().compareTo(musica2.getDataDeCriacao());
+//		return musica2.getDataDeCriacao().compareTo(getDataDeCriacao());
 	}
 
 	public String getID() {
 		return id;
 	}
-	
-	/** Adicina usuarios que favoritaram a musica
+
+	/**
+	 * Adicina usuarios que favoritaram a musica
 	 * 
 	 * @param idSessao
-	 * 		Id do usuario que a favoritou
+	 *            Id do usuario que a favoritou
 	 */
-	
-	public void addFavoritado(String idSessao){
+
+	public void addFavoritado(String idSessao) {
 		favoritaram.add(idSessao);
+	}
+	
+	/** Retorna o numero de usuario que favoritaram a musica
+	 * 
+	 * @return
+	 * 		numero de favoritos
+	 */
+	public int getNumeroFavoritos(){
+		return favoritaram.size();
 	}
 
 }

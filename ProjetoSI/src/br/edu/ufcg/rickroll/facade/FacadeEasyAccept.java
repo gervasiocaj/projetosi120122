@@ -7,8 +7,6 @@ package br.edu.ufcg.rickroll.facade;
 import br.edu.ufcg.rickroll.rickroll.*;
 import br.edu.ufcg.rickroll.exceptions.*;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -34,7 +32,8 @@ public class FacadeEasyAccept {
 	}
 
 	public String getAtributoUsuario(String login, String atributo)
-			throws AtributoException, UsuarioNaoCadastradoException, LoginException {
+			throws AtributoException, UsuarioNaoCadastradoException,
+			LoginException {
 		if (!Verificador.verificaStringValida(login))
 			throw new LoginException("Login inválido");
 		return sistema.getAtributoUsuario(login, atributo);
@@ -43,35 +42,18 @@ public class FacadeEasyAccept {
 	public String getPerfilMusical(String idSessao)
 			throws UsuarioNaoCadastradoException, SessaoIDException {
 		List<String> musicas = sistema.getPerfilMusical(idSessao);
-		Iterator<String> it = musicas.iterator();
-		
-		String mus = "{";
-		while (it.hasNext()) {
-			mus += it.next();
-			if (it.hasNext())
-				mus += ",";
-		}
-		mus += "}";
-		return mus;
-
+		return convertCollection(musicas);
 	}
 
 	public String postarSom(String idSessao, String link, String dataCriacao)
-			throws SessaoIDException, LinkInvalidoException, DataInvalidaException {
-		
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		GregorianCalendar cal = new GregorianCalendar();
-		try {	
-			sdf.setLenient(false);
-			cal.setTime(sdf.parse(dataCriacao));
-		} catch (ParseException e) {
-			throw new DataInvalidaException("Data de Criação inválida");
-		}
-		return sistema.postarSom(idSessao, link, cal);
+			throws SessaoIDException, LinkInvalidoException,
+			DataInvalidaException {
+		return sistema.postarSom(idSessao, link, dataCriacao);
 	}
 
 	public String getAtributoSom(String idSom, String atributo)
-			throws UsuarioNaoCadastradoException, AtributoException, SomInexistenteException {
+			throws UsuarioNaoCadastradoException, AtributoException,
+			SomInexistenteException {
 		return sistema.getAtributoSom(idSom, atributo);
 	}
 
@@ -96,68 +78,76 @@ public class FacadeEasyAccept {
 		sistema.seguirUsuario(idSessao, login);
 	}
 
-	public String getFontesDeSons(String idSessao)
-			throws SessaoIDException {
-		String str = "{";
+	public String getFontesDeSons(String idSessao) throws SessaoIDException {
 		Set<String> fonteDeSons = sistema.getListaSeguindo(idSessao);
-		Iterator<String> it = fonteDeSons.iterator();
-		while(it.hasNext()){
-			str += it.next();
-			if(it.hasNext()){
-				str += ",";
-			}
-		}
-		str += "}";
-		return str;
-		
+		return convertCollection(fonteDeSons);
 	}
 
-	public String getListaDeSeguidores(String idSessao)
-			throws Exception {
-		String str = "{";
-		Set<String> seguidores = sistema.getListaDeSeguidores(idSessao);
-		Iterator<String> it = seguidores.iterator();
-		while(it.hasNext()){
-			str += it.next();
-			if(it.hasNext()){
-				str += ",";
-			}
+	public String getVisaoDosSons(String idSessao) throws SessaoIDException {
+		List<String> sons = new LinkedList<String>();
+		for (String user : sistema.getListaSeguindo(idSessao)) {
+			sons.addAll(sistema.getPerfilMusical(idSessao, user));
 		}
-		str += "}";
-		return str;
+		return convertCollection(sons); // TODO
 	}
-	
-	public void favoritarSom(String idSessao, String idSom) throws SessaoIDException{
+
+	public String getListaDeSeguidores(String idSessao) throws Exception {
+		Set<String> seguidores = sistema.getListaDeSeguidores(idSessao);
+		return convertCollection(seguidores);
+	}
+
+	public void favoritarSom(String idSessao, String idSom)
+			throws SessaoIDException, SomInexistenteException {
 		sistema.addFavorito(idSessao, idSom);
 	}
-	
-	public String getSonsFavoritos(String idSessao) throws SessaoIDException{
-		String str = "{";
+
+	public String getSonsFavoritos(String idSessao) throws SessaoIDException {
 		List<String> favoritos = sistema.getFavoritos(idSessao);
-		Iterator<String> it = favoritos.iterator();
-		while(it.hasNext()){
-			str += it.next();
-			if(it.hasNext()){
-				str += ",";
-			}
-		}
-		str += "}";
-		return str;
-	}
-	
-	public String getFeedExtra(String idSessao){
-		String str = "{";
-		List<Favorito> feed = sistema.getFeedExtra(idSessao);
-		Iterator<Favorito> it = feed.iterator();
-		while(it.hasNext()){
-			str += it.next().getIdMusica();
-			if(it.hasNext()){
-				str += ",";
-			}
-		}
-		str += "}";
-		return str;
+		return convertCollection(favoritos);
 	}
 
+	public String getFeedExtra(String idSessao) throws SessaoIDException {
+		List<String> feed = new LinkedList<String>();
+		for (Favorito m : sistema.getFeedExtra(idSessao))
+			feed.add(m.getIdMusica());
+		return convertCollection(feed);
+	}
+	
+	public String getFirstCompositionRule(){
+		return sistema.getPrimeiraRegraDeComposicao();
+	}
+	
+	public String getSecondCompositionRule(){
+		return sistema.getSegundaRegraDeComposicao();
+	}
+	
+	public String getThirdCompositionRule(){
+		return sistema.getTerceiraRegraDeComposicao();
+	}
+	
+	public String getMainFeed(String idSessao) throws SessaoIDException{
+		List<String> feed = new LinkedList<String>();
+		for (String m : sistema.getMainFeed(idSessao))
+			feed.add(m);
+		return convertCollection(feed);
+	}
+	
+	public void setMainFeedRule(String idSessao ,String rule) throws SessaoIDException, RegraDeComposicaoException{
+		sistema.setRegraDeComposicao(idSessao, rule);
+	}
+
+	private String convertCollection(Collection<?> c) {
+		String str = "{";
+		Iterator<?> it = c.iterator();
+		while (it.hasNext()) {
+			str += it.next().toString();
+			if (it.hasNext()) {
+				str += ",";
+			}
+		}
+		str += "}";
+		return str;
+	}
+	
 
 }
