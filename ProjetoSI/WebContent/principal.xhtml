@@ -45,9 +45,12 @@ and open the template in the editor.
                 <h:dataTable value="#{sessao.musicas}" var="mus" bgcolor="FFF500">
                     
                 <h:column >
+                    
                     <f:facet name="header"><h3>Musicas Recentes</h3></f:facet>
-    			#{mus}
-    		</h:column>
+                    <h:outputLabel value="#{sessao.nomePostador(mus)} postou: #{sessao.linkMusica(mus)}" />
+                    <h:commandButton value="favoritar" action="#{sessao.favoritarMusica(mus)}" />
+                    
+                </h:column>
                     
                 </h:dataTable>
                 
@@ -65,15 +68,85 @@ and open the template in the editor.
                 
                 
                 
+                
                 <tr>
+                    <td><h:commandButton value="Ordenar" action="#{sessao.mudarOrdenacao()}" /></td>
+                    <td><h:selectOneRadio value="#{sessao.ordenacao}">
+                            <f:selectItems value="#{sessao.choicesRadioButton}" var="it"
+                                           itemLabel="#{it}"
+                                           itemValue="#{it}"
+                                
+                                
+                            />
+                            
+                        </h:selectOneRadio></td>
+                    
+                    
                     <td><h:commandButton value="Mais Novas" disabled="#{!sessao.hasMusicasMaisNovas()}" id="musicasMaisNovas" action="#{sessao.pegaMusicasMaisNovas()}"/></td>
                     <td><h:commandButton value="Mais Antigas" disabled="#{!sessao.hasMusicasMaisAntigas()}" id="musicasMaisAntigas" action="#{sessao.pegaMusicasMaisAntigas()}"/></td>
+                    
+                    
                 </tr>
                 
                 
                 
+                
+                
+                <h:dataTable value="#{sessao.favoritos}" var="fav" bgcolor="00F500">
+                    
+                <h:column >
+                    <f:facet name="header"><h3>Meus Sons Favoritos: </h3></f:facet>
+                    <h:outputLabel value="#{sessao.nomePostador(fav)} postou: #{sessao.linkMusica(fav)}" />
+                    
+    		</h:column>
+                    
+                </h:dataTable>
+                
+                <tr>
+                    
+                    <td><h:commandButton value="Mais Novos" disabled="#{!sessao.hasFavoritosMaisNovos()}" id="favoritosMaisNovos" action="#{sessao.pegaFavoritosMaisNovos()}"/></td>
+                    <td><h:commandButton value="Mais Antigos" disabled="#{!sessao.hasFavoritosMaisAntigos()}" id="favoritosMaisAntigos" action="#{sessao.pegaFavoritosMaisAntigos()}"/></td>
+                    
+                    
+                </tr>
+                
+                
+                
+                
+                
+                <h:dataTable value="#{sessao.feedExtra}" var="feed" bgcolor="00F5AA">
+                    
+                <h:column >
+                    <f:facet name="header"><h3>Feed Extra: </h3></f:facet>
+                    <h:outputLabel value="#{sessao.nomePostador(feed)} postou:  #{sessao.linkMusica(feed)}" />
+                    
+    		</h:column>
+                    
+                </h:dataTable>
+                
+                <tr>
+                    
+                    <td><h:commandButton value="Mais Novas" disabled="#{!sessao.hasFeedMaisNovas()}" id="feedMaisNovas" action="#{sessao.pegaFeedMaisNovas()}"/></td>
+                    <td><h:commandButton value="Mais Antigas" disabled="#{!sessao.hasFeedMaisAntigas()}" id="feedMaisAntigas" action="#{sessao.pegaFeedMaisAntigas()}"/></td>
+                    
+                    
+                </tr>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
                 <tr >
-                    <td><h2>Amigos: </h2></td>
+                    <td><h2>Seguidores: </h2></td>
                 </tr>
                 
                 </table>
@@ -88,7 +161,7 @@ and open the template in the editor.
         <p:panel style="text-align:center">  
             <h:panelGrid columns="1" style="width:100%">  
                 
-                <h:outputText value="#{seguidor.name}" />  
+                <h:outputText value="#{sessao.nomeUsuario(seguidor)}" />  
   
    
             </h:panelGrid>  
@@ -96,7 +169,18 @@ and open the template in the editor.
   
     </p:dataGrid> 
                 
-                
+               
+            
+            
+            
+            <table>
+            
+            
+            
+            
+            
+            
+            
                 
             <table>
                 
@@ -111,6 +195,54 @@ and open the template in the editor.
             </table>
             
             
+                
+                
+                
+             <tr >
+                    <td><h2>Fonte de Sons: </h2></td>
+                </tr>
+                
+                </table>
+                
+                
+                
+                <p:dataGrid var="sigo" value="#{sessao.seguindo}" columns="3"  
+        rows="12" paginator="true"  
+        paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+        rowsPerPageTemplate="9,12,15">  
+  
+        <p:panel style="text-align:center">  
+            <h:panelGrid columns="1" style="width:100%">  
+                
+                <h:outputText value="#{sessao.nomeUsuario(sigo)}" /> 
+  
+   
+            </h:panelGrid>  
+        </p:panel>  
+  
+    </p:dataGrid> 
+               
+                
+                
+                
+            <table>
+                
+                
+
+                <tr>
+                    <td><h:commandButton disabled="#{!sessao.hasSeguindoMaisNovos()}" value="Mais Novos" id="seguindoMaisNovos" action="#{sessao.pegaSeguindoMaisNovos()}" /></td>
+                    <td><h:commandButton disabled="#{!sessao.hasSeguindoMaisVelhos()}" value="Mais Velhos" id="seguindoMaisVelhos" action="#{sessao.pegaSeguindoMaisAntigos()}" /></td>
+                </tr>
+                
+                
+            </table>
+                
+                
+                
+                
+                
+                
+                
         </h:form>
     </body>
 </html>
