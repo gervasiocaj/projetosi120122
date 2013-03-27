@@ -26,14 +26,8 @@ public final class CentralDeDados {
 	}
 	
 	protected void zerarSistema(){
-		Iterator it = listagemDeUsuarios.keySet().iterator();
-		while (it.hasNext()) {
-			listagemDeUsuarios.remove(it.next());			
-		}
-		it = listagemDeMusicas.keySet().iterator();
-		while (it.hasNext()) {
-			listagemDeMusicas.remove(it.next());			
-		}
+		listagemDeUsuarios = new HashMap<String, Usuario>();
+		listagemDeMusicas = new HashMap<String, Musica>();
 	}
 	
 	/**

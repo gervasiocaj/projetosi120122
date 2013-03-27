@@ -27,7 +27,6 @@
 		<mkdir dir="build/classes" />
 		<mkdir dir="build/jar" />
 		<mkdir dir="build/war" />
-		<mkdir dir="build/doc" />
 		<javac srcdir="src" destdir="build/classes" encoding="UTF8">
 			<classpath refid="libs" />
 		</javac>
@@ -37,28 +36,28 @@
 	<target name="testa" depends="jar">
 		<java classname="easyaccept.EasyAccept">
 			<arg
-				line="br.edu.ufcg.rickroll.facade.FacadeEasyAccept 
-				testesDeAceitacao_SI1\scripts\US01.txt 
-				testesDeAceitacao_SI1\scripts\US02.txt 
-				testesDeAceitacao_SI1\scripts\US03.txt 
-				testesDeAceitacao_SI1\scripts\US04.txt 
-				testesDeAceitacao_SI1\scripts\US05.txt" />
+				line="remake.fachada.FachadaEasyAccept
+				testesDeAceitacao_SI1\scripts\US01.txt
+				testesDeAceitacao_SI1\scripts\US02.txt
+				testesDeAceitacao_SI1\scripts\US03.txt" />
 			<classpath refid="bins" />
 			<classpath refid="libs" />
 		</java>
 	</target>
 
 	<target name="doc">
-		<javadoc sourcepath="src" destdir="build/doc">
-			<classpath refid="libs" />
-		</javadoc>
+		<javadoc></javadoc> <!-- criar javadoc -->
 	</target>
 
 	<target name="jar" depends="compila">
 		<mkdir dir="build/jar" />
-		<jar destfile="build/jar/ProjetoSI.jar" basedir="build/classes" />
+		<jar destfile="build/jar/ProjetoSI.jar" basedir="build/classes">
+			<manifest>
+				<attribute name="Main-Class" value="a.Definir" />
+			</manifest>
+		</jar>
 	</target>
-
+	
 	<target name="war" depends="compila">
 		<mkdir dir="build/war" />
 		<war destfile="build/jar/ProjetoSI.war" webxml="WebContent/WEB-INF/web.xml">

@@ -173,11 +173,13 @@ public class SistemaAPI {
 	 *            -> sessaoID do usuario logado
 	 * @throws SessaoIDException
 	 */
-	public void encerrarSessao(String sessaoID) throws SessaoIDException {
-		// TODO: fazer metodo da fachada equivalente a encerrar sessao com o
-		// login!
-		isAutenticado(sessaoID);
-		usuarioLogados.remove(sessaoID);
+	public void encerrarSessao(String login) throws SessaoIDException {
+		for (String u : usuarioLogados.keySet()) {
+			if (centralDeDados.getUser(usuarioLogados.get(u)).getLogin().equals(login)) {
+				usuarioLogados.remove(u);
+				break;
+			}
+		}
 	}
 
 	/**
@@ -260,6 +262,15 @@ public class SistemaAPI {
 
 		return amigo.getPerfilMusical();
 	}
+	
+	public List<String> getVisaoDosSons(String sessaoID) throws SessaoIDException{
+		List<String> sons = new LinkedList<String>();
+		String meuID = isAutenticado(sessaoID);
+		for (String seguido : centralDeDados.getUser(meuID).getSeguindo()) {
+			sons.addAll(centralDeDados.getUser(seguido).getPerfilMusical());
+		} Collections.sort(sons, new OrdenadorRegraDefaut());
+		return sons;
+	}
 
 	/**
 	 * Realiza a postagem de um som
@@ -282,7 +293,8 @@ public class SistemaAPI {
 
 		Calendar dataAtual = Calendar.getInstance();
 		Date data = dataAtual.getTime();
-		String dataCriacao = SimpleDateFormat("dd/MM/yyyy").format( data );
+		SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy");
+		String dataCriacao = formatador.format( data );
 		return postarSom(sessaoID, link, dataCriacao);
 	}
 
@@ -475,8 +487,12 @@ public class SistemaAPI {
 	public List<String> getMainFeed(String sessaoID) throws SessaoIDException {
 		String meuID = isAutenticado(sessaoID);
 		Usuario usuario = centralDeDados.getUser(meuID);
-
 		return usuario.getMainFeed();
+	}
+	
+	//TODO: mudar pacote de fachada para toranar esse metodo protected!
+	public void zerarSistema(){
+		centralDeDados.zerarSistema();
 	}
 
 }

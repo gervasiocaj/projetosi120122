@@ -1,12 +1,14 @@
 package remake.regras;
 
-import java.util.Comparator;
+import remake.sistema.CentralDeDados;
 
 public class OrdenadorRegraDefaut implements OrdenadorRegra<String> {
+	
+	CentralDeDados data = CentralDeDados.getInstance();
 
 	@Override
-	public int compare(String o1, String o2) {
-		return 0;
+	public int compare(String id1, String id2) {
+		return data.getMusica(id2).getDataDeCriacao().compareTo(data.getMusica(id1).getDataDeCriacao());
 	}
 
 }

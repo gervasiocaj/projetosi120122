@@ -26,6 +26,7 @@ public class FachadaEasyAccept {
 
 	public void zerarSistema() {
 		sistema = new SistemaAPI();
+		sistema.zerarSistema();
 	}
 
 	public void criarUsuario(String login, String senha, String nome,
@@ -51,7 +52,7 @@ public class FachadaEasyAccept {
 		if ( !Verificador.verificaStringValida(atributo) ) 
 			throw new AtributoException("Atributo inválido");
 		else if ( atributo.equals("nome") ) 
-			return usuario.getLogin();
+			return usuario.getNome();
 		else if ( atributo.equals("email") )
 			return usuario.getEmail();
 		else
@@ -115,12 +116,9 @@ public class FachadaEasyAccept {
 		return convertCollection(fonteDeSons);
 	}
 
-	public String getVisaoDosSons(String idSessao) throws SessaoIDException {
-		List<String> sons = new LinkedList<String>();
-		for (String user : sistema.getListaSeguindo(idSessao)) {
-			sons.addAll(sistema.getPerfilMusical(idSessao, user));
-		}
-		return convertCollection(sons); // TODO
+	public String getVisaoDosSons(String sessaoID) throws SessaoIDException {
+		List<String> sons = sistema.getVisaoDosSons(sessaoID);
+		return convertCollection(sons);
 	}
 
 	public String getListaDeSeguidores(String idSessao) throws Exception {

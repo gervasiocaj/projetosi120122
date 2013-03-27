@@ -1,5 +1,6 @@
 package remake.entidades;
 
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -14,6 +15,7 @@ import java.util.UUID;
 import remake.excecao.AtributoException;
 import remake.excecao.DataInvalidaException;
 import remake.excecao.LinkInvalidoException;
+import remake.excecao.LoginException;
 import remake.regras.*;
 import remake.sistema.Verificador;
 import br.edu.ufcg.rickroll.rickroll.Favorito;
@@ -24,7 +26,7 @@ public class Usuario {
 	private String senha;
 	private String nome;
 	private String email;
-	private OrdenadorRegra<String> regraDeComposicao;
+	private Comparator<String> regraDeComposicao;
 	private final String id;
 
 	private List<String> perfilMusical;
@@ -361,6 +363,13 @@ public class Usuario {
 	public Integer getOrdemSeguidor(String idUser){
 		return ordemSeguidor.get(idUser);
 	}
+
+	public String fazLogin( String senha ) throws LoginException{
+		if ( !senha.equals(getSenha()) ) 
+			throw new LoginException("Login inválido");
+		String sessaoID = getLogin() + Calendar.getInstance().hashCode();
+		return sessaoID;
+		}
 
 
 }
