@@ -3,6 +3,8 @@ package br.edu.ufcg.rickroll.rickroll;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import remake.util.Favorito;
+
 import br.edu.ufcg.rickroll.exceptions.*;
 
 public class RickRoll {

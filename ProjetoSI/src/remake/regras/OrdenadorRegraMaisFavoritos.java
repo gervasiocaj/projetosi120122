@@ -1,13 +1,16 @@
 package remake.regras;
 
-import java.util.Comparator;
-
 import remake.sistema.CentralDeDados;
 
 public class OrdenadorRegraMaisFavoritos implements OrdenadorRegra<String>{
 	
 	CentralDeDados data = CentralDeDados.getInstance();
 	String usuarioID;
+	private final String regra = "PRIMEIRO SONS DE FONTES DAS QUAIS FAVORITEI SONS NO PASSADO";
+	
+	public OrdenadorRegraMaisFavoritos() {
+		usuarioID = "default";
+	}
 	
 	public OrdenadorRegraMaisFavoritos(String usuarioID) {
 		this.usuarioID = usuarioID;
@@ -24,5 +27,10 @@ public class OrdenadorRegraMaisFavoritos implements OrdenadorRegra<String>{
 		return data.getUser(usuarioID).getNumeroDeFavoritos(data.getMusica(arg1).getIDCriador())
 				- data.getUser(usuarioID).getNumeroDeFavoritos(data.getMusica(arg0).getIDCriador());
 	}
+	
+	public String getRegra(){
+		return regra;
+	}
+
 
 }

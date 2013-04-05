@@ -3,26 +3,47 @@ package remake.sistema;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
+
 import java.util.Date;
-import java.util.GregorianCalendar;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import br.edu.ufcg.rickroll.rickroll.Favorito;
+
+
+import remake.excecao.RegraDeComposicaoException;
+
 
 import remake.entidades.Musica;
 import remake.entidades.Usuario;
 import remake.excecao.*;
 import remake.regras.*;
+import remake.util.Favorito;
 
 public class SistemaAPI {
 
 	CentralDeDados centralDeDados;
 	Map<String, String> usuarioLogados;
+	
+	private enum Regras{
+		
+		REGRA1("PRIMEIRO OS SONS POSTADOS MAIS RECENTEMENTE PELAS FONTES DE SONS"),
+		REGRA2("PRIMEIRO OS SONS COM MAIS FAVORITOS"),
+		REGRA3("PRIMEIRO SONS DE FONTES DAS QUAIS FAVORITEI SONS NO PASSADO");
+		
+		private String regra;
+		
+		Regras(String regra){
+			this.regra = regra;
+			}
+		
+		public String getRegra(){
+			return this.regra;
+			}
+		}
 
 	public SistemaAPI() {
 		usuarioLogados = new HashMap<String, String>();
@@ -268,7 +289,7 @@ public class SistemaAPI {
 		String meuID = isAutenticado(sessaoID);
 		for (String seguido : centralDeDados.getUser(meuID).getSeguindo()) {
 			sons.addAll(centralDeDados.getUser(seguido).getPerfilMusical());
-		} Collections.sort(sons, new OrdenadorRegraDefaut());
+		} Collections.sort(sons, new OrdenadorRegraTempo());
 		return sons;
 	}
 
@@ -408,16 +429,16 @@ public class SistemaAPI {
 			throw new SomInexistenteException("Som inexistente");
 
 		String meuID = isAutenticado(sessaoID);
-		Usuario usuario = getUsuarioByLogin(meuID);
-		usuario.addFavorito(musicaID);
-		// storage.getUser(meuID).addFavorito(idMusica);
+//		Usuario usuario = getUsuarioByLogin(meuID);
+//		usuario.addFavorito(musicaID);
+		centralDeDados.getUser(meuID).addFavorito(musicaID);
 
 		Musica musica = getMusica(musicaID);
 		musica.addFavoritado(meuID);
-		// storage.getMusica(musicaID).addFavoritado(meuID);
+		centralDeDados.getMusica(musicaID).addFavoritado(meuID);
 
-		usuario.addNumeroDeFavoritos(musica.getIDCriador());
-		// storage.getUser(meuID).addNumeroDeFavoritos(storage.getMusica(musicaID).getIDCriador());
+//		usuario.addNumeroDeFavoritos(musica.getIDCriador());
+		centralDeDados.getUser(meuID).addNumeroDeFavoritos(centralDeDados.getMusica(musicaID).getIDCriador());
 
 		// Aqui ele adiciona o post favoritado a todos os que o seguem.
 
@@ -467,11 +488,13 @@ public class SistemaAPI {
 	 * @throws SessaoIDException
 	 * @throws RegraDeComposicaoException
 	 */
-	public void setRegraDeComposicao(String sessaoID, OrdenadorRegra comparador)
+	public void setRegraDeComposicao(String sessaoID, OrdenadorRegra<String> comparador, String regra)
 			throws SessaoIDException, RegraDeComposicaoException {
-
+		
 		String meuID = isAutenticado(sessaoID);
+		verificaRegra(regra);
 		centralDeDados.getUser(meuID).setRegraDeComposicao(comparador);
+		
 	}
 
 	/**
@@ -493,6 +516,44 @@ public class SistemaAPI {
 	//TODO: mudar pacote de fachada para toranar esse metodo protected!
 	public void zerarSistema(){
 		centralDeDados.zerarSistema();
+	}
+	
+	/** Retorna a primeira forma de composição (os sons postados mais recentemente pelas fontes de som)
+	 * 
+	 * @return
+	 * 		a regra
+	 */
+	public String getPrimeiraRegraDeComposicao(){
+		return new OrdenadorRegraDefaut().getRegra();
+	}
+	
+	/** Retorna a segunda forma de composição (os sons com mais favoritos)
+	 * 
+	 * @return
+	 * 		a regra
+	 */
+	public String getSegundaRegraDeComposicao(){
+		return new OrdenadorRegraFavoritado().getRegra();
+	}
+	
+	/** Retorna a terceira forma de composição (os sons das fontes do qual favoritei no passado)
+	 * 
+	 * @return
+	 * 		a regra
+	 */
+	public String getTerceiraRegraDeComposicao(){
+		return new OrdenadorRegraMaisFavoritos().getRegra();
+	}
+	
+	private void verificaRegra(String regra) throws RegraDeComposicaoException {
+
+		if (regra == null || regra.equals(""))
+			throw new RegraDeComposicaoException("Regra de composição inválida");
+
+		if (!regra.equals(Regras.REGRA1.getRegra()) && !regra.equals(Regras.REGRA2.getRegra()) 
+				&& !regra.equals(Regras.REGRA3.getRegra())) 
+				throw new RegraDeComposicaoException("Regra de composição inexistente");
+
 	}
 
 }

@@ -1,4 +1,4 @@
-package br.edu.ufcg.rickroll.rickroll;
+package remake.util;
 
 public class Favorito {
 	

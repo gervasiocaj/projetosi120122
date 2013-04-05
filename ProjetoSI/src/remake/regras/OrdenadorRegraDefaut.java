@@ -5,10 +5,15 @@ import remake.sistema.CentralDeDados;
 public class OrdenadorRegraDefaut implements OrdenadorRegra<String> {
 	
 	CentralDeDados data = CentralDeDados.getInstance();
+	private final String regra = "PRIMEIRO OS SONS POSTADOS MAIS RECENTEMENTE PELAS FONTES DE SONS";
 
 	@Override
 	public int compare(String id1, String id2) {
-		return data.getMusica(id2).getDataDeCriacao().compareTo(data.getMusica(id1).getDataDeCriacao());
+		return 0;
+	}
+	
+	public String getRegra(){
+		return regra;
 	}
 
 }

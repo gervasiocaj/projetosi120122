@@ -13,11 +13,11 @@ import remake.regras.OrdenadorRegraDefaut;
 import remake.regras.OrdenadorRegraFavoritado;
 import remake.regras.OrdenadorRegraMaisFavoritos;
 import remake.sistema.SistemaAPI;
+import remake.util.Favorito;
 
 import remake.entidades.Musica;
 import remake.entidades.Usuario;
 import remake.excecao.*;
-import br.edu.ufcg.rickroll.rickroll.Favorito;
 import br.edu.ufcg.rickroll.rickroll.Verificador;
 
 public class FachadaEasyAccept {
@@ -145,15 +145,15 @@ public class FachadaEasyAccept {
 	}
 
 	public String getFirstCompositionRule() {
-		return "regraDefault";
+		return sistema.getPrimeiraRegraDeComposicao();
 	}
 
 	public String getSecondCompositionRule() {
-		return "regraFavoritado";
+		return sistema.getSegundaRegraDeComposicao();
 	}
 
 	public String getThirdCompositionRule() {
-		return "regraMaisFavoritado";
+		return sistema.getTerceiraRegraDeComposicao();
 	}
 
 	public String getMainFeed(String idSessao) throws SessaoIDException {
@@ -164,17 +164,19 @@ public class FachadaEasyAccept {
 	}
 
 	public void setMainFeedRule(String sessaoID, String rule)
-			throws SessaoIDException, RegraDeComposicaoException, LoginException, UsuarioNaoCadastradoException {
+			throws SessaoIDException, RegraDeComposicaoException, LoginException, UsuarioNaoCadastradoException{
 
 		String usuarioID = sistema.getUsuario(sessaoID).getID();
-		OrdenadorRegra<String> regra = new OrdenadorRegraDefaut();;
+		OrdenadorRegra<String> regra = new OrdenadorRegraDefaut();
 		
-		if ( rule.equals( getSecondCompositionRule() ) )
-			regra = new OrdenadorRegraFavoritado();
-		else if ( rule.equals( getThirdCompositionRule() ) )
-			regra = new OrdenadorRegraMaisFavoritos(usuarioID);
-			
-		sistema.setRegraDeComposicao(sessaoID, regra);
+		if(rule != null){
+			if ( rule.equals( getSecondCompositionRule() ) )
+				regra = new OrdenadorRegraFavoritado();
+			else if ( rule.equals( getThirdCompositionRule() ) )
+				regra = new OrdenadorRegraMaisFavoritos(usuarioID);
+		}
+		sistema.setRegraDeComposicao(sessaoID, regra, rule);
+
 	}
 
 	private String convertCollection(Collection<?> c) {

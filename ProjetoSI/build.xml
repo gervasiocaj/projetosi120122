@@ -39,7 +39,9 @@
 				line="remake.fachada.FachadaEasyAccept
 				testesDeAceitacao_SI1\scripts\US01.txt
 				testesDeAceitacao_SI1\scripts\US02.txt
-				testesDeAceitacao_SI1\scripts\US03.txt" />
+				testesDeAceitacao_SI1\scripts\US03.txt
+				testesDeAceitacao_SI1\scripts\US04.txt
+				testesDeAceitacao_SI1\scripts\US05.txt" />
 			<classpath refid="bins" />
 			<classpath refid="libs" />
 		</java>

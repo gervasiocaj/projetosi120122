@@ -5,6 +5,8 @@ import br.edu.ufcg.rickroll.rickroll.RickRoll.Regras;
 
 import java.util.*;
 
+import remake.util.Favorito;
+
 public class Usuario {
 
 	private String login;

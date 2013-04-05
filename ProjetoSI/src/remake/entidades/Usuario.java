@@ -18,7 +18,7 @@ import remake.excecao.LinkInvalidoException;
 import remake.excecao.LoginException;
 import remake.regras.*;
 import remake.sistema.Verificador;
-import br.edu.ufcg.rickroll.rickroll.Favorito;
+import remake.util.Favorito;
 
 public class Usuario {
 

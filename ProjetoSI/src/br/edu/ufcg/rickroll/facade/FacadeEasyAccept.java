@@ -9,6 +9,8 @@ import br.edu.ufcg.rickroll.exceptions.*;
 
 import java.util.*;
 
+import remake.util.Favorito;
+
 /**
  * 
  * @author Guilherme

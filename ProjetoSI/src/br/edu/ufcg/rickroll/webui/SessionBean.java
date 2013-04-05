@@ -4,7 +4,6 @@ import br.edu.ufcg.rickroll.exceptions.LoginException;
 import br.edu.ufcg.rickroll.exceptions.RegraDeComposicaoException;
 import br.edu.ufcg.rickroll.exceptions.SessaoIDException;
 import br.edu.ufcg.rickroll.exceptions.UsuarioNaoCadastradoException;
-import br.edu.ufcg.rickroll.rickroll.Favorito;
 import br.edu.ufcg.rickroll.rickroll.Musica;
 import br.edu.ufcg.rickroll.rickroll.Usuario;
 import java.io.BufferedOutputStream;
@@ -24,6 +23,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+
+import remake.util.Favorito;
 import sun.awt.shell.ShellFolder;
 
    // or import javax.enterprise.context.SessionScoped;
