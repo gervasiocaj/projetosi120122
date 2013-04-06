@@ -3,47 +3,40 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core">
-    <head>
-        <title>Registrar</title>
-    </head>
-    <body>
-        <h:form>
-            
-            <table>
-                <tr>
-                    <td>Name: </td>
-                    <td><h:inputText value="#{propriedades.name}" id="name"/></td>
-                    
-                </tr>
-                <tr>
-                    <td>Login: </td>
-                    <td><h:inputText value="#{propriedades.login}" id="login"/></td>
-                    
-                </tr>
-                <tr>
-                    <td>Password: </td>
-                    <td><h:inputSecret value="#{propriedades.password}" id="password"/></td>
-                    
-                </tr>
-                <tr>
-                    <td>Confirm Password: </td>
-                    <td><h:inputSecret value="#{propriedades.confirmPassword}" id="confirmPassword"/></td>
-                    
-                </tr>
-                <tr>
-                    <td>E-mail: </td>
-                    <td><h:inputText value="#{propriedades.email}" id="email"/></td>
-                    
-                </tr>
-                
-                
-            </table>
-            
-            <h:commandButton value="Registrar" action="#{classe.registrar()}" />
-            <h:commandButton value="Voltar" action="index"/>
-            
-            
-        </h:form>
-    </body>
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>Registrar</title>
+</h:head>
+<h:form>
+	<p:panel header="Register: ">
+		<h:panelGrid columns="2">
+
+			<h:outputText value="Name: " />
+			<p:inputText value="#{propriedades.name}" id="name" />
+
+			<h:outputText value="Login: " />
+			<p:inputText value="#{propriedades.login}" id="login" />
+
+			<h:outputLabel for="password" value="Password: " />
+			<p:password minLength="1" value="#{propriedades.password}"
+				id="password" />
+
+			<h:outputLabel for="confirmPassword" value="Confirm Password: " />
+			<p:password minLength="1" value="#{propriedades.confirmPassword}"
+				id="confirmPassword" />
+
+			<h:outputText value="E-mail: " />
+			<p:inputText value="#{propriedades.email}" id="email" />
+
+			<p:spacer height="12" />
+			<p:spacer height="12" />
+
+			<h:commandButton value="Registrar" action="#{classe.registrar()}" />
+			<h:commandButton value="Voltar" action="index" />
+
+		</h:panelGrid>
+	</p:panel>
+</h:form>
 </html>

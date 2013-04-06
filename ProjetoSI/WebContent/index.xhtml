@@ -3,38 +3,29 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core">
-   <h:head>
-      <title>Welcome</title>
-   </h:head>
-   <h:body>   
-      <h:form prependId="false">
-         <h3>Login: </h3>
-         <table >
-             
-             
-                    <tr >
-                        <td>Login:</td>
-                        <td><h:inputText value="#{propriedades.login}" id="login"/></td>
-                        
-                    </tr>
-                    <tr>
-                        <td>Password:</td>
-                        <td><h:inputSecret value="#{propriedades.password}" id="password"/></td>
-                    </tr>
-                    
-               
-             
-            
-            
-         </table>
-         <table >
-            <tr > 
-                <td ><h:commandButton value="Registrar" action="registro"></h:commandButton></td>
-                <td><h:commandButton value="Login" action="#{classe.logar()}"></h:commandButton></td>
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Welcome</title>
+</h:head>
+<h:form prependId="false">
+	<p:panel header="Login:">
+		<h:panelGrid columns="2">
 
-            </tr>
-         </table>
-      </h:form>
-   </h:body>
+			<h:outputText value="Login: " />
+			<p:inputText value="#{propriedades.login}" id="login" />
+
+			<h:outputText value="Password: " />
+			<p:password minLength="3" value="#{propriedades.password}"
+				id="password" />
+
+			<p:spacer height="12" />
+			<p:spacer height="12" />
+
+			<h:commandButton value="Registrar" action="registro" />
+			<h:commandButton value="Login" action="#{classe.logar()}" />
+
+		</h:panelGrid>
+	</p:panel>
+</h:form>
 </html>
