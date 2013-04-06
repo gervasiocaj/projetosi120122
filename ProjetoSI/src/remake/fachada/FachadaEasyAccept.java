@@ -18,6 +18,7 @@ import remake.util.Favorito;
 import remake.entidades.Musica;
 import remake.entidades.Usuario;
 import remake.excecao.*;
+import br.edu.ufcg.rickroll.exceptions.ListaPersonalizadaException;
 import br.edu.ufcg.rickroll.rickroll.Verificador;
 
 public class FachadaEasyAccept {
@@ -177,6 +178,19 @@ public class FachadaEasyAccept {
 		}
 		sistema.setRegraDeComposicao(sessaoID, regra, rule);
 
+	}
+	
+	public String criarLista(String idSessao, String nome) throws SessaoIDException, ListaPersonalizadaException{
+		sistema.criaLista(idSessao, nome);
+		return nome;
+	}
+	
+	public void adicionarUsuario(String idSessao, String idLista, String idUsuario) throws SessaoIDException, ListaPersonalizadaException{
+		sistema.adicionarUsuarioALista(idSessao, idLista, idUsuario);
+	}
+	
+	public String getSonsEmLista(String idSessao, String idLista) throws ListaPersonalizadaException, LoginException, UsuarioNaoCadastradoException{
+		return convertCollection(sistema.getUsuario(idSessao).getListasPersonalizadas(idLista));
 	}
 
 	private String convertCollection(Collection<?> c) {

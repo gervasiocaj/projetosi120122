@@ -12,6 +12,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 
+import br.edu.ufcg.rickroll.exceptions.ListaPersonalizadaException;
+
 import remake.excecao.AtributoException;
 import remake.excecao.DataInvalidaException;
 import remake.excecao.LinkInvalidoException;
@@ -38,6 +40,7 @@ public class Usuario {
 	private Map<String, Integer> ordemSeguidor;
 	private Map<String, Integer> numeroDeFavoritos;
 	private int ordem;
+	private Map<String, List<String>> listasPersonilizadas;
 	
 	/**
 	 * Cria um novo usuario.
@@ -85,6 +88,7 @@ public class Usuario {
 		numeroDeFavoritos = new HashMap<String, Integer>();
 		ordemSeguidor = new HashMap<String, Integer>();
 		ordem = 1;
+		listasPersonilizadas = new HashMap<String, List<String>>();
 	}
 
 	/**
@@ -369,7 +373,35 @@ public class Usuario {
 			throw new LoginException("Login inválido");
 		String sessaoID = getLogin() + Calendar.getInstance().hashCode();
 		return sessaoID;
+	}
+	
+	public void criarListaPersonalizada(String nomeDaLista) throws ListaPersonalizadaException{
+		if(!listasPersonilizadas.containsKey(nomeDaLista)){
+			listasPersonilizadas.put(nomeDaLista, new LinkedList<String>());
+		} else {
+			throw new ListaPersonalizadaException("Nome já escolhido");
 		}
+	}
+	
+	public void adicinarUsuarioALista(String nomeDaLista, String idUser) throws ListaPersonalizadaException{
+		if(listasPersonilizadas.containsKey(nomeDaLista)){
+			if(!listasPersonilizadas.get(nomeDaLista).contains(idUser)){
+				listasPersonilizadas.get(nomeDaLista).add(idUser);
+			} else {
+				if(listasPersonilizadas.get(nomeDaLista).contains(id)){
+					throw new ListaPersonalizadaException("Usuário não pode adicionar-se a própria lista");
+				} else throw new ListaPersonalizadaException("Usuário já existe nesta lista");
+			}
+		} else {
+			throw new ListaPersonalizadaException("Lista inexistente");
+		}
+	}
+	
+	public List<String> getListasPersonalizadas(String nomeLista) throws ListaPersonalizadaException{
+		if(!listasPersonilizadas.containsKey(nomeLista)) 
+			throw new ListaPersonalizadaException("Lista inexistente");
+		return listasPersonilizadas.get(nomeLista);
+	}
 
 
 }

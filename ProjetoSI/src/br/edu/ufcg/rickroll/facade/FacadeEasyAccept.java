@@ -137,6 +137,8 @@ public class FacadeEasyAccept {
 	public void setMainFeedRule(String idSessao ,String rule) throws SessaoIDException, RegraDeComposicaoException{
 		sistema.setRegraDeComposicao(idSessao, rule);
 	}
+	
+
 
 	private String convertCollection(Collection<?> c) {
 		String str = "{";

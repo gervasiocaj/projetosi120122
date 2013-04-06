@@ -12,9 +12,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import br.edu.ufcg.rickroll.exceptions.ListaPersonalizadaException;
+
 
 
 import remake.excecao.RegraDeComposicaoException;
+import remake.excecao.SessaoIDException;
 
 
 import remake.entidades.Musica;
@@ -246,7 +249,7 @@ public class SistemaAPI {
 		return centralDeDados.getUser(meuID).hasAmigo(amigoID);
 
 	}
-
+	
 	/**
 	 * Perfil musicao do usuario
 	 * 
@@ -554,6 +557,26 @@ public class SistemaAPI {
 				&& !regra.equals(Regras.REGRA3.getRegra())) 
 				throw new RegraDeComposicaoException("Regra de composição inexistente");
 
+	}
+	
+	public void criaLista(String sessaoID, String nomeLista) throws SessaoIDException, ListaPersonalizadaException{
+		String meuID = isAutenticado(sessaoID);
+		if (nomeLista == null || nomeLista.equals("")) throw new ListaPersonalizadaException("Nome inválida");
+		centralDeDados.getUser(meuID).criarListaPersonalizada(nomeLista);
+	}
+	
+	public void adicionarUsuarioALista(String sessaoID, String nomeLista, String userID) throws SessaoIDException, ListaPersonalizadaException{
+		String meuID = isAutenticado(sessaoID);
+		if(nomeLista == null || nomeLista.equals("")) throw new ListaPersonalizadaException("Lista inválida");
+		centralDeDados.getUser(meuID).adicinarUsuarioALista(nomeLista, userID);
+	}
+	
+	public List<String> getSonsEmLista(String sessaoID, String nomeLista) throws SessaoIDException, ListaPersonalizadaException{
+		String meuID = isAutenticado(sessaoID);
+		if(nomeLista == null || nomeLista.equals("")) throw new ListaPersonalizadaException("Lista inválida");
+		List<String> lista = centralDeDados.getUser(meuID).getListasPersonalizadas(nomeLista);
+		Collections.sort(lista, new OrdenadorRegraTempo());
+		return lista;
 	}
 
 }
