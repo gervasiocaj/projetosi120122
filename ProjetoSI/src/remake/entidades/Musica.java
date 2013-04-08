@@ -21,6 +21,7 @@ public class Musica implements Comparable<Musica> {
 	private final String id;
 	private List<String> favoritaram;
 
+	@SuppressWarnings("deprecation")
 	public Musica(String IDCriador, String link, String dataDeCriacao)
 			throws LinkInvalidoException, DataInvalidaException {
 

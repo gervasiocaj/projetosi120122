@@ -13,13 +13,12 @@ import remake.regras.OrdenadorRegraDefaut;
 import remake.regras.OrdenadorRegraFavoritado;
 import remake.regras.OrdenadorRegraMaisFavoritos;
 import remake.sistema.SistemaAPI;
+import remake.sistema.Verificador;
 import remake.util.Favorito;
 
 import remake.entidades.Musica;
 import remake.entidades.Usuario;
 import remake.excecao.*;
-import br.edu.ufcg.rickroll.exceptions.ListaPersonalizadaException;
-import br.edu.ufcg.rickroll.rickroll.Verificador;
 
 public class FachadaEasyAccept {
 

@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
 <h:head>
 	<title>Welcome</title>
 </h:head>
@@ -12,10 +12,10 @@
 	<p:panel header="Login:">
 		<h:panelGrid columns="2">
 
-			<h:outputText value="Login: " />
+			<p:outputLabel value="Login: " />
 			<p:inputText value="#{propriedades.login}" id="login" />
 
-			<h:outputText value="Password: " />
+			<p:outputLabel value="Password: " />
 			<p:password minLength="3" value="#{propriedades.password}"
 				id="password" />
 

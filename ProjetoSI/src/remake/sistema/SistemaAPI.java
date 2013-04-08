@@ -1,28 +1,10 @@
 package remake.sistema;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Collections;
-
-import java.util.Date;
-
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import br.edu.ufcg.rickroll.exceptions.ListaPersonalizadaException;
-
-
-
-import remake.excecao.RegraDeComposicaoException;
-import remake.excecao.SessaoIDException;
-
-
+import java.util.*;
+import remake.excecao.*;
 import remake.entidades.Musica;
 import remake.entidades.Usuario;
-import remake.excecao.*;
 import remake.regras.*;
 import remake.util.Favorito;
 

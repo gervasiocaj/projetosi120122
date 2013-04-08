@@ -11,13 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
-
-import br.edu.ufcg.rickroll.exceptions.ListaPersonalizadaException;
-
-import remake.excecao.AtributoException;
-import remake.excecao.DataInvalidaException;
-import remake.excecao.LinkInvalidoException;
-import remake.excecao.LoginException;
+import remake.excecao.*;
 import remake.regras.*;
 import remake.sistema.Verificador;
 import remake.util.Favorito;

@@ -13,13 +13,15 @@ import javax.faces.bean.SessionScoped;
 @SessionScoped
 public class ClasseBean implements Serializable {
 
+	private static final long serialVersionUID = 6322672411701456627L;
+
 	public ClasseBean() {
 		Conversador.tentaIniciarRepositorio();
 	}
 
 	public String registrar() {
 		try {
-			if (!PropriedadesBean.password().equals(
+			if (!PropriedadesBean.password.equals(
 					PropriedadesBean.confirmPassword())) {
 				return "";
 			}
