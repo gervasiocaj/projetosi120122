@@ -12,23 +12,24 @@ public class SistemaAPI {
 
 	CentralDeDados centralDeDados;
 	Map<String, String> usuarioLogados;
-	
-	private enum Regras{
-		
-		REGRA1("PRIMEIRO OS SONS POSTADOS MAIS RECENTEMENTE PELAS FONTES DE SONS"),
-		REGRA2("PRIMEIRO OS SONS COM MAIS FAVORITOS"),
-		REGRA3("PRIMEIRO SONS DE FONTES DAS QUAIS FAVORITEI SONS NO PASSADO");
-		
+
+	private enum Regras {
+
+		REGRA1(
+				"PRIMEIRO OS SONS POSTADOS MAIS RECENTEMENTE PELAS FONTES DE SONS"), REGRA2(
+				"PRIMEIRO OS SONS COM MAIS FAVORITOS"), REGRA3(
+				"PRIMEIRO SONS DE FONTES DAS QUAIS FAVORITEI SONS NO PASSADO");
+
 		private String regra;
-		
-		Regras(String regra){
+
+		Regras(String regra) {
 			this.regra = regra;
-			}
-		
-		public String getRegra(){
-			return this.regra;
-			}
 		}
+
+		public String getRegra() {
+			return this.regra;
+		}
+	}
 
 	public SistemaAPI() {
 		usuarioLogados = new HashMap<String, String>();
@@ -181,7 +182,8 @@ public class SistemaAPI {
 	 */
 	public void encerrarSessao(String login) throws SessaoIDException {
 		for (String u : usuarioLogados.keySet()) {
-			if (centralDeDados.getUser(usuarioLogados.get(u)).getLogin().equals(login)) {
+			if (centralDeDados.getUser(usuarioLogados.get(u)).getLogin()
+					.equals(login)) {
 				usuarioLogados.remove(u);
 				break;
 			}
@@ -197,8 +199,7 @@ public class SistemaAPI {
 	 * @throws SessaoIDException
 	 *             sessaoID é invalida
 	 */
-	private String isAutenticado(String sessaoID) throws SessaoIDException {
-
+	private String getUserID(String sessaoID) throws SessaoIDException {
 		if (sessaoID == null || sessaoID.equals(""))
 			throw new SessaoIDException("Sessão inválida");
 
@@ -223,15 +224,15 @@ public class SistemaAPI {
 	 * @throws SessaoIDException
 	 *             sessaoID invalido
 	 */
-	private boolean hasPermicao(String sessaoID, String amigoID)
+	private boolean hasPermissao(String sessaoID, String amigoID)
 			throws SessaoIDException {
 
-		String meuID = isAutenticado(sessaoID);
+		String meuID = getUserID(sessaoID);
 
 		return centralDeDados.getUser(meuID).hasAmigo(amigoID);
 
 	}
-	
+
 	/**
 	 * Perfil musicao do usuario
 	 * 
@@ -260,21 +261,23 @@ public class SistemaAPI {
 	public List<String> getPerfilMusical(String sessaoID, String userID)
 			throws SessaoIDException {
 
-		isAutenticado(sessaoID);
-		if (!hasPermicao(sessaoID, userID)) {
-			// TODO: codigo que laca exeçao
+		getUserID(sessaoID);
+		if (!hasPermissao(sessaoID, userID)) {
+			// TODO: codigo que lança exceçao
 		}
 		Usuario amigo = centralDeDados.getUser(userID);
 
 		return amigo.getPerfilMusical();
 	}
-	
-	public List<String> getVisaoDosSons(String sessaoID) throws SessaoIDException{
+
+	public List<String> getVisaoDosSons(String sessaoID)
+			throws SessaoIDException {
 		List<String> sons = new LinkedList<String>();
-		String meuID = isAutenticado(sessaoID);
+		String meuID = getUserID(sessaoID);
 		for (String seguido : centralDeDados.getUser(meuID).getSeguindo()) {
 			sons.addAll(centralDeDados.getUser(seguido).getPerfilMusical());
-		} Collections.sort(sons, new OrdenadorRegraTempo());
+		}
+		Collections.sort(sons, new OrdenadorRegraTempo());
 		return sons;
 	}
 
@@ -300,7 +303,7 @@ public class SistemaAPI {
 		Calendar dataAtual = Calendar.getInstance();
 		Date data = dataAtual.getTime();
 		SimpleDateFormat formatador = new SimpleDateFormat("dd/MM/yyyy");
-		String dataCriacao = formatador.format( data );
+		String dataCriacao = formatador.format(data);
 		return postarSom(sessaoID, link, dataCriacao);
 	}
 
@@ -325,18 +328,18 @@ public class SistemaAPI {
 			throws SessaoIDException, DataInvalidaException,
 			LinkInvalidoException {
 
-		String meuID = isAutenticado(sessaoID);
+		String meuID = getUserID(sessaoID);
+		Usuario usuarioAtual = centralDeDados.getUser(meuID);
 
 		Musica musica = new Musica(meuID, link, dataCriacao);
 		centralDeDados.addMusic(musica);
-		centralDeDados.getUser(meuID).addMusica(musica.getID());
+		usuarioAtual.addMusica(musica.getID());
 
 		// Aqui ele adiciona o post criado na main feed dos seguidos.
 
-		for (String seguidor : centralDeDados.getUser(meuID)
-				.getListaMeusSeguidores()) {
+		for (String seguidor : usuarioAtual.getListaMeusSeguidores())
 			centralDeDados.getUser(seguidor).addMainFeed(musica.getID());
-		}
+
 		return musica.getID();
 	}
 
@@ -352,7 +355,7 @@ public class SistemaAPI {
 	public Set<String> getListaSeguindo(String sessaoID)
 			throws SessaoIDException {
 
-		String meuID = isAutenticado(sessaoID);
+		String meuID = getUserID(sessaoID);
 		return centralDeDados.getUser(meuID).getSeguindo();
 	}
 
@@ -374,7 +377,7 @@ public class SistemaAPI {
 		if (loginFollowed == null || loginFollowed.equals(""))
 			throw new LoginException("Login inválido");
 
-		String meuID = isAutenticado(sessaoID);
+		String meuID = getUserID(sessaoID);
 		String userIDSeguido = centralDeDados.getUsuarioID(loginFollowed);
 
 		if (userIDSeguido == null)
@@ -399,7 +402,7 @@ public class SistemaAPI {
 	public Set<String> getListaDeSeguidores(String sessaoID)
 			throws SessaoIDException {
 
-		String meuID = isAutenticado(sessaoID);
+		String meuID = getUserID(sessaoID);
 		return centralDeDados.getUser(meuID).getListaMeusSeguidores();
 	}
 
@@ -413,22 +416,19 @@ public class SistemaAPI {
 		else if (centralDeDados.getMusica(musicaID) == null)
 			throw new SomInexistenteException("Som inexistente");
 
-		String meuID = isAutenticado(sessaoID);
-//		Usuario usuario = getUsuarioByLogin(meuID);
-//		usuario.addFavorito(musicaID);
-		centralDeDados.getUser(meuID).addFavorito(musicaID);
+		String meuID = getUserID(sessaoID);
 
-		Musica musica = getMusica(musicaID);
-		musica.addFavoritado(meuID);
-		centralDeDados.getMusica(musicaID).addFavoritado(meuID);
+		Usuario usuarioAtual = centralDeDados.getUser(meuID);
+		Musica musicaAtual = centralDeDados.getMusica(musicaID);
 
-//		usuario.addNumeroDeFavoritos(musica.getIDCriador());
-		centralDeDados.getUser(meuID).addNumeroDeFavoritos(centralDeDados.getMusica(musicaID).getIDCriador());
+		usuarioAtual.addFavorito(musicaID);
+		musicaAtual.addFavoritado(meuID);
+
+		usuarioAtual.addNumeroDeFavoritos(musicaAtual.getIDCriador());
 
 		// Aqui ele adiciona o post favoritado a todos os que o seguem.
 
-		for (String seguidor : centralDeDados.getUser(meuID)
-				.getListaMeusSeguidores()) {
+		for (String seguidor : usuarioAtual.getListaMeusSeguidores()) {
 			centralDeDados.getUser(seguidor).addFeedExtra(musicaID, meuID);
 		}
 	}
@@ -443,7 +443,7 @@ public class SistemaAPI {
 	 */
 	public List<String> getFavoritos(String sessaoID) throws SessaoIDException {
 
-		String meuID = isAutenticado(sessaoID);
+		String meuID = getUserID(sessaoID);
 		return centralDeDados.getUser(meuID).getFavoritos();
 	}
 
@@ -457,7 +457,7 @@ public class SistemaAPI {
 	 */
 	public List<Favorito> getFeedExtra(String idSessao)
 			throws SessaoIDException {
-		Usuario user = centralDeDados.getUser(isAutenticado(idSessao));
+		Usuario user = centralDeDados.getUser(getUserID(idSessao));
 		return user.getFeedExtra();
 	}
 
@@ -473,13 +473,14 @@ public class SistemaAPI {
 	 * @throws SessaoIDException
 	 * @throws RegraDeComposicaoException
 	 */
-	public void setRegraDeComposicao(String sessaoID, OrdenadorRegra<String> comparador, String regra)
+	public void setRegraDeComposicao(String sessaoID,
+			OrdenadorRegra<String> comparador, String regra)
 			throws SessaoIDException, RegraDeComposicaoException {
-		
-		String meuID = isAutenticado(sessaoID);
+
+		String meuID = getUserID(sessaoID);
 		verificaRegra(regra);
 		centralDeDados.getUser(meuID).setRegraDeComposicao(comparador);
-		
+
 	}
 
 	/**
@@ -493,71 +494,85 @@ public class SistemaAPI {
 	 */
 
 	public List<String> getMainFeed(String sessaoID) throws SessaoIDException {
-		String meuID = isAutenticado(sessaoID);
+		String meuID = getUserID(sessaoID);
 		Usuario usuario = centralDeDados.getUser(meuID);
 		return usuario.getMainFeed();
 	}
-	
-	//TODO: mudar pacote de fachada para toranar esse metodo protected!
-	public void zerarSistema(){
+
+	// TODO: mudar pacote de fachada para toranar esse metodo protected!
+	public void zerarSistema() {
 		centralDeDados.zerarSistema();
 	}
-	
-	/** Retorna a primeira forma de composição (os sons postados mais recentemente pelas fontes de som)
+
+	/**
+	 * Retorna a primeira forma de composição (os sons postados mais
+	 * recentemente pelas fontes de som)
 	 * 
-	 * @return
-	 * 		a regra
+	 * @return a regra
 	 */
-	public String getPrimeiraRegraDeComposicao(){
+	public String getPrimeiraRegraDeComposicao() {
 		return new OrdenadorRegraDefaut().getRegra();
 	}
-	
-	/** Retorna a segunda forma de composição (os sons com mais favoritos)
+
+	/**
+	 * Retorna a segunda forma de composição (os sons com mais favoritos)
 	 * 
-	 * @return
-	 * 		a regra
+	 * @return a regra
 	 */
-	public String getSegundaRegraDeComposicao(){
+	public String getSegundaRegraDeComposicao() {
 		return new OrdenadorRegraFavoritado().getRegra();
 	}
-	
-	/** Retorna a terceira forma de composição (os sons das fontes do qual favoritei no passado)
+
+	/**
+	 * Retorna a terceira forma de composição (os sons das fontes do qual
+	 * favoritei no passado)
 	 * 
-	 * @return
-	 * 		a regra
+	 * @return a regra
 	 */
-	public String getTerceiraRegraDeComposicao(){
+	public String getTerceiraRegraDeComposicao() {
 		return new OrdenadorRegraMaisFavoritos().getRegra();
 	}
-	
+
 	private void verificaRegra(String regra) throws RegraDeComposicaoException {
 
 		if (regra == null || regra.equals(""))
 			throw new RegraDeComposicaoException("Regra de composição inválida");
 
-		if (!regra.equals(Regras.REGRA1.getRegra()) && !regra.equals(Regras.REGRA2.getRegra()) 
-				&& !regra.equals(Regras.REGRA3.getRegra())) 
-				throw new RegraDeComposicaoException("Regra de composição inexistente");
+		if (!regra.equals(Regras.REGRA1.getRegra())
+				&& !regra.equals(Regras.REGRA2.getRegra())
+				&& !regra.equals(Regras.REGRA3.getRegra()))
+			throw new RegraDeComposicaoException(
+					"Regra de composição inexistente");
 
 	}
-	
-	public void criaLista(String sessaoID, String nomeLista) throws SessaoIDException, ListaPersonalizadaException{
-		String meuID = isAutenticado(sessaoID);
-		if (nomeLista == null || nomeLista.equals("")) throw new ListaPersonalizadaException("Nome inválida");
+
+	public void criaLista(String sessaoID, String nomeLista)
+			throws SessaoIDException, ListaPersonalizadaException {
+		String meuID = getUserID(sessaoID);
+		if (nomeLista == null || nomeLista.equals(""))
+			throw new ListaPersonalizadaException("Nome inválida");
 		centralDeDados.getUser(meuID).criarListaPersonalizada(nomeLista);
 	}
-	
-	public void adicionarUsuarioALista(String sessaoID, String nomeLista, String userID) throws SessaoIDException, ListaPersonalizadaException{
-		String meuID = isAutenticado(sessaoID);
-		if(nomeLista == null || nomeLista.equals("")) throw new ListaPersonalizadaException("Lista inválida");
+
+	public void adicionarUsuarioALista(String sessaoID, String nomeLista,
+			String userID) throws SessaoIDException,
+			ListaPersonalizadaException {
+		String meuID = getUserID(sessaoID);
+		if (nomeLista == null || nomeLista.equals(""))
+			throw new ListaPersonalizadaException("Lista inválida");
 		centralDeDados.getUser(meuID).adicinarUsuarioALista(nomeLista, userID);
 	}
-	
-	public List<String> getSonsEmLista(String sessaoID, String nomeLista) throws SessaoIDException, ListaPersonalizadaException{
-		String meuID = isAutenticado(sessaoID);
-		if(nomeLista == null || nomeLista.equals("")) throw new ListaPersonalizadaException("Lista inválida");
-		List<String> lista = centralDeDados.getUser(meuID).getListasPersonalizadas(nomeLista);
+
+	public List<String> getSonsEmLista(String sessaoID, String nomeLista)
+			throws SessaoIDException, ListaPersonalizadaException {
+		if (nomeLista == null || nomeLista.equals(""))
+			throw new ListaPersonalizadaException("Lista inválida");
+		
+		String meuID = getUserID(sessaoID);
+		List<String> lista = centralDeDados.getUser(meuID)
+				.getListasPersonalizadas(nomeLista);
 		Collections.sort(lista, new OrdenadorRegraTempo());
+		
 		return lista;
 	}
 

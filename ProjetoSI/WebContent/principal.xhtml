@@ -13,23 +13,26 @@ and open the template in the editor.
 </h:head>
 
 <p:layout fullPage="true">
-	<h:commandButton value="Sair" action="#{sessao.deslogar()}" />
 
-	<p:layoutUnit header="RickRoll" position="north" />
+	<p:layoutUnit header="RickRoll" position="north">
+		<p:commandButton value="Sair" action="#{sessao.deslogar()}" />
+	</p:layoutUnit>
 
 	<p:layoutUnit position="east" size="200" header="Contatos">
 		<h:outputText value="Contatos" />
 	</p:layoutUnit>
 
 	<p:layoutUnit position="center"
-		header="Bem vindo, #{sessao.nameUsuarioLogado}">
+		header="Bem vindo(a), #{sessao.nameUsuarioLogado}">
 
 		<h:form>
 			<h:panelGrid columns="4" cellpadding="5">
 				<p:outputLabel for="postagem" value="Poste uma musica: " />
-				<p:inputText value="#{sessao.musica} " id="postagem" />
-				<p:commandButton value="postar" action="#{sessao.postarMusica()}" />
-				<p:commandButton value="apagar" action="#{sessao.limpaMusica()}" />
+				<p:inputText value="#{sessao.musica}" id="postagem" />
+				<p:commandButton value="postar" action="#{sessao.postarMusica()}"
+					ajax="false" />
+				<p:commandButton value="apagar" action="#{sessao.limpaMusica()}"
+					ajax="false" />
 			</h:panelGrid>
 
 			<p:spacer height="12" />
@@ -38,28 +41,27 @@ and open the template in the editor.
 				<p:outputLabel value="Seguir Usuario: " />
 				<p:inputText value="#{sessao.seguir}" id="amigoParaAdicionar" />
 				<p:commandButton value="adicionar" id="adicionarAmigo"
-					action="#{sessao.seguirUsuario()}" />
+					action="#{sessao.seguirUsuario()}" ajax="false" />
 			</h:panelGrid>
 
 			<p:spacer height="12" />
 
+			<h3>Musicas Recentes</h3>
 			<p:dataTable value="#{sessao.musicas}" var="mus" rows="10"
-				paginatorTemplate="{PreviousPageLink} {CurrentPageReport} {NextPageLink}"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink}"
 				id="musTable" lazy="true">
-
-				<p:outputLabel value="Musicas Recentes" />
 
 				<p:column headerText="Link">
 					<p:outputLabel value="#{sessao.linkMusica(mus)}" />
 				</p:column>
 
-				<p:column headerText="Favoritar">
-					<h:commandButton value="favoritar"
-						action="#{sessao.favoritarMusica(mus)}" />
+				<p:column headerText="Autor" width="250">
+					<h:outputLabel value="#{sessao.nomePostador(mus)}" />
 				</p:column>
 
-				<p:column headerText="Autor">
-					<h:outputLabel value="#{sessao.nomePostador(mus)}" />
+				<p:column headerText="Favoritar" width="160">
+					<h:commandButton value="favoritar"
+						action="#{sessao.favoritarMusica(mus)}" />
 				</p:column>
 			</p:dataTable>
 
@@ -72,14 +74,16 @@ and open the template in the editor.
 						itemLabel="#{it}" itemValue="#{it}" />
 				</p:selectOneRadio>
 			</p:panelGrid>
-
+			
 			<p:spacer height="12" />
-
-			<p:dataTable value="#{sessao.favoritos}" var="fav" rows="10" paginator="true"
-				paginatorTemplate="{PreviousPageLink} {CurrentPageReport} {NextPageLink}"
+			
+			<h3>Meus Sons Favoritos</h3>
+			<p:dataTable value="#{sessao.favoritos}" var="fav" rows="10"
+				paginator="true"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink}"
 				id="favsTable" lazy="true">
 
-				<p:column headerText="Meus Sons Favoritos">
+				<p:column>
 					<p:outputLabel
 						value="#{sessao.nomePostador(fav)} postou: #{sessao.linkMusica(fav)}" />
 				</p:column>
@@ -87,10 +91,12 @@ and open the template in the editor.
 
 			<p:spacer height="12" />
 
-			<p:dataTable value="#{sessao.feedExtra}" var="feed" rows="10" paginator="true"
-				paginatorTemplate="{PreviousPageLink} {CurrentPageReport} {NextPageLink}"
+			<h3>Feed Extra</h3>
+			<p:dataTable value="#{sessao.feedExtra}" var="feed" rows="10"
+				paginator="true"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink}"
 				id="extraFeedTable" lazy="true">
-				<p:column headerText="Feed Extra">
+				<p:column>
 					<p:outputLabel
 						value="#{sessao.nomePostador(feed)} postou:  #{sessao.linkMusica(feed)}" />
 				</p:column>
@@ -102,8 +108,7 @@ and open the template in the editor.
 			<p:dataGrid var="seguidor" value="#{sessao.seguidores}" columns="3"
 				rows="10" paginator="true" lazy="true"
 				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink}">
-
-				<p:column style="text-align:center">
+				<p:column>
 					<p:outputLabel value="#{sessao.nomeUsuario(seguidor)}" />
 				</p:column>
 			</p:dataGrid>
@@ -114,7 +119,6 @@ and open the template in the editor.
 			<p:dataGrid var="sigo" value="#{sessao.seguindo}" columns="3"
 				rows="10" paginator="true" lazy="true"
 				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink}">
-
 				<p:column>
 					<p:outputLabel value="#{sessao.nomeUsuario(sigo)}" />
 				</p:column>
