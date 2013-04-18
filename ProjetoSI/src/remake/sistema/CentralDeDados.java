@@ -106,4 +106,8 @@ public final class CentralDeDados {
 	public Musica getMusica(String somID) {
 		return listagemDeMusicas.get(somID);
 	}
+	
+	public Set<String> getUsuarios(){
+		return listagemDeUsuarios.keySet();
+	}
 }

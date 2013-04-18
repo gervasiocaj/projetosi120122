@@ -1,5 +1,6 @@
 package remake.webui;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -7,12 +8,16 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 import remake.excecao.*;
+import remake.regras.OrdenadorRegraDefault;
+import remake.regras.OrdenadorRegraFavoritado;
+import remake.regras.OrdenadorRegraMaisFavoritos;
 import remake.util.Favorito;
 
 @ManagedBean(name = "sessao")
 @SessionScoped
-public class SessionBean {
-
+public class SessionBean implements Serializable {
+	
+	private static final long serialVersionUID = 130772112220421211L;
 	protected static String sessaoID;
 	private String musica;
 	private String seguir;
@@ -33,9 +38,8 @@ public class SessionBean {
 
 	public String nomePostador(String idMusica) throws LoginException,
 			UsuarioNaoCadastradoException, SomInexistenteException {
-		// TODO FIXME não há getusuario por id
 		String id = Conversador.sistema.getMusica(idMusica).getIDCriador();
-		return Conversador.sistema.getUsuario(id).getNome();
+		return Conversador.sistema.getUsuarioByID(id).getNome();
 	}
 
 	public String linkMusica(String idMusica) throws SomInexistenteException {
@@ -79,14 +83,17 @@ public class SessionBean {
 	public void mudarOrdenacao() throws SessaoIDException,
 			RegraDeComposicaoException {
 		if (ordenacao.equals("Mais Recentes Primeiro")) {
-			Conversador.sistema.setRegraDeComposicao(sessaoID, null,
-					Conversador.sistema.getPrimeiraRegraDeComposicao()); // FIXME o que é esse comparador?
+			Conversador.sistema.setRegraDeComposicao(sessaoID,
+					new OrdenadorRegraDefault(),
+					Conversador.sistema.getPrimeiraRegraDeComposicao()); 																			// o
 		}
 		if (ordenacao.equals("Mais favoritos Primeiro")) {
-			Conversador.sistema.setRegraDeComposicao(sessaoID, null,
+			Conversador.sistema.setRegraDeComposicao(sessaoID,
+					new OrdenadorRegraFavoritado(),
 					Conversador.sistema.getSegundaRegraDeComposicao());
 		} else {
-			Conversador.sistema.setRegraDeComposicao(sessaoID, null,
+			Conversador.sistema.setRegraDeComposicao(sessaoID,
+					new OrdenadorRegraMaisFavoritos(),
 					Conversador.sistema.getTerceiraRegraDeComposicao());
 		}
 	}
@@ -96,7 +103,6 @@ public class SessionBean {
 		Conversador.sistema.postarSom(sessaoID, musica,
 				format.format(new Date()));
 		reiniciaCampos();
-		System.out.println(Conversador.sistema.getMainFeed(sessaoID).isEmpty());
 	}
 
 	public void seguirUsuario() {
@@ -129,7 +135,10 @@ public class SessionBean {
 	}
 
 	public Collection<String> getSeguidores() throws Exception {
-		return Conversador.sistema.getListaDeSeguidores(sessaoID); // FIXME converter set pra list
+		return Conversador.sistema.getListaDeSeguidores(sessaoID); // FIXME
+																	// converter
+																	// set pra
+																	// list
 	}
 
 	public Collection<String> getSeguindo() throws Exception {

@@ -46,84 +46,101 @@ and open the template in the editor.
 
 			<p:spacer height="12" />
 
-			<h3>Musicas Recentes</h3>
-			<p:dataTable value="#{sessao.musicas}" var="mus" rows="10"
-				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink}"
-				id="musTable" lazy="true">
+			<p:tabView id="tabView" dynamic="true" cache="true">
 
-				<p:column headerText="Link">
-					<p:outputLabel value="#{sessao.linkMusica(mus)}" />
-				</p:column>
+				<p:tab id="tab1" title="Musicas Recentes">
+					<h3>Musicas Recentes</h3>
+					<p:dataTable value="#{sessao.musicas}" var="mus" rows="10"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink}"
+						id="musTable" lazy="true">
 
-				<p:column headerText="Autor" width="250">
-					<h:outputLabel value="#{sessao.nomePostador(mus)}" />
-				</p:column>
+						<p:column headerText="Link">
+							<p:outputLabel value="#{sessao.linkMusica(mus)}" />
+						</p:column>
 
-				<p:column headerText="Favoritar" width="160">
-					<h:commandButton value="favoritar"
-						action="#{sessao.favoritarMusica(mus)}" />
-				</p:column>
-			</p:dataTable>
+						<p:column headerText="Autor" width="250">
+							<h:outputLabel value="#{sessao.nomePostador(mus)}" />
+						</p:column>
 
-			<p:spacer height="12" />
+						<p:column headerText="Favoritar" width="160">
+							<h:commandButton value="favoritar"
+								action="#{sessao.favoritarMusica(mus)}" />
+						</p:column>
+					</p:dataTable>
 
-			<p:panelGrid columns="2" cellpadding="5">
-				<p:commandButton value="Ordenar" action="#{sessao.mudarOrdenacao()}" />
-				<p:selectOneRadio value="#{sessao.ordenacao}">
-					<f:selectItems value="#{sessao.choicesRadioButton}" var="it"
-						itemLabel="#{it}" itemValue="#{it}" />
-				</p:selectOneRadio>
-			</p:panelGrid>
-			
-			<p:spacer height="12" />
-			
-			<h3>Meus Sons Favoritos</h3>
-			<p:dataTable value="#{sessao.favoritos}" var="fav" rows="10"
-				paginator="true"
-				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink}"
-				id="favsTable" lazy="true">
+					<p:spacer height="12" />
 
-				<p:column>
-					<p:outputLabel
-						value="#{sessao.nomePostador(fav)} postou: #{sessao.linkMusica(fav)}" />
-				</p:column>
-			</p:dataTable>
+					<p:panelGrid columns="2" cellpadding="5">
+						<p:commandButton value="Ordenar"
+							action="#{sessao.mudarOrdenacao()}" />
+						<p:selectOneRadio value="#{sessao.ordenacao}">
+							<f:selectItems value="#{sessao.choicesRadioButton}" var="it"
+								itemLabel="#{it}" itemValue="#{it}" />
+						</p:selectOneRadio>
+					</p:panelGrid>
 
-			<p:spacer height="12" />
+					<p:spacer height="12" />
+				</p:tab>
 
-			<h3>Feed Extra</h3>
-			<p:dataTable value="#{sessao.feedExtra}" var="feed" rows="10"
-				paginator="true"
-				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink}"
-				id="extraFeedTable" lazy="true">
-				<p:column>
-					<p:outputLabel
-						value="#{sessao.nomePostador(feed)} postou:  #{sessao.linkMusica(feed)}" />
-				</p:column>
-			</p:dataTable>
+				<p:tab id="tab2" title="Meus Sons Favoritos">
 
-			<p:spacer height="12" />
+					<h3>Meus Sons Favoritos</h3>
+					<p:dataTable value="#{sessao.favoritos}" var="fav" rows="10"
+						paginator="true"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink}"
+						id="favsTable" lazy="true">
 
-			<h3>Seguidores:</h3>
-			<p:dataGrid var="seguidor" value="#{sessao.seguidores}" columns="3"
-				rows="10" paginator="true" lazy="true"
-				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink}">
-				<p:column>
-					<p:outputLabel value="#{sessao.nomeUsuario(seguidor)}" />
-				</p:column>
-			</p:dataGrid>
+						<p:column>
+							<p:outputLabel
+								value="#{sessao.nomePostador(fav)} postou: #{sessao.linkMusica(fav)}" />
+						</p:column>
+					</p:dataTable>
 
-			<p:spacer height="12" />
+					<p:spacer height="12" />
+				</p:tab>
 
-			<h3>Fontes de Sons</h3>
-			<p:dataGrid var="sigo" value="#{sessao.seguindo}" columns="3"
-				rows="10" paginator="true" lazy="true"
-				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink}">
-				<p:column>
-					<p:outputLabel value="#{sessao.nomeUsuario(sigo)}" />
-				</p:column>
-			</p:dataGrid>
+				<p:tab id="tab3" title="Feed Extra">
 
+					<h3>Feed Extra</h3>
+					<p:dataTable value="#{sessao.feedExtra}" var="feed" rows="10"
+						paginator="true"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink}"
+						id="extraFeedTable" lazy="true">
+						<p:column>
+							<p:outputLabel
+								value="#{sessao.nomePostador(feed)} postou:  #{sessao.linkMusica(feed)}" />
+						</p:column>
+					</p:dataTable>
+
+					<p:spacer height="12" />
+				</p:tab>
+
+				<p:tab id="tab4" title="Seguidores">
+
+					<h3>Seguidores:</h3>
+					<p:dataGrid var="seguidor" value="#{sessao.seguidores}" columns="3"
+						rows="10" paginator="true" lazy="true"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink}">
+						<p:column>
+							<p:outputLabel value="#{sessao.nomeUsuario(seguidor)}" />
+						</p:column>
+					</p:dataGrid>
+
+					<p:spacer height="12" />
+				</p:tab>
+
+				<p:tab id="tab5" title="Fontes de Sons">
+
+					<h3>Fontes de Sons</h3>
+					<p:dataGrid var="sigo" value="#{sessao.seguindo}" columns="3"
+						rows="10" paginator="true" lazy="true"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink}">
+						<p:column>
+							<p:outputLabel value="#{sessao.nomeUsuario(sigo)}" />
+						</p:column>
+					</p:dataGrid>
+				</p:tab>
+			</p:tabView>
 		</h:form>
 	</p:layoutUnit>
 

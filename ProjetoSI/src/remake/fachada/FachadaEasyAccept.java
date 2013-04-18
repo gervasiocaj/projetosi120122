@@ -1,23 +1,14 @@
 package remake.fachada;
 
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-import remake.regras.OrdenadorRegra;
-import remake.regras.OrdenadorRegraDefaut;
-import remake.regras.OrdenadorRegraFavoritado;
-import remake.regras.OrdenadorRegraMaisFavoritos;
+import remake.regras.*;
 import remake.sistema.SistemaAPI;
 import remake.sistema.Verificador;
 import remake.util.Favorito;
 
-import remake.entidades.Musica;
-import remake.entidades.Usuario;
+import remake.entidades.*;
 import remake.excecao.*;
 
 public class FachadaEasyAccept {
@@ -158,7 +149,8 @@ public class FachadaEasyAccept {
 
 	public String getMainFeed(String idSessao) throws SessaoIDException {
 		List<String> feed = new LinkedList<String>();
-		for (String m : sistema.getMainFeed(idSessao))
+		List<String> mainFeed = sistema.getMainFeed(idSessao);
+		for (String m : mainFeed)
 			feed.add(m);
 		return convertCollection(feed);
 	}
@@ -167,7 +159,7 @@ public class FachadaEasyAccept {
 			throws SessaoIDException, RegraDeComposicaoException, LoginException, UsuarioNaoCadastradoException{
 
 		String usuarioID = sistema.getUsuario(sessaoID).getID();
-		OrdenadorRegra<String> regra = new OrdenadorRegraDefaut();
+		OrdenadorRegra<String> regra = new OrdenadorRegraDefault();
 		
 		if(rule != null){
 			if ( rule.equals( getSecondCompositionRule() ) )
@@ -188,8 +180,20 @@ public class FachadaEasyAccept {
 		sistema.adicionarUsuarioALista(idSessao, idLista, idUsuario);
 	}
 	
-	public String getSonsEmLista(String idSessao, String idLista) throws ListaPersonalizadaException, LoginException, UsuarioNaoCadastradoException{
-		return convertCollection(sistema.getUsuario(idSessao).getListasPersonalizadas(idLista));
+	public String getSonsEmLista(String idSessao, String idLista) throws ListaPersonalizadaException, LoginException, UsuarioNaoCadastradoException, SessaoIDException{
+		return convertCollection(sistema.getSonsEmLista(idSessao, idLista));
+	}
+	
+	public String getNumFavoritosEmComum(String idSessao, String idUsuario) throws SessaoIDException, UsuarioNaoCadastradoException{
+		return "" + sistema.getNumFavoritosEmComum(idSessao, idUsuario);
+	}
+	
+	public String getNumFontesEmComum(String idSessao, String idUsuario) throws SessaoIDException, UsuarioNaoCadastradoException{
+		return "" + sistema.getNumFontesEmComum(idSessao, idUsuario);
+	}
+	
+	public String getFontesDeSonsRecomendadas(String idSessao) throws SessaoIDException{
+		return convertCollection(sistema.getFontesDeSonsRecomendadas(idSessao));
 	}
 
 	private String convertCollection(Collection<?> c) {

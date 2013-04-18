@@ -4,15 +4,17 @@
  */
 package remake.webui;
 
+import java.io.Serializable;
 import remake.sistema.*;
 
 /**
  *
  * @author Guilherme
  */
-public class Conversador {
+public class Conversador implements Serializable{
     
-    protected static SistemaAPI sistema;
+	private static final long serialVersionUID = -8772607007262223094L;
+	protected static SistemaAPI sistema;
     
     
     public static void tentaIniciarRepositorio(){

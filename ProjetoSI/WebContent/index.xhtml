@@ -4,27 +4,32 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:fb="http://www.facebook.com/2008/fbml">
 <h:head>
 	<title>Welcome</title>
 </h:head>
 <h:form prependId="false">
 	<p:panel header="Login:">
-		<h:panelGrid columns="2">
+		<h:panelGrid columns="3">
 
 			<p:outputLabel value="Login: " />
 			<p:inputText value="#{propriedades.login}" id="login" />
+			<p:spacer height="12" />
 
 			<p:outputLabel value="Password: " />
 			<p:password minLength="3" value="#{propriedades.password}"
 				id="password" />
+			<p:spacer height="12" />
 
+			<p:spacer height="12" />
 			<p:spacer height="12" />
 			<p:spacer height="12" />
 
 			<h:commandButton value="Registrar" action="registro" />
 			<h:commandButton value="Login" action="#{classe.logar()}" />
-
+			
+			
 		</h:panelGrid>
 	</p:panel>
 </h:form>

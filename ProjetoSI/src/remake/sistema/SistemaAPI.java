@@ -121,10 +121,17 @@ public class SistemaAPI {
 	 */
 	public Usuario getUsuario(String sessaoID) throws LoginException,
 			UsuarioNaoCadastradoException {
-
 		String usuarioID = usuarioLogados.get(sessaoID);
-
 		return centralDeDados.getUser(usuarioID);
+	}
+
+	/**
+	 * 
+	 * @param userID
+	 * @return Usuario correspondete ao ID passado
+	 */
+	public Usuario getUsuarioByID(String userID) {
+		return centralDeDados.getUser(userID);
 	}
 
 	/**
@@ -139,8 +146,7 @@ public class SistemaAPI {
 	public Musica getMusica(String somID) throws SomInexistenteException {
 
 		if (!Verificador.verificaStringValida(somID))
-			;
-		// TODO: execao?
+			throw new SomInexistenteException("Som inválido");
 
 		Musica musica = centralDeDados.getMusica(somID);
 		if (musica == null)
@@ -180,14 +186,8 @@ public class SistemaAPI {
 	 *            -> sessaoID do usuario logado
 	 * @throws SessaoIDException
 	 */
-	public void encerrarSessao(String login) throws SessaoIDException {
-		for (String u : usuarioLogados.keySet()) {
-			if (centralDeDados.getUser(usuarioLogados.get(u)).getLogin()
-					.equals(login)) {
-				usuarioLogados.remove(u);
-				break;
-			}
-		}
+	public void encerrarSessao(String sessaoID) throws SessaoIDException {
+		usuarioLogados.remove(sessaoID);
 	}
 
 	/**
@@ -195,12 +195,12 @@ public class SistemaAPI {
 	 * 
 	 * @param sessaoID
 	 *            -> sessaoID a ser verificada
-	 * @return true - exite sessaoID false - nao existe sessaoID
+	 * @return ID do Usuario
 	 * @throws SessaoIDException
 	 *             sessaoID é invalida
 	 */
 	private String getUserID(String sessaoID) throws SessaoIDException {
-		if (sessaoID == null || sessaoID.equals(""))
+		if (!Verificador.verificaStringValida(sessaoID))
 			throw new SessaoIDException("Sessão inválida");
 
 		String retorno = usuarioLogados.get(sessaoID);
@@ -425,6 +425,7 @@ public class SistemaAPI {
 		musicaAtual.addFavoritado(meuID);
 
 		usuarioAtual.addNumeroDeFavoritos(musicaAtual.getIDCriador());
+		centralDeDados.getUser(centralDeDados.getMusica(musicaID).getIDCriador()).adicionaFavorito();
 
 		// Aqui ele adiciona o post favoritado a todos os que o seguem.
 
@@ -511,7 +512,7 @@ public class SistemaAPI {
 	 * @return a regra
 	 */
 	public String getPrimeiraRegraDeComposicao() {
-		return new OrdenadorRegraDefaut().getRegra();
+		return new OrdenadorRegraDefault().getRegra();
 	}
 
 	/**
@@ -546,34 +547,131 @@ public class SistemaAPI {
 
 	}
 
+	/**
+	 * Cria uma lista personalizada
+	 * 
+	 * @param sessaoID
+	 *            id do usuario
+	 * @param nomeLista
+	 *            nome da lista a ser criada
+	 * @throws SessaoIDException
+	 * @throws ListaPersonalizadaException
+	 */
 	public void criaLista(String sessaoID, String nomeLista)
 			throws SessaoIDException, ListaPersonalizadaException {
 		String meuID = getUserID(sessaoID);
-		if (nomeLista == null || nomeLista.equals(""))
-			throw new ListaPersonalizadaException("Nome inválida");
+		if (!Verificador.verificaStringValida(nomeLista))
+			throw new ListaPersonalizadaException("Nome inválido");
 		centralDeDados.getUser(meuID).criarListaPersonalizada(nomeLista);
 	}
 
+	/**
+	 * Adiciona um usuario a uma lista personalizada
+	 * 
+	 * @param sessaoID
+	 *            id do usuario
+	 * @param nomeLista
+	 *            nome da lista no qual o usuario sera adicionado
+	 * @param userID
+	 *            id do usuario a ser adicionado
+	 * @throws SessaoIDException
+	 * @throws ListaPersonalizadaException
+	 * @throws UsuarioNaoCadastradoException
+	 */
 	public void adicionarUsuarioALista(String sessaoID, String nomeLista,
 			String userID) throws SessaoIDException,
 			ListaPersonalizadaException {
 		String meuID = getUserID(sessaoID);
-		if (nomeLista == null || nomeLista.equals(""))
+		if (!Verificador.verificaStringValida(nomeLista))
 			throw new ListaPersonalizadaException("Lista inválida");
 		centralDeDados.getUser(meuID).adicinarUsuarioALista(nomeLista, userID);
 	}
 
 	public List<String> getSonsEmLista(String sessaoID, String nomeLista)
 			throws SessaoIDException, ListaPersonalizadaException {
-		if (nomeLista == null || nomeLista.equals(""))
+		if (!Verificador.verificaStringValida(nomeLista))
 			throw new ListaPersonalizadaException("Lista inválida");
-		
+
 		String meuID = getUserID(sessaoID);
-		List<String> lista = centralDeDados.getUser(meuID)
-				.getListasPersonalizadas(nomeLista);
+		List<String> lista = new LinkedList<String>();
+		for (String user : centralDeDados.getUser(meuID).getListasPersonalizadas(nomeLista))
+			lista.addAll(centralDeDados.getUser(user).getPerfilMusical());
 		Collections.sort(lista, new OrdenadorRegraTempo());
-		
+
 		return lista;
+	}
+
+	/**
+	 * Pega o numero de sons favoritos em comum entre dois usuarios
+	 * 
+	 * @param idSessao
+	 *            id do do usuario corrente
+	 * @param idUsuario
+	 *            id do usuario a se comparar
+	 * @return numero de favoritos em comum
+	 * @throws SessaoIDException
+	 * @throws UsuarioNaoCadastradoException
+	 */
+	public int getNumFavoritosEmComum(String idSessao, String idUsuario)
+			throws SessaoIDException, UsuarioNaoCadastradoException {
+		String meuID = getUserID(idSessao);
+		if (!Verificador.verificaStringValida(idUsuario))
+			throw new UsuarioNaoCadastradoException("Usuário inválido");
+		int contador = 0;
+		for (String favorito : centralDeDados.getUser(meuID).getFavoritos()) {
+			if (centralDeDados.getUser(idUsuario).getFavoritos()
+					.contains(favorito))
+				contador++;
+		}
+		return contador;
+	}
+
+	/**
+	 * Pega o numero de fontes de som em comum entre dois usuarios
+	 * 
+	 * @param idSessao
+	 *            id do do usuario corrente
+	 * @param idUsuario
+	 *            id do usuario a se comparar
+	 * @return o numero de fontes em comum
+	 * @throws SessaoIDException
+	 * @throws UsuarioNaoCadastradoException
+	 */
+	public int getNumFontesEmComum(String idSessao, String idUsuario)
+			throws SessaoIDException, UsuarioNaoCadastradoException {
+		String meuID = getUserID(idSessao);
+		if (!Verificador.verificaStringValida(idUsuario))
+			throw new UsuarioNaoCadastradoException("Usuário inválido");
+		int contador = 0;
+		for (String fonte : centralDeDados.getUser(meuID).getSeguindo()) {
+			if (centralDeDados.getUser(idUsuario).getSeguindo().contains(fonte))
+				contador++;
+		}
+		return contador;
+	}
+
+	/**
+	 * Pega as fontes de smo recomendadas para o usuario
+	 * 
+	 * @param idSessao
+	 *            Id do usuario
+	 * @return Lista dos usuario recomendados
+	 * @throws SessaoIDException
+	 */
+	public List<String> getFontesDeSonsRecomendadas(String idSessao)
+			throws SessaoIDException {
+		String meuID = getUserID(idSessao);
+		List<String> recomendados = new LinkedList<String>();
+		for (String usuario : centralDeDados.getUsuarios()) {
+			if (!meuID.equals(usuario) && 
+					!centralDeDados.getUser(meuID).getSeguindo().contains(usuario) &&
+					(centralDeDados.getUser(usuario).getSeguindo().size() != 0 ||
+					centralDeDados.getUser(usuario).getFavoritos().size() != 0))
+				recomendados.add(usuario);
+		}
+		Collections.sort(recomendados, new OrdenadorRecomendacoes(
+				centralDeDados, meuID));
+		return recomendados;
 	}
 
 }

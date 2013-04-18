@@ -1,16 +1,6 @@
 package remake.entidades;
 
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.UUID;
+import java.util.*;
 import remake.excecao.*;
 import remake.regras.*;
 import remake.sistema.Verificador;
@@ -34,6 +24,7 @@ public class Usuario {
 	private Map<String, Integer> ordemSeguidor;
 	private Map<String, Integer> numeroDeFavoritos;
 	private int ordem;
+	private int vezesFavoritado;
 	private Map<String, List<String>> listasPersonilizadas;
 	
 	/**
@@ -72,7 +63,7 @@ public class Usuario {
 			throw new AtributoException("Email inválido");
 		
 		this.id = login + ";" + UUID.randomUUID();
-		regraDeComposicao = new OrdenadorRegraDefaut();
+		regraDeComposicao = new OrdenadorRegraTempo();
 		perfilMusical = new LinkedList<String>();
 		listaMyFollowers = new TreeSet<String>();
 		listaFollowing = new LinkedHashSet<String>();
@@ -83,6 +74,7 @@ public class Usuario {
 		ordemSeguidor = new HashMap<String, Integer>();
 		ordem = 1;
 		listasPersonilizadas = new HashMap<String, List<String>>();
+		vezesFavoritado = 0;
 	}
 
 	/**
@@ -326,6 +318,15 @@ public class Usuario {
 		return copiaDeMainFeed; 
 	}
 	
+	/** Retorna o numero de vezes que um post meu foi favoritado
+	 * 
+	 * @return
+	 * 		vezes que foi favoritado
+	 */
+	public int vezesFavoritado(){
+		return vezesFavoritado;
+	}
+	
 	/** Adiciona um novo favorito para um usuario
 	 * 
 	 * @param idUser
@@ -358,6 +359,12 @@ public class Usuario {
 		ordem++;
 	}
 	
+	/**	Pega a ordem em que dado usuario foi seguido
+	 * 
+	 * @param idUser
+	 * 		id do usuario desejado
+	 * @return
+	 */
 	public Integer getOrdemSeguidor(String idUser){
 		return ordemSeguidor.get(idUser);
 	}
@@ -369,6 +376,11 @@ public class Usuario {
 		return sessaoID;
 	}
 	
+	/**	
+	 * 
+	 * @param nomeDaLista
+	 * @throws ListaPersonalizadaException
+	 */
 	public void criarListaPersonalizada(String nomeDaLista) throws ListaPersonalizadaException{
 		if(!listasPersonilizadas.containsKey(nomeDaLista)){
 			listasPersonilizadas.put(nomeDaLista, new LinkedList<String>());
@@ -377,25 +389,46 @@ public class Usuario {
 		}
 	}
 	
+	/**	Adiciona um usuario a uma lista personalizada
+	 * 
+	 * @param nomeDaLista
+	 * 		nome da lista personalizada
+	 * @param idUser
+	 * 		id do usuario a ser adicionado
+	 * @throws ListaPersonalizadaException
+	 */
 	public void adicinarUsuarioALista(String nomeDaLista, String idUser) throws ListaPersonalizadaException{
-		if(listasPersonilizadas.containsKey(nomeDaLista)){
-			if(!listasPersonilizadas.get(nomeDaLista).contains(idUser)){
-				listasPersonilizadas.get(nomeDaLista).add(idUser);
-			} else {
-				if(listasPersonilizadas.get(nomeDaLista).contains(id)){
+		if (listasPersonilizadas.containsKey(nomeDaLista)) {
+			if (!listasPersonilizadas.get(nomeDaLista).contains(idUser)) {
+				if (idUser.equals(id)) {
 					throw new ListaPersonalizadaException("Usuário não pode adicionar-se a própria lista");
-				} else throw new ListaPersonalizadaException("Usuário já existe nesta lista");
-			}
+				}
+				listasPersonilizadas.get(nomeDaLista).add(idUser);
+			} else throw new ListaPersonalizadaException("Usuário já existe nesta lista");
 		} else {
 			throw new ListaPersonalizadaException("Lista inexistente");
 		}
 	}
 	
+	/** Pega os usuarios de uma determinada lista personalizada
+	 * 
+	 * @param nomeLista
+	 * 		nome da lista personalizada
+	 * @return
+	 * 		a lista de usuarios
+	 * @throws ListaPersonalizadaException
+	 */
 	public List<String> getListasPersonalizadas(String nomeLista) throws ListaPersonalizadaException{
 		if(!listasPersonilizadas.containsKey(nomeLista)) 
 			throw new ListaPersonalizadaException("Lista inexistente");
 		return listasPersonilizadas.get(nomeLista);
 	}
-
+	
+	/** Adiciona um favoritado a este usuario
+	 * 
+	 */
+	public void adicionaFavorito() {
+		vezesFavoritado++;
+	}
 
 }
