@@ -1,5 +1,6 @@
 package remake.regras;
 
+import remake.entidades.Usuario;
 import remake.sistema.CentralDeDados;
 
 public class OrdenadorRegraMaisFavoritos implements OrdenadorRegra<String>{
@@ -17,15 +18,16 @@ public class OrdenadorRegraMaisFavoritos implements OrdenadorRegra<String>{
 	}
 
 	@Override
-	public int compare(String arg0, String arg1) {
-		if(data.getUser(usuarioID).getNumeroDeFavoritos(data.getMusica(arg1).getIDCriador())
-				== data.getUser(usuarioID).getNumeroDeFavoritos(data.getMusica(arg0).getIDCriador())){
+	public int compare(String mus1, String mus2) {
+		Usuario userAtual = data.getUser(usuarioID);
+		if(userAtual.getNumeroDeFavoritos(data.getMusica(mus2).getIDCriador())
+				== userAtual.getNumeroDeFavoritos(data.getMusica(mus1).getIDCriador())){
 			// Se o numero de favoritos for igual, compara pela ordem em que comecou a ser seguido
-			return data.getUser(usuarioID).getOrdemSeguidor(data.getMusica(arg1).getIDCriador()) 
-			- data.getUser(usuarioID).getOrdemSeguidor(data.getMusica(arg0).getIDCriador());
+			return userAtual.getOrdemSeguidor(data.getMusica(mus2).getIDCriador()) 
+			- userAtual.getOrdemSeguidor(data.getMusica(mus1).getIDCriador());
 		}
-		return data.getUser(usuarioID).getNumeroDeFavoritos(data.getMusica(arg1).getIDCriador())
-				- data.getUser(usuarioID).getNumeroDeFavoritos(data.getMusica(arg0).getIDCriador());
+		return userAtual.getNumeroDeFavoritos(data.getMusica(mus2).getIDCriador())
+				- userAtual.getNumeroDeFavoritos(data.getMusica(mus1).getIDCriador());
 	}
 	
 	public String getRegra(){

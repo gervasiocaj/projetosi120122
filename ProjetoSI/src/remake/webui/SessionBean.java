@@ -7,6 +7,7 @@ import java.util.*;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
+import remake.entidades.Usuario;
 import remake.excecao.*;
 import remake.regras.OrdenadorRegraDefault;
 import remake.regras.OrdenadorRegraFavoritado;
@@ -16,7 +17,7 @@ import remake.util.Favorito;
 @ManagedBean(name = "sessao")
 @SessionScoped
 public class SessionBean implements Serializable {
-	
+
 	private static final long serialVersionUID = 130772112220421211L;
 	protected static String sessaoID;
 	private String musica;
@@ -58,7 +59,7 @@ public class SessionBean implements Serializable {
 	public String deslogar() {
 		try {
 			Conversador.sistema.encerrarSessao(sessaoID);
-			return "index";
+			return "index?faces-redirect=true";
 		} catch (SessaoIDException ex) {
 			return "";
 		}
@@ -85,7 +86,7 @@ public class SessionBean implements Serializable {
 		if (ordenacao.equals("Mais Recentes Primeiro")) {
 			Conversador.sistema.setRegraDeComposicao(sessaoID,
 					new OrdenadorRegraDefault(),
-					Conversador.sistema.getPrimeiraRegraDeComposicao()); 																			// o
+					Conversador.sistema.getPrimeiraRegraDeComposicao()); // o
 		}
 		if (ordenacao.equals("Mais favoritos Primeiro")) {
 			Conversador.sistema.setRegraDeComposicao(sessaoID,
@@ -163,6 +164,21 @@ public class SessionBean implements Serializable {
 	public String nomeUsuario(String str) throws LoginException,
 			UsuarioNaoCadastradoException {
 		return "";
+	}
+
+	public List<Usuario> followers() throws SessaoIDException {
+		return Conversador.sistema.getFollowers(sessaoID);
+	}
+
+	public List<Usuario> following() throws SessaoIDException {
+		return Conversador.sistema.getFollowing(sessaoID);
+	}
+
+	public List<Usuario> fontesRecomendadas() throws SessaoIDException {
+		List<Usuario> result = new LinkedList<Usuario>();
+		for (String u : Conversador.sistema.getFontesDeSonsRecomendadas(sessaoID))
+			result.add(Conversador.sistema.getUsuarioByID(u));
+		return result;
 	}
 
 }

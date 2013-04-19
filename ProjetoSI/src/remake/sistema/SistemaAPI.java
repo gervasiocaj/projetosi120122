@@ -2,6 +2,7 @@ package remake.sistema;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+
 import remake.excecao.*;
 import remake.entidades.Musica;
 import remake.entidades.Usuario;
@@ -15,10 +16,9 @@ public class SistemaAPI {
 
 	private enum Regras {
 
-		REGRA1(
-				"PRIMEIRO OS SONS POSTADOS MAIS RECENTEMENTE PELAS FONTES DE SONS"), REGRA2(
-				"PRIMEIRO OS SONS COM MAIS FAVORITOS"), REGRA3(
-				"PRIMEIRO SONS DE FONTES DAS QUAIS FAVORITEI SONS NO PASSADO");
+		REGRA1("PRIMEIRO OS SONS POSTADOS MAIS RECENTEMENTE PELAS FONTES DE SONS"),
+		REGRA2("PRIMEIRO OS SONS COM MAIS FAVORITOS"),
+		REGRA3("PRIMEIRO SONS DE FONTES DAS QUAIS FAVORITEI SONS NO PASSADO");
 
 		private String regra;
 
@@ -425,7 +425,9 @@ public class SistemaAPI {
 		musicaAtual.addFavoritado(meuID);
 
 		usuarioAtual.addNumeroDeFavoritos(musicaAtual.getIDCriador());
-		centralDeDados.getUser(centralDeDados.getMusica(musicaID).getIDCriador()).adicionaFavorito();
+		centralDeDados.getUser(
+				centralDeDados.getMusica(musicaID).getIDCriador())
+				.adicionaFavorito();
 
 		// Aqui ele adiciona o post favoritado a todos os que o seguem.
 
@@ -594,7 +596,8 @@ public class SistemaAPI {
 
 		String meuID = getUserID(sessaoID);
 		List<String> lista = new LinkedList<String>();
-		for (String user : centralDeDados.getUser(meuID).getListasPersonalizadas(nomeLista))
+		for (String user : centralDeDados.getUser(meuID)
+				.getListasPersonalizadas(nomeLista))
 			lista.addAll(centralDeDados.getUser(user).getPerfilMusical());
 		Collections.sort(lista, new OrdenadorRegraTempo());
 
@@ -663,15 +666,32 @@ public class SistemaAPI {
 		String meuID = getUserID(idSessao);
 		List<String> recomendados = new LinkedList<String>();
 		for (String usuario : centralDeDados.getUsuarios()) {
-			if (!meuID.equals(usuario) && 
-					!centralDeDados.getUser(meuID).getSeguindo().contains(usuario) &&
-					(centralDeDados.getUser(usuario).getSeguindo().size() != 0 ||
-					centralDeDados.getUser(usuario).getFavoritos().size() != 0))
+			if (!meuID.equals(usuario)
+					&& !centralDeDados.getUser(meuID).getSeguindo()
+							.contains(usuario)
+					&& (centralDeDados.getUser(usuario).getSeguindo().size() != 0 || centralDeDados
+							.getUser(usuario).getFavoritos().size() != 0))
 				recomendados.add(usuario);
 		}
 		Collections.sort(recomendados, new OrdenadorRecomendacoes(
 				centralDeDados, meuID));
 		return recomendados;
+	}
+
+	public List<Usuario> getFollowers(String sessaoID) throws SessaoIDException {
+		String meuID = getUserID(sessaoID);
+		List<Usuario> result = new LinkedList<Usuario>();
+		for (String u : centralDeDados.getUser(meuID).getListaMeusSeguidores())
+			result.add(centralDeDados.getUser(u));
+		return result;
+	}
+
+	public List<Usuario> getFollowing(String sessaoID) throws SessaoIDException {
+		String meuID = getUserID(sessaoID);
+		List<Usuario> result = new LinkedList<Usuario>();
+		for (String u : centralDeDados.getUser(meuID).getSeguindo())
+			result.add(centralDeDados.getUser(u));
+		return result;
 	}
 
 }

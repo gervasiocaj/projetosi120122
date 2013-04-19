@@ -18,8 +18,17 @@ and open the template in the editor.
 		<p:commandButton value="Sair" action="#{sessao.deslogar()}" />
 	</p:layoutUnit>
 
-	<p:layoutUnit position="east" size="200" header="Contatos">
-		<h:outputText value="Contatos" />
+	<p:layoutUnit position="east" size="240" header="Contatos">
+		<h3>  Seguidores</h3>
+		<p:dataList value="#{sessao.followers()}" var="s1" itemType="circle">  
+			#{s1.nome}
+		</p:dataList>
+		
+		<h3>  Sigo</h3>
+		<p:dataList value="#{sessao.following()}" var="s2" itemType="circle">  
+			#{s2.nome}  
+		</p:dataList>
+
 	</p:layoutUnit>
 
 	<p:layoutUnit position="center"
@@ -137,6 +146,18 @@ and open the template in the editor.
 						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink}">
 						<p:column>
 							<p:outputLabel value="#{sessao.nomeUsuario(sigo)}" />
+						</p:column>
+					</p:dataGrid>
+				</p:tab>
+				
+				<p:tab id="tab6" title="Recomendações">
+
+					<h3>Recomendações de Fontes</h3>
+					<p:dataGrid var="fonte" value="#{sessao.fontesRecomendadas()}" columns="1"
+						rows="10" paginator="true" lazy="true"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink}">
+						<p:column>
+							<p:outputLabel value="#{fonte.nome}" />
 						</p:column>
 					</p:dataGrid>
 				</p:tab>
