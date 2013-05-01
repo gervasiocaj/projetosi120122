@@ -4,6 +4,7 @@
  */
 package remake.webui;
 
+import java.io.IOException;
 import java.io.Serializable;
 import remake.sistema.*;
 
@@ -17,12 +18,11 @@ public class Conversador implements Serializable{
 	protected static SistemaAPI sistema;
     
     
-    public static void tentaIniciarRepositorio(){
+    public static void tentaIniciarRepositorio() throws ClassNotFoundException, IOException{
         if(sistema == null){
             sistema = new SistemaAPI();
             //falta fazer a parte da persistencia
         }
-        
     }
     
     public static String getNameUsuarioLogado(String login){

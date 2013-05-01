@@ -2,13 +2,10 @@ package remake.webui;
 
 import java.io.Serializable;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-
-   // or import javax.enterprise.context.SessionScoped;
+import javax.faces.bean.*;
 
 @ManagedBean(name="propriedades") // or @Named("user")
-@SessionScoped
+@ViewScoped
 public class PropriedadesBean implements Serializable {
     
 	private static final long serialVersionUID = 5757911213823283988L;
@@ -17,9 +14,6 @@ public class PropriedadesBean implements Serializable {
     protected static String password;
     protected static String confirmPassword;
     protected static String email;
-    
-
-    
     
    public String getLogin() { 
        return login; 

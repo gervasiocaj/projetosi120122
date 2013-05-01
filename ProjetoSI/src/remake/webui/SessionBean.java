@@ -1,5 +1,6 @@
 package remake.webui;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -24,7 +25,7 @@ public class SessionBean implements Serializable {
 	private String seguir;
 	private String ordenacao;
 
-	public SessionBean() {
+	public SessionBean() throws ClassNotFoundException, IOException {
 		Conversador.tentaIniciarRepositorio();
 		ordenacao = "Mais Recentes Primeiro";
 	}
@@ -82,7 +83,7 @@ public class SessionBean implements Serializable {
 	}
 
 	public void mudarOrdenacao() throws SessaoIDException,
-			RegraDeComposicaoException {
+			RegraDeComposicaoException, IOException {
 		if (ordenacao.equals("Mais Recentes Primeiro")) {
 			Conversador.sistema.setRegraDeComposicao(sessaoID,
 					new OrdenadorRegraDefault(),
@@ -111,6 +112,8 @@ public class SessionBean implements Serializable {
 			Conversador.sistema.seguirUsuario(sessaoID, seguir);
 		} catch (SessaoIDException ex) { // TODO tratar essas excecoes
 		} catch (LoginException ex) {
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 

@@ -1,5 +1,6 @@
 package remake.util;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -7,8 +8,9 @@ import remake.excecao.AnoInvalidoException;
 import remake.excecao.DiaInvalidoException;
 import remake.excecao.MesInvalidoException;
 
-public class Data implements Comparable<Data> {
+public class Data implements Comparable<Data>, Serializable {
 
+	private static final long serialVersionUID = 7406540674063929783L;
 	private Calendar cal;
 
 	/**

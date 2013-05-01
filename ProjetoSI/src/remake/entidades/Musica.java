@@ -1,5 +1,6 @@
 package remake.entidades;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -10,11 +11,12 @@ import java.util.UUID;
 
 import remake.excecao.DataInvalidaException;
 import remake.excecao.LinkInvalidoException;
+import remake.sistema.Verificador;
 
-public class Musica implements Comparable<Musica> {
+public class Musica implements Serializable, Comparable<Musica> {
 	
-	
-
+	private static final long serialVersionUID = 5737577736835958735L;
+	private List<String> tags;
 	private String IDCriador;
 	private String link;
 	private GregorianCalendar dataDeCriacao;
@@ -45,6 +47,7 @@ public class Musica implements Comparable<Musica> {
 		this.IDCriador = IDCriador;
 		this.link = link;
 		this.dataDeCriacao = cal;
+		this.tags = new LinkedList<String>();
 		this.id = IDCriador + ";" + link + ";" + UUID.randomUUID();
 		favoritaram = new LinkedList<String>();
 		// this.dataDeCriacao = new GregorianCalendar();
@@ -197,6 +200,15 @@ public class Musica implements Comparable<Musica> {
 	 */
 	public int getNumeroFavoritos(){
 		return favoritaram.size();
+	}
+
+	public void addTag(String tag) {
+		if (Verificador.verificaStringValida(tag))
+			tags.add(tag);
+	}
+
+	public List<String> getTags() {
+		return tags;
 	}
 
 }

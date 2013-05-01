@@ -1,9 +1,12 @@
 package remake.regras;
 
+import java.io.Serializable;
+
 import remake.sistema.CentralDeDados;
 
-public class OrdenadorRegraFavoritado implements OrdenadorRegra<String> {
+public class OrdenadorRegraFavoritado implements OrdenadorRegra<String>, Serializable {
 
+	private static final long serialVersionUID = 1967455555606433090L;
 	CentralDeDados data = CentralDeDados.getInstance();
 	private final String regra = "PRIMEIRO OS SONS COM MAIS FAVORITOS";
 

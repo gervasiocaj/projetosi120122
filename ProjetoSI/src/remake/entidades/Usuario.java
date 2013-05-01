@@ -1,13 +1,17 @@
 package remake.entidades;
 
+import java.io.Serializable;
+import java.security.InvalidParameterException;
 import java.util.*;
+
 import remake.excecao.*;
 import remake.regras.*;
 import remake.sistema.Verificador;
 import remake.util.Favorito;
 
-public class Usuario {
+public class Usuario implements Serializable{
 
+	private static final long serialVersionUID = 7443373461713020044L;
 	private String login;
 	private String senha;
 	private String nome;
@@ -18,6 +22,7 @@ public class Usuario {
 	private List<String> perfilMusical;
 	private Set<String> listaMyFollowers;
 	private Set<String> listaFollowing;
+	private List<String> tags;
 	private List<String> listaFavorite;
 	private List<Favorito> feedExtra;
 	private List<String> mainFeed;
@@ -70,6 +75,7 @@ public class Usuario {
 		listaFavorite = new LinkedList<String>();
 		feedExtra = new LinkedList<Favorito>();
 		mainFeed = new LinkedList<String>();
+		tags = new LinkedList<String>();
 		numeroDeFavoritos = new HashMap<String, Integer>();
 		ordemSeguidor = new HashMap<String, Integer>();
 		ordem = 1;
@@ -429,6 +435,17 @@ public class Usuario {
 	 */
 	public void adicionaFavorito() {
 		vezesFavoritado++;
+	}
+
+	public String addTag(String tag) {
+		if (!Verificador.verificaStringValida(tag) || tags.contains(tag))
+			throw new InvalidParameterException("Tag inválida");
+		tags.add(tag);
+		return tag;
+	}
+	
+	public List<String> getTags() {
+		return tags;
 	}
 
 }

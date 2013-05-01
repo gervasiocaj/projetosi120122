@@ -1,12 +1,12 @@
 package remake.regras;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import remake.sistema.CentralDeDados;
 
-
-public class OrdenadorRecomendacoes implements Comparator<String> {
+public class OrdenadorRecomendacoes implements Comparator<String>, Serializable {
 	
-	
+	private static final long serialVersionUID = 8004927433834815076L;
 	private CentralDeDados central;
 	private String usuario;
 

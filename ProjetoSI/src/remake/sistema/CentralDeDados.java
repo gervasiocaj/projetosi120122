@@ -1,5 +1,6 @@
 package remake.sistema;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -8,8 +9,9 @@ import java.util.Set;
 import remake.entidades.Musica;
 import remake.entidades.Usuario;
 
-public final class CentralDeDados {
+public final class CentralDeDados implements Serializable{
 
+	private static final long serialVersionUID = 2508126784232256614L;
 	final static CentralDeDados INSTANCE = new CentralDeDados();
 	private Map<String, Usuario> listagemDeUsuarios;
 	private Map<String, Musica> listagemDeMusicas;

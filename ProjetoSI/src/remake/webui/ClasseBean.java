@@ -1,5 +1,6 @@
 package remake.webui;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 import javax.faces.bean.ManagedBean;
@@ -15,7 +16,7 @@ public class ClasseBean implements Serializable {
 
 	private static final long serialVersionUID = 6322672411701456627L;
 
-	public ClasseBean() {
+	public ClasseBean() throws ClassNotFoundException, IOException {
 		Conversador.tentaIniciarRepositorio();
 	}
 

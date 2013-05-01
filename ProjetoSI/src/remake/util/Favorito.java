@@ -1,7 +1,10 @@
 package remake.util;
 
-public class Favorito {
+import java.io.Serializable;
+
+public class Favorito implements Serializable {
 	
+	private static final long serialVersionUID = -2716564189826559140L;
 	private String idUsuario;
 	private String idMusica;
 	

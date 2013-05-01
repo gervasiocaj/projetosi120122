@@ -1,5 +1,6 @@
 package remake.sistema;
 
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -11,8 +12,10 @@ import remake.util.Favorito;
 
 public class SistemaAPI {
 
-	CentralDeDados centralDeDados;
+	static CentralDeDados centralDeDados;
 	Map<String, String> usuarioLogados;
+	private List<String> usuariosDeslogados;
+	private final static String arquivoDados = "CentralDeDados.txt";
 
 	private enum Regras {
 
@@ -31,8 +34,10 @@ public class SistemaAPI {
 		}
 	}
 
-	public SistemaAPI() {
+	public SistemaAPI() throws ClassNotFoundException, IOException {
 		usuarioLogados = new HashMap<String, String>();
+		usuariosDeslogados = new LinkedList<String>();
+		leArquivo(arquivoDados);
 		centralDeDados = CentralDeDados.getInstance();
 	}
 
@@ -50,9 +55,11 @@ public class SistemaAPI {
 	 * @throws AtributoException
 	 *             -> exceção lancada caso algum dos atributos sejam invalidos
 	 * @throws CriacaoUserException
+	 * @throws IOException
 	 */
 	public void criaNovoUsuario(String login, String senha, String nome,
-			String email) throws AtributoException, CriacaoUserException {
+			String email) throws AtributoException, CriacaoUserException,
+			IOException {
 
 		if (centralDeDados.hasUsuarioLogin(login))
 			throw new CriacaoUserException(
@@ -63,6 +70,7 @@ public class SistemaAPI {
 
 		Usuario usuario = new Usuario(login, senha, nome, email);
 		centralDeDados.addUsuario(usuario);
+		escreveEmArquivo();
 	}
 
 	/**
@@ -118,9 +126,12 @@ public class SistemaAPI {
 	 *             login invalido
 	 * @throws UsuarioNaoCadastradoException
 	 *             Usuario inesistente
+	 * @throws SessaoIDException
 	 */
 	public Usuario getUsuario(String sessaoID) throws LoginException,
-			UsuarioNaoCadastradoException {
+			UsuarioNaoCadastradoException, SessaoIDException {
+		
+		verificaSessao(sessaoID);
 		String usuarioID = usuarioLogados.get(sessaoID);
 		return centralDeDados.getUser(usuarioID);
 	}
@@ -188,6 +199,7 @@ public class SistemaAPI {
 	 */
 	public void encerrarSessao(String sessaoID) throws SessaoIDException {
 		usuarioLogados.remove(sessaoID);
+		usuariosDeslogados.add(sessaoID);
 	}
 
 	/**
@@ -200,8 +212,7 @@ public class SistemaAPI {
 	 *             sessaoID é invalida
 	 */
 	private String getUserID(String sessaoID) throws SessaoIDException {
-		if (!Verificador.verificaStringValida(sessaoID))
-			throw new SessaoIDException("Sessão inválida");
+		verificaSessao(sessaoID);
 
 		String retorno = usuarioLogados.get(sessaoID);
 		if (retorno == null)
@@ -246,7 +257,6 @@ public class SistemaAPI {
 			throws SessaoIDException, UsuarioNaoCadastradoException {
 
 		String usuarioID = usuarioLogados.get(sessaoID);
-
 		return getPerfilMusical(sessaoID, usuarioID);
 	}
 
@@ -277,6 +287,7 @@ public class SistemaAPI {
 		for (String seguido : centralDeDados.getUser(meuID).getSeguindo()) {
 			sons.addAll(centralDeDados.getUser(seguido).getPerfilMusical());
 		}
+		sons.addAll(centralDeDados.getUser(meuID).getPerfilMusical());
 		Collections.sort(sons, new OrdenadorRegraTempo());
 		return sons;
 	}
@@ -295,10 +306,11 @@ public class SistemaAPI {
 	 *             data invalida
 	 * @throws LinkInvalidoException
 	 *             link invalido
+	 * @throws IOException
 	 */
 	public String postarSom(String sessaoID, String link)
 			throws SessaoIDException, DataInvalidaException,
-			LinkInvalidoException {
+			LinkInvalidoException, IOException {
 
 		Calendar dataAtual = Calendar.getInstance();
 		Date data = dataAtual.getTime();
@@ -323,10 +335,11 @@ public class SistemaAPI {
 	 *             data invalida
 	 * @throws LinkInvalidoException
 	 *             link invalido
+	 * @throws IOException
 	 */
 	public String postarSom(String sessaoID, String link, String dataCriacao)
 			throws SessaoIDException, DataInvalidaException,
-			LinkInvalidoException {
+			LinkInvalidoException, IOException {
 
 		String meuID = getUserID(sessaoID);
 		Usuario usuarioAtual = centralDeDados.getUser(meuID);
@@ -339,7 +352,7 @@ public class SistemaAPI {
 
 		for (String seguidor : usuarioAtual.getListaMeusSeguidores())
 			centralDeDados.getUser(seguidor).addMainFeed(musica.getID());
-
+		escreveEmArquivo();
 		return musica.getID();
 	}
 
@@ -354,7 +367,6 @@ public class SistemaAPI {
 	 */
 	public Set<String> getListaSeguindo(String sessaoID)
 			throws SessaoIDException {
-
 		String meuID = getUserID(sessaoID);
 		return centralDeDados.getUser(meuID).getSeguindo();
 	}
@@ -370,10 +382,12 @@ public class SistemaAPI {
 	 *             -> sessapID invalido
 	 * @throws LoginException
 	 *             -> login invalido
+	 * @throws IOException
 	 */
 	public void seguirUsuario(String sessaoID, String loginFollowed)
-			throws SessaoIDException, LoginException {
+			throws SessaoIDException, LoginException, IOException {
 
+		verificaSessao(sessaoID);
 		if (loginFollowed == null || loginFollowed.equals(""))
 			throw new LoginException("Login inválido");
 
@@ -388,6 +402,7 @@ public class SistemaAPI {
 		centralDeDados.getUser(meuID).seguir(userIDSeguido);
 		centralDeDados.getUser(userIDSeguido).addMeuSeguidor(meuID);
 		centralDeDados.getUser(meuID).addOrdemSeguidor(userIDSeguido);
+		escreveEmArquivo();
 	}
 
 	/**
@@ -399,24 +414,27 @@ public class SistemaAPI {
 	 * @throws SessaoIDException
 	 *             sessaoID invalida
 	 */
-	public Set<String> getListaDeSeguidores(String sessaoID)
+	public List<String> getListaDeSeguidores(String sessaoID)
 			throws SessaoIDException {
 
 		String meuID = getUserID(sessaoID);
-		return centralDeDados.getUser(meuID).getListaMeusSeguidores();
+		
+		List<String> a = new LinkedList<String>();
+		a.addAll(centralDeDados.getUser(meuID).getListaMeusSeguidores());
+		return a;	
 	}
 
 	public void addFavorito(String sessaoID, String musicaID)
 			throws SessaoIDException, SomInexistenteException, LoginException,
-			UsuarioNaoCadastradoException {
+			UsuarioNaoCadastradoException, IOException {
+
+		String meuID = getUserID(sessaoID);
 
 		if (!Verificador.verificaStringValida(musicaID))
 			throw new SomInexistenteException("Som inválido");
 
 		else if (centralDeDados.getMusica(musicaID) == null)
 			throw new SomInexistenteException("Som inexistente");
-
-		String meuID = getUserID(sessaoID);
 
 		Usuario usuarioAtual = centralDeDados.getUser(meuID);
 		Musica musicaAtual = centralDeDados.getMusica(musicaID);
@@ -434,6 +452,7 @@ public class SistemaAPI {
 		for (String seguidor : usuarioAtual.getListaMeusSeguidores()) {
 			centralDeDados.getUser(seguidor).addFeedExtra(musicaID, meuID);
 		}
+		escreveEmArquivo();
 	}
 
 	/**
@@ -475,15 +494,16 @@ public class SistemaAPI {
 	 *            a regra de composicao
 	 * @throws SessaoIDException
 	 * @throws RegraDeComposicaoException
+	 * @throws IOException
 	 */
 	public void setRegraDeComposicao(String sessaoID,
 			OrdenadorRegra<String> comparador, String regra)
-			throws SessaoIDException, RegraDeComposicaoException {
+			throws SessaoIDException, RegraDeComposicaoException, IOException {
 
 		String meuID = getUserID(sessaoID);
 		verificaRegra(regra);
 		centralDeDados.getUser(meuID).setRegraDeComposicao(comparador);
-
+		escreveEmArquivo();
 	}
 
 	/**
@@ -503,8 +523,9 @@ public class SistemaAPI {
 	}
 
 	// TODO: mudar pacote de fachada para toranar esse metodo protected!
-	public void zerarSistema() {
+	public void zerarSistema() throws IOException {
 		centralDeDados.zerarSistema();
+		deletaArquivo();
 	}
 
 	/**
@@ -558,13 +579,15 @@ public class SistemaAPI {
 	 *            nome da lista a ser criada
 	 * @throws SessaoIDException
 	 * @throws ListaPersonalizadaException
+	 * @throws IOException
 	 */
 	public void criaLista(String sessaoID, String nomeLista)
-			throws SessaoIDException, ListaPersonalizadaException {
+			throws SessaoIDException, ListaPersonalizadaException, IOException {
 		String meuID = getUserID(sessaoID);
 		if (!Verificador.verificaStringValida(nomeLista))
 			throw new ListaPersonalizadaException("Nome inválido");
 		centralDeDados.getUser(meuID).criarListaPersonalizada(nomeLista);
+		escreveEmArquivo();
 	}
 
 	/**
@@ -579,14 +602,19 @@ public class SistemaAPI {
 	 * @throws SessaoIDException
 	 * @throws ListaPersonalizadaException
 	 * @throws UsuarioNaoCadastradoException
+	 * @throws IOException
 	 */
 	public void adicionarUsuarioALista(String sessaoID, String nomeLista,
 			String userID) throws SessaoIDException,
-			ListaPersonalizadaException {
+			ListaPersonalizadaException, UsuarioNaoCadastradoException,
+			IOException {
 		String meuID = getUserID(sessaoID);
+		if (!Verificador.verificaStringValida(userID))
+			throw new UsuarioNaoCadastradoException("Usuário inválido");
 		if (!Verificador.verificaStringValida(nomeLista))
 			throw new ListaPersonalizadaException("Lista inválida");
 		centralDeDados.getUser(meuID).adicinarUsuarioALista(nomeLista, userID);
+		escreveEmArquivo();
 	}
 
 	public List<String> getSonsEmLista(String sessaoID, String nomeLista)
@@ -693,5 +721,67 @@ public class SistemaAPI {
 			result.add(centralDeDados.getUser(u));
 		return result;
 	}
+	
+	private static void escreveEmArquivo() throws IOException {
+		ObjectOutputStream out = null;
+		try {
+			out = new ObjectOutputStream(new BufferedOutputStream(
+					new FileOutputStream(arquivoDados)));
+			out.writeObject(centralDeDados);
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+		} finally {
+			out.close();
+		}
+	}
 
+	private static void leArquivo(String nomeDoArquivo)
+			throws ClassNotFoundException, IOException {
+		ObjectInputStream in = null;
+		centralDeDados = null;
+		if (verificaExistencia(arquivoDados)) {
+			try {
+				in = new ObjectInputStream(new BufferedInputStream(
+						new FileInputStream(nomeDoArquivo)));
+				centralDeDados = (CentralDeDados) in.readObject();
+			} catch (ClassNotFoundException e) {
+				System.err.println(e.getMessage());
+			} catch (IOException e) {
+				System.err.println(e.getMessage());
+			} finally {
+				in.close();
+			}
+		}
+	}
+
+	public static boolean verificaExistencia(String nomeDoArquivo) {
+		File arquivo = new File(nomeDoArquivo);
+		return arquivo.exists();
+	}
+
+	public void reiniciarSistema() throws ClassNotFoundException, IOException {
+		leArquivo(arquivoDados);
+		centralDeDados = CentralDeDados.getInstance();
+	}
+
+	public void encerrarSistema() throws IOException {
+		escreveEmArquivo();
+		centralDeDados = null;
+	}
+
+	private void deletaArquivo() {
+		if (verificaExistencia(arquivoDados)) {
+			File f = new File(arquivoDados);
+			f.delete();
+		}
+	}
+	
+	private void verificaSessao(String sessaoID) throws SessaoIDException {
+		if (!Verificador.verificaStringValida(sessaoID))
+			throw new SessaoIDException("Sessão inválida");
+		if (usuariosDeslogados.contains(sessaoID))
+			throw new SessaoIDException("Sessão inexistente");
+		if (!usuarioLogados.containsKey(sessaoID))
+			throw new SessaoIDException("Sessão inválida");
+	}
 }

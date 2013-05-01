@@ -1,13 +1,11 @@
 package remake.fachada;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
 import remake.regras.*;
-import remake.sistema.SistemaAPI;
-import remake.sistema.Verificador;
+import remake.sistema.*;
 import remake.util.Favorito;
-
 import remake.entidades.*;
 import remake.excecao.*;
 
@@ -15,13 +13,13 @@ public class FachadaEasyAccept {
 
 	private SistemaAPI sistema;
 
-	public void zerarSistema() {
+	public void zerarSistema() throws Exception {
 		sistema = new SistemaAPI();
 		sistema.zerarSistema();
 	}
 
 	public void criarUsuario(String login, String senha, String nome,
-			String email) throws CriacaoUserException, AtributoException {
+			String email) throws CriacaoUserException, AtributoException, IOException {
 		
 		sistema.criaNovoUsuario(login, senha, nome, email);
 	}
@@ -59,7 +57,7 @@ public class FachadaEasyAccept {
 
 	public String postarSom(String idSessao, String link, String dataCriacao)
 			throws SessaoIDException, LinkInvalidoException,
-			DataInvalidaException {
+			DataInvalidaException, IOException {
 		
 		return sistema.postarSom(idSessao, link, dataCriacao);
 	}
@@ -83,11 +81,11 @@ public class FachadaEasyAccept {
 		sistema.encerrarSessao(login);
 	}
 
-	public void encerrarSistema() {
-		sistema = null;
+	public void encerrarSistema() throws IOException {
+		sistema.encerrarSistema();
 	}
 
-	public String getIDUsuario(String idSessao) throws LoginException, UsuarioNaoCadastradoException {
+	public String getIDUsuario(String idSessao) throws LoginException, UsuarioNaoCadastradoException, SessaoIDException {
 		
 		Usuario usuario = sistema.getUsuario(idSessao);
 		return usuario.getID();
@@ -98,7 +96,7 @@ public class FachadaEasyAccept {
 	}
 
 	public void seguirUsuario(String idSessao, String login)
-			throws SessaoIDException, LoginException {
+			throws SessaoIDException, LoginException, IOException {
 		sistema.seguirUsuario(idSessao, login);
 	}
 
@@ -113,12 +111,12 @@ public class FachadaEasyAccept {
 	}
 
 	public String getListaDeSeguidores(String idSessao) throws Exception {
-		Set<String> seguidores = sistema.getListaDeSeguidores(idSessao);
+		List<String> seguidores = sistema.getListaDeSeguidores(idSessao);
 		return convertCollection(seguidores);
 	}
 
 	public void favoritarSom(String idSessao, String idSom)
-			throws SessaoIDException, SomInexistenteException, LoginException, UsuarioNaoCadastradoException {
+			throws SessaoIDException, SomInexistenteException, LoginException, UsuarioNaoCadastradoException, IOException {
 		
 		sistema.addFavorito(idSessao, idSom);
 	}
@@ -156,7 +154,7 @@ public class FachadaEasyAccept {
 	}
 
 	public void setMainFeedRule(String sessaoID, String rule)
-			throws SessaoIDException, RegraDeComposicaoException, LoginException, UsuarioNaoCadastradoException{
+			throws SessaoIDException, RegraDeComposicaoException, LoginException, UsuarioNaoCadastradoException, IOException{
 
 		String usuarioID = sistema.getUsuario(sessaoID).getID();
 		OrdenadorRegra<String> regra = new OrdenadorRegraDefault();
@@ -171,12 +169,12 @@ public class FachadaEasyAccept {
 
 	}
 	
-	public String criarLista(String idSessao, String nome) throws SessaoIDException, ListaPersonalizadaException{
+	public String criarLista(String idSessao, String nome) throws SessaoIDException, ListaPersonalizadaException, IOException{
 		sistema.criaLista(idSessao, nome);
 		return nome;
 	}
 	
-	public void adicionarUsuario(String idSessao, String idLista, String idUsuario) throws SessaoIDException, ListaPersonalizadaException{
+	public void adicionarUsuario(String idSessao, String idLista, String idUsuario) throws SessaoIDException, ListaPersonalizadaException, UsuarioNaoCadastradoException, IOException{
 		sistema.adicionarUsuarioALista(idSessao, idLista, idUsuario);
 	}
 	
@@ -195,7 +193,38 @@ public class FachadaEasyAccept {
 	public String getFontesDeSonsRecomendadas(String idSessao) throws SessaoIDException{
 		return convertCollection(sistema.getFontesDeSonsRecomendadas(idSessao));
 	}
-
+	
+	public void reiniciarSistema() throws ClassNotFoundException, IOException{
+		sistema.reiniciarSistema();
+	}
+	
+	public String criarTag(String idSessao, String tag) throws LoginException, SessaoIDException, UsuarioNaoCadastradoException {
+		Usuario user = sistema.getUsuario(idSessao);
+		return user.addTag(tag);
+	}
+	
+	public void adicionarTagASom(String idSessao, String tag, String som) throws SomInexistenteException, SessaoIDException, UsuarioNaoCadastradoException, LoginException {
+		Usuario user = sistema.getUsuario(idSessao);
+		Musica mus = sistema.getMusica(som);
+		if (user.getPerfilMusical().contains(mus.getID()) && user.getTags().contains(tag))
+			mus.addTag(tag);
+	}
+	
+	public String getListaTagsEmSom(String idSessao, String som) throws SomInexistenteException {
+		return convertCollection(sistema.getMusica(som).getTags());
+	}
+	
+	public String getNomeTag(String idSessao, String tag) throws LoginException, UsuarioNaoCadastradoException, SessaoIDException {
+		Usuario user = sistema.getUsuario(idSessao);
+		if (user.getTags().contains(tag))
+			return tag;
+		return null;
+	}
+	
+	public String getTagsDisponiveis(String idSessao) throws LoginException, UsuarioNaoCadastradoException, SessaoIDException {
+		return convertCollection(sistema.getUsuario(idSessao).getTags());
+	}
+	
 	private String convertCollection(Collection<?> c) {
 		String str = "{";
 		Iterator<?> it = c.iterator();
@@ -208,5 +237,4 @@ public class FachadaEasyAccept {
 		str += "}";
 		return str;
 	}
-
 }

@@ -37,12 +37,15 @@
 		<java classname="easyaccept.EasyAccept">
 			<arg
 				line="remake.fachada.FachadaEasyAccept
-				testesDeAceitacao_SI1\scripts\US01.txt
-				testesDeAceitacao_SI1\scripts\US02.txt
-				testesDeAceitacao_SI1\scripts\US03.txt
-				testesDeAceitacao_SI1\scripts\US04.txt
-				testesDeAceitacao_SI1\scripts\US05.txt
-				testesDeAceitacao_SI1\scripts\US06.txt" />
+				testesDeAceitacao_SI1/scripts/US01.txt
+				testesDeAceitacao_SI1/scripts/US02.txt
+				testesDeAceitacao_SI1/scripts/US03.txt
+				testesDeAceitacao_SI1/scripts/US04.txt
+				testesDeAceitacao_SI1/scripts/US05.txt
+				testesDeAceitacao_SI1/scripts/US06.txt
+				testesDeAceitacao_SI1/scripts/US07.txt
+				testesDeAceitacao_SI1/scripts/US09.txt
+				testesDeAceitacao_SI1/scripts/US10.txt"/>
 			<classpath refid="bins" />
 			<classpath refid="libs" />
 		</java>
@@ -63,7 +66,7 @@
 	
 	<target name="war" depends="compila">
 		<mkdir dir="build/war" />
-		<war destfile="build/jar/ProjetoSI.war" webxml="WebContent/WEB-INF/web.xml">
+		<war destfile="build/war/ProjetoSI.war" webxml="WebContent/WEB-INF/web.xml">
 			<classes dir="build/classes" />
 			<fileset dir="WebContent" />
 			<lib dir="WebContent/WEB-INF/lib" />
