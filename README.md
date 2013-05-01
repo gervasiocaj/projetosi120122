@@ -3,6 +3,11 @@ projetosi120122
 
 Projeto de SI 1 UFCG 2012.2
 
+
+========================================================================
+
+  Servidor AWS: http://rickroll.elasticbeanstalk.com/
+
 ========================================================================
   	
  -> Create a new repository on the command line
